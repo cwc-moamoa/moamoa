@@ -44,12 +44,19 @@ dependencies {
 	kapt("com.querydsl:querydsl-apt:$queryDslVersion:jakarta")
 	kapt("jakarta.annotation:jakarta.annotation-api")
 	kapt("jakarta.persistence:jakarta.persistence-api")
+	implementation("org.springframework.boot:spring-boot-starter-aop")
 
+
+	runtimeOnly("org.postgresql:postgresql")
+	implementation("com.h2database:h2")
+	implementation ("org.springframework.boot:spring-boot-starter-thymeleaf")
+
+
+	// Security, jjwt 라이브러리 추가
+	implementation("org.springframework.boot:spring-boot-starter-security")
+	implementation("io.jsonwebtoken:jjwt-api:0.12.3")
 	runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.3")
 	runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.3")
-	runtimeOnly("org.postgresql:postgresql")
-//	implementation("com.h2database:h2")
-	implementation ("org.springframework.boot:spring-boot-starter-thymeleaf")
 
 	// 테스트 코드
 	runtimeOnly("com.h2database:h2")
