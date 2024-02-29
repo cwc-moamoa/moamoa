@@ -15,7 +15,7 @@ class GroupPurchaseEntity(
     val userLimit: Int,
 
     @Column(name = "user_count")
-    val userCount: Int,
+    var userCount: Int,
 
     @Column(name = "time_limit")
     val timeLimit: LocalDateTime,
@@ -23,9 +23,8 @@ class GroupPurchaseEntity(
     @Column(name = "discount")
     val discount: Double,
 
-    @OneToMany(mappedBy = "group_purchases", fetch = FetchType.LAZY)
-    @JoinColumn
-    val groupPurchaseUsers: MutableList<GroupPurchaseJoinUserEntity>
+    @OneToMany(mappedBy = "groupPurchase", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
+    val groupPurchaseUsers: MutableList<GroupPurchaseJoinUserEntity> = mutableListOf()
 
 ):BaseTimeEntity()
 {

@@ -10,9 +10,6 @@ class GroupPurchaseJoinUserEntity(
     @Column(name = "user_id")
     val userId : Long,
 
-    @Column(name = "order_id")
-    val orderId : Long,
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_purchase_id")
     val groupPurchase : GroupPurchaseEntity
