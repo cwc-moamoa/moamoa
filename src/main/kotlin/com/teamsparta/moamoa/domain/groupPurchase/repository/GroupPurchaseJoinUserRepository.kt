@@ -4,4 +4,7 @@ import com.teamsparta.moamoa.domain.groupPurchase.model.GroupPurchaseJoinUserEnt
 import org.springframework.data.jpa.repository.JpaRepository
 
 interface GroupPurchaseJoinUserRepository : JpaRepository<GroupPurchaseJoinUserEntity, Long> {
+
+    fun findByUserIdAndGroupPurchaseId(userId :Long , groupPurchaseId :Long) : GroupPurchaseJoinUserEntity?
+
 }
