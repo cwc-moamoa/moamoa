@@ -9,7 +9,7 @@ import java.time.LocalDateTime
 class GroupPurchaseEntity(
 
     @Column(name = "product_id",)
-    val productId: Int,
+    val productId: Long,
 
     @Column(name = "user_limit")
     val userLimit: Int,
