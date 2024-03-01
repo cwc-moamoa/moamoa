@@ -7,4 +7,6 @@ interface GroupPurchaseJoinUserRepository : JpaRepository<GroupPurchaseJoinUserE
 
     fun findByUserIdAndGroupPurchaseId(userId :Long , groupPurchaseId :Long) : GroupPurchaseJoinUserEntity?
 
+    fun findByGroupPurchaseId(purchaseId :Long) : List<GroupPurchaseJoinUserEntity>
+
 }

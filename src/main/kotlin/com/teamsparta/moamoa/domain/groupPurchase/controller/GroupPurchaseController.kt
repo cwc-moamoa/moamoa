@@ -18,20 +18,30 @@ import org.springframework.web.bind.annotation.RestController
 class GroupPurchaseController(private val groupPurchaseService: GroupPurchaseService)
 {
 
+//    @PostMapping("/createAndJoin")
+//    fun createAndJoin(
+//        @RequestBody request: CreateGroupPurchaseRequest,
+//        @RequestParam userId: Long,
+//    ): ResponseEntity<GroupPurchaseResponse> {
+//        val groupPurchaseResponse = groupPurchaseService.createAndJoinGroupPurchase(request, userId)
+//        return ResponseEntity.status(HttpStatus.OK).body(groupPurchaseResponse)
+//    }
+
     @PostMapping("/createAndJoin")
-    fun createAndJoin(
+    fun createAndJoinOrJoin(
         @RequestBody request: CreateGroupPurchaseRequest,
-        @RequestParam userId: Long,
-    ): ResponseEntity<GroupPurchaseResponse> {
-        val groupPurchaseResponse = groupPurchaseService.createAndJoinGroupPurchase(request, userId)
-        return ResponseEntity.status(HttpStatus.OK).body(groupPurchaseResponse)
+        @RequestParam userId: Long
+    ): ResponseEntity<String> {
+        groupPurchaseService.createAndJoinOrJoinGroupPurchase(request, userId)
+        return ResponseEntity.status(HttpStatus.OK).body("공동구매 매칭 성공")
     }
+
 
     @PostMapping("/join")
     fun join(
         @RequestParam userId: Long,
         @RequestParam groupPurchaseId: Long,
-    ): ResponseEntity<GroupPurchaseJoinUserResponse> {
+    ): ResponseEntity<Unit> {
         val groupPurchaseJoinUserResponse = groupPurchaseService.joinGroupPurchase(userId, groupPurchaseId)
         return ResponseEntity.status(HttpStatus.OK).body(groupPurchaseJoinUserResponse)
     }
