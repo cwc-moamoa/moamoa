@@ -22,6 +22,6 @@ abstract class BaseTimeEntity {
         protected set
 
     @Column(nullable = true)
-    var deletedAt: LocalDateTime = LocalDateTime.now()
+    var deletedAt: LocalDateTime? = null
 
 }
