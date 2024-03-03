@@ -49,5 +49,10 @@ data class Product(
     val userLimit: Int,
 
     @Column(name ="discount")
-    val discount: Double
+    val discount: Double,
+
+    @OneToOne(cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_stock_id")
+    val productStock: ProductStock? = null
+
 ): BaseTimeEntity()

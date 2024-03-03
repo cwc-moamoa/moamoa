@@ -1,6 +1,5 @@
 package com.teamsparta.moamoa.product.dto
 
-import java.time.LocalDateTime
 
 data class ProductRequest(
     val title: String,
@@ -8,12 +7,11 @@ data class ProductRequest(
     val imageUrl: String,
     val price: Int,
     val purchaseAble: Boolean,
-//    val isDeleted: Boolean,
     val likes: Int,
     val productDiscount: Double,
     val ratingAverage: Double,
     val sellerId: Long,
-    val deletedAt: LocalDateTime? = null,
+//    val deletedAt: LocalDateTime?, 이거 있으면 안됨
     val userLimit: Int, // 추가된 필드
     val discount: Double // 추가된 필드
 )

@@ -1,10 +1,7 @@
 package com.teamsparta.moamoa.product.controller
 
-import com.teamsparta.moamoa.exception.ModelNotFoundException
 import com.teamsparta.moamoa.product.dto.ProductRequest
 import com.teamsparta.moamoa.product.dto.ProductResponse
-import com.teamsparta.moamoa.product.model.Product
-import com.teamsparta.moamoa.product.repository.ProductRepository
 import com.teamsparta.moamoa.product.service.ProductService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -13,18 +10,21 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/products")
 class ProductController(
     private val productService: ProductService,
-    private val productRepository: ProductRepository
 ) {
     @GetMapping
     fun getAllProducts(): List<ProductResponse> {
         return productService.getAllProducts()
     }
 
+//    @GetMapping("/{productId}")
+//    fun getProduct(@PathVariable productId: Long): ResponseEntity<Product> {
+//        val product = productRepository.findById(productId)
+//            .orElseThrow { ModelNotFoundException("Product", productId) }
+//        return ResponseEntity.ok(product)
+//    }
     @GetMapping("/{productId}")
-    fun getProduct(@PathVariable productId: Long): ResponseEntity<Product> {
-        val product = productRepository.findById(productId)
-            .orElseThrow { ModelNotFoundException("Product", productId) }
-        return ResponseEntity.ok(product)
+    fun getProduct(@PathVariable productId: Long): ProductResponse {
+        return productService.getProductById(productId)
     }
 
     @PostMapping

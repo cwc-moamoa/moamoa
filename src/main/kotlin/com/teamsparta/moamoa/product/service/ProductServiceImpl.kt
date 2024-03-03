@@ -10,16 +10,26 @@ import java.time.LocalDateTime
 @Service
 class ProductServiceImpl(private val productRepository: ProductRepository) : ProductService {
 
+
     override fun getAllProducts(): List<ProductResponse> {
-        return productRepository.findAll()
-            .map { ProductResponse(it) }
+        val products = productRepository.findAll().filter { it.deletedAt == null }
+        return products.map { ProductResponse(it) }
     }
 
+//    override fun getProductById(id: Long): ProductResponse {
+//        val product = productRepository.findById(id)
+//            .orElseThrow { RuntimeException("Product not found") }
+//        return ProductResponse(product)
+//    }
+
     override fun getProductById(id: Long): ProductResponse {
-        val product = productRepository.findById(id)
-            .orElseThrow { RuntimeException("Product not found") }
+        val product = productRepository.findByIdAndDeletedAtIsNull(id)
+            .orElseThrow { RuntimeException("Product not found or has been deleted") }
+
         return ProductResponse(product)
     }
+
+
     override fun createProduct(request: ProductRequest): Product {
         val product = Product(
             title = request.title,
@@ -27,7 +37,7 @@ class ProductServiceImpl(private val productRepository: ProductRepository) : Pro
             imageUrl = request.imageUrl,
             price = request.price,
             purchaseAble = request.purchaseAble,
-            deletedAt = request.deletedAt,
+//            deletedAt = request.deletedAt,
             likes = request.likes,  // 추가
             productDiscount = request.productDiscount,  // 추가
             ratingAverage = request.ratingAverage,  // 추가
@@ -47,7 +57,7 @@ class ProductServiceImpl(private val productRepository: ProductRepository) : Pro
             imageUrl = request.imageUrl
             price = request.price
             purchaseAble = request.purchaseAble
-            deletedAt = request.deletedAt
+//            deletedAt = request.deletedAt
         }
 
         return productRepository.save(product)
