@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing
 @EnableJpaAuditing
 @EnableCaching
 @SpringBootApplication
+@EnableJpaAuditing
 class MoamoaApplication
 
 fun main(args: Array<String>) {
