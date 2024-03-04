@@ -1,15 +1,15 @@
 package com.teamsparta.moamoa.review.service
 
 import com.teamsparta.moamoa.exception.ModelNotFoundException
+import com.teamsparta.moamoa.product.repository.ProductRepository
 import com.teamsparta.moamoa.review.dto.CreateReviewRequest
 import com.teamsparta.moamoa.review.dto.ReviewResponse
 import com.teamsparta.moamoa.review.dto.UpdateReviewRequest
-import com.teamsparta.moamoa.review.model.Product
-import com.teamsparta.moamoa.review.repository.ProductRepository
 import com.teamsparta.moamoa.review.repository.ReviewRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDateTime
 
 
 @Service
@@ -46,7 +46,7 @@ class ReviewServiceImpl(
         val review = reviewRepository.findByIdOrNull(reviewId)
             ?: throw ModelNotFoundException("Review", reviewId)
 
-        review.isDeleted = true
+        review.deletedAt = LocalDateTime.now()
         reviewRepository.save(review)
     }
 

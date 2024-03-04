@@ -1,7 +1,9 @@
 package com.teamsparta.moamoa.review.model
 
 import com.teamsparta.moamoa.infra.BaseTimeEntity
+import com.teamsparta.moamoa.product.model.Product
 import jakarta.persistence.*
+import java.time.LocalDateTime
 
 @Entity
 class Review (
@@ -25,8 +27,8 @@ class Review (
     @Column(name = "image_path")
     val imagePath: String? = null,
 
-    @Column(name = "is_deleted")
-    var isDeleted: Boolean = false
+    @Column(name = "deleted_at")
+    var deletedAt: LocalDateTime? = null
 
 
 ): BaseTimeEntity() {

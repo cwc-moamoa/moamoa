@@ -1,6 +1,6 @@
 package com.teamsparta.moamoa.review.dto
 
-import com.teamsparta.moamoa.review.model.Product
+import com.teamsparta.moamoa.product.model.Product
 import com.teamsparta.moamoa.review.model.Review
 
 data class CreateReviewRequest (
