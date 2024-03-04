@@ -11,5 +11,5 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing
 class MoamoaApplication
 
 fun main(args: Array<String>) {
-	runApplication<MoamoaApplication>(*args)
+    runApplication<MoamoaApplication>(*args)
 }

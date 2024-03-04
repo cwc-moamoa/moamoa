@@ -8,14 +8,9 @@ import org.springframework.context.annotation.Configuration
 
 @Configuration
 class SwaggerConfig {
-
     @Bean
-    fun openAPI(): OpenAPI = OpenAPI()
-        .components(Components())
-        .info(
-            Info()
-                .title("Course API")
-                .description("Course API schema")
-                .version("1.0.0")
+    fun openAPI(): OpenAPI =
+        OpenAPI().components(Components()).info(
+            Info().title("Course API").description("Course API schema").version("1.0.0"),
         )
 }

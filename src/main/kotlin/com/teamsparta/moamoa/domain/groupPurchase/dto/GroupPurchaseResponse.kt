@@ -8,5 +8,5 @@ data class GroupPurchaseResponse(
     val userLimit: Int,
     val userCount: Int,
     val timeLimit: LocalDateTime,
-    val discount: Double
+    val discount: Double,
 )

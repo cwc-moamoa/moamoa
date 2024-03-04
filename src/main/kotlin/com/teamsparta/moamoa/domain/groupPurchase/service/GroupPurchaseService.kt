@@ -1,13 +1,13 @@
 package com.teamsparta.moamoa.domain.groupPurchase.service
 
-import com.teamsparta.moamoa.domain.groupPurchase.repository.GroupPurchaseJoinUserRepository
-import com.teamsparta.moamoa.domain.groupPurchase.repository.GroupPurchaseRepository
-import org.springframework.stereotype.Service
 import com.teamsparta.moamoa.domain.groupPurchase.dto.*
 import com.teamsparta.moamoa.domain.groupPurchase.model.GroupPurchaseEntity
 import com.teamsparta.moamoa.domain.groupPurchase.model.GroupPurchaseJoinUserEntity
+import com.teamsparta.moamoa.domain.groupPurchase.repository.GroupPurchaseJoinUserRepository
+import com.teamsparta.moamoa.domain.groupPurchase.repository.GroupPurchaseRepository
 import com.teamsparta.moamoa.exception.ModelNotFoundException
 import jakarta.transaction.Transactional
+import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 
 @Service
@@ -15,8 +15,7 @@ class GroupPurchaseService(
     private val groupPurchaseRepository: GroupPurchaseRepository,
     private val groupPurchaseJoinUserRepository: GroupPurchaseJoinUserRepository,
 ) {
-
-//    @Transactional
+    //    @Transactional
 //    fun createGroupPurchase(request: CreateGroupPurchaseRequest): GroupPurchaseResponse {
 //        val groupPurchase = GroupPurchaseEntity(
 //            request.productId, request.userLimit, 0, request.timeLimit, request.discount, mutableListOf()
@@ -44,13 +43,22 @@ class GroupPurchaseService(
     //    있을시 else로 joinGroupPurchase 실행?
 
     @Transactional
-    fun createAndJoinOrJoinGroupPurchase(request: CreateGroupPurchaseRequest, userId: Long) {
+    fun createAndJoinOrJoinGroupPurchase(
+        request: CreateGroupPurchaseRequest,
+        userId: Long,
+    ) {
         val groupPurchase = groupPurchaseRepository.findByProductId(request.productId)
 
         if (groupPurchase == null) {
-            val newGroupPurchase = GroupPurchaseEntity(
-                request.productId, request.userLimit, 1, request.timeLimit.plusHours(24), request.discount, mutableListOf()
-            )
+            val newGroupPurchase =
+                GroupPurchaseEntity(
+                    request.productId,
+                    request.userLimit,
+                    1,
+                    request.timeLimit.plusHours(24),
+                    request.discount,
+                    mutableListOf(),
+                )
 
             val groupPurchaseJoinUser = GroupPurchaseJoinUserEntity(userId, newGroupPurchase)
 
@@ -61,13 +69,15 @@ class GroupPurchaseService(
         }
     }
 
-
-
     @Transactional
-    fun joinGroupPurchase(userId: Long, groupPurchaseId: Long) {
-        val groupPurchase = groupPurchaseRepository.findByIdOrNull(groupPurchaseId) ?: throw ModelNotFoundException(
-            "GroupPurchase", groupPurchaseId
-        )
+    fun joinGroupPurchase(
+        userId: Long,
+        groupPurchaseId: Long,
+    ) {
+        val groupPurchase =
+            groupPurchaseRepository.findByIdOrNull(groupPurchaseId) ?: throw ModelNotFoundException(
+                "GroupPurchase", groupPurchaseId,
+            )
         if (groupPurchase.userCount >= groupPurchase.userLimit) {
             throw IllegalStateException("GroupPurchase is full")
         }
@@ -87,7 +97,8 @@ class GroupPurchaseService(
             groupPurchase.deletedAt = LocalDateTime.now()
             groupPurchaseRepository.save(groupPurchase)
 
-            val userSoftDelete: List<GroupPurchaseJoinUserEntity> = groupPurchaseJoinUserRepository.findByGroupPurchaseId(groupPurchaseId)
+            val userSoftDelete: List<GroupPurchaseJoinUserEntity> =
+                groupPurchaseJoinUserRepository.findByGroupPurchaseId(groupPurchaseId)
 
             userSoftDelete.forEach { user ->
                 user.deletedAt = LocalDateTime.now()
@@ -98,10 +109,14 @@ class GroupPurchaseService(
     }
 
     @Transactional
-    fun leaveGroupPurchase(userId: Long, groupPurchaseId: Long) {
-        val groupPurchase = groupPurchaseRepository.findByIdOrNull(groupPurchaseId) ?: throw ModelNotFoundException(
-            "GroupPurchase", groupPurchaseId
-        )
+    fun leaveGroupPurchase(
+        userId: Long,
+        groupPurchaseId: Long,
+    ) {
+        val groupPurchase =
+            groupPurchaseRepository.findByIdOrNull(groupPurchaseId) ?: throw ModelNotFoundException(
+                "GroupPurchase", groupPurchaseId,
+            )
         val groupPurchaseJoinUser =
             groupPurchaseJoinUserRepository.findByUserIdAndGroupPurchaseId(userId, groupPurchaseId)
                 ?: throw Exception("userId or groupPurchaseId not found")
@@ -118,7 +133,6 @@ class GroupPurchaseService(
         groupPurchaseJoinUserRepository.save(groupPurchaseJoinUser)
     }
 
-
     fun GroupPurchaseEntity.toResponse(): GroupPurchaseResponse {
         return GroupPurchaseResponse(
             id = id!!,
@@ -126,13 +140,15 @@ class GroupPurchaseService(
             userLimit = userLimit,
             userCount = userCount,
             timeLimit = timeLimit,
-            discount = discount
+            discount = discount,
         )
     }
 
     fun GroupPurchaseJoinUserEntity.toResponse(): GroupPurchaseJoinUserResponse {
         return GroupPurchaseJoinUserResponse(
-            id = id!!, userId = userId, groupPurchaseId = groupPurchase.id!!
+            id = id!!,
+            userId = userId,
+            groupPurchaseId = groupPurchase.id!!,
         )
     }
 }

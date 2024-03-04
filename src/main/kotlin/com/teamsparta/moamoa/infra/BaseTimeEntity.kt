@@ -23,5 +23,4 @@ abstract class BaseTimeEntity {
 
     @Column(nullable = true)
     var deletedAt: LocalDateTime? = null
-
 }

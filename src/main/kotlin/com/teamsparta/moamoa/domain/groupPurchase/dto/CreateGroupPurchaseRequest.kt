@@ -6,5 +6,5 @@ data class CreateGroupPurchaseRequest(
     val productId: Long,
     val userLimit: Int,
     val timeLimit: LocalDateTime,
-    val discount: Double
+    val discount: Double,
 )
