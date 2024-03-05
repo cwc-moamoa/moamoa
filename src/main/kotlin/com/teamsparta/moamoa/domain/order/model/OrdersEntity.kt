@@ -29,15 +29,10 @@ class OrdersEntity(
     @JoinColumn(name = "user_id")
     var userId:UserEntity
 
-    //단방향/ 참조 안할꺼임 ~
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "product_id")
-//    var productId:ProductEntity
-    // 시간은 나중ㅇ ㅔ한번에 넣기 BaseTimeEntity
 ){
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var odersId:Long? = null
+    var ordersId:Long? = null
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
@@ -47,7 +42,7 @@ class OrdersEntity(
 }
 fun OrdersEntity.toResponse():ResponseOrderDto{
     return ResponseOrderDto(
-        ordersId = odersId!!,
+        ordersId = ordersId!!,
         productName = productName,
         totalPrice = totalPrice,
         address = address,

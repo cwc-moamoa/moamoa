@@ -2,10 +2,10 @@ package com.teamsparta.moamoa.domain.order.service
 
 import com.teamsparta.moamoa.domain.order.dto.CreateOrderDto
 import com.teamsparta.moamoa.domain.order.dto.ResponseOrderDto
+import com.teamsparta.moamoa.domain.order.dto.UpdateOrderDto
 import com.teamsparta.moamoa.domain.order.model.OrdersEntity
 import com.teamsparta.moamoa.domain.order.model.toResponse
 import com.teamsparta.moamoa.domain.order.repository.OrderRepository
-import com.teamsparta.moamoa.domain.product.model.StockEntity
 import com.teamsparta.moamoa.domain.product.model.StockEntity.Companion.discount
 import com.teamsparta.moamoa.domain.product.repository.ProductRepository
 import com.teamsparta.moamoa.domain.product.repository.StockRepository
@@ -44,10 +44,22 @@ class OrderServiceImpl(
                     userId = findUser
                 )
             ).toResponse()
-
         } else {
             throw Exception("재고가 모자랍니다 다시 시도")
         }
+
+    }
+
+    @Transactional
+    override fun updateOrder( userId: Long,ordersId: Long,updateOrderDto: UpdateOrderDto): ResponseOrderDto {
+        val findUser = userRepository.findByIdOrNull(userId)?: throw ModelNotFoundException("user",userId)
+        val findOrders = orderRepository.findByIdOrNull(ordersId)?:throw ModelNotFoundException("user",ordersId)
+            if(findOrders.userId == findUser){
+                findOrders.address = updateOrderDto.address
+                return orderRepository.save(findOrders).toResponse()
+            }else{
+                throw Exception("도둑 검거 완료")
+            }
 
     }
 }
