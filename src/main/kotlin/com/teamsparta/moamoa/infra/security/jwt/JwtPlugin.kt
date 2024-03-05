@@ -12,11 +12,12 @@ import java.time.Instant
 import java.util.*
 
 @Component
-class JwtPlugin(
-        @Value("\${auth.jwt.issuer}") private val ISSUER: String,
-        @Value("\${auth.jwt.seceret}") private val  SECRET: String,
-        @Value("\${auth.jwt.accessTokenExpirationHour}") private val ACCESS_TOKEN_EXPIRATION_HOUR: Long,
-) {
+class JwtPlugin{
+    companion object {
+        const val ISSUER = "team.sparta.com"
+        const val SECRET = "PO4c8z41Hia5gJG3oeuFJMRYBB4Ws4aZ"
+        const val ACCESS_TOKEN_EXPIRATION_HOUR: Long = 168
+    }
 
     fun validateToken(jwt: String): Result<Jws<Claims>> {
         return kotlin.runCatching {
@@ -26,14 +27,14 @@ class JwtPlugin(
         }
     }
 
-    fun generateAccessToken(subject: String, email: String, role: String): String {
-        return generateToken(subject, email, role, Duration.ofHours(ACCESS_TOKEN_EXPIRATION_HOUR))
+    fun generateAccessToken(subject: String, email: String): String {
+        return generateToken(subject, email, Duration.ofHours(ACCESS_TOKEN_EXPIRATION_HOUR))
 
     }
 
-    private fun generateToken(subject: String, email: String, role: String, expirationPeriod: Duration): String {
+    private fun generateToken(subject: String, email: String, expirationPeriod: Duration): String {
         val claims: Claims = Jwts.claims()
-            .add(mapOf("role" to role, "email" to email))
+            .add(mapOf("email" to email))
             .build()
 
         val key = Keys.hmacShaKeyFor(SECRET.toByteArray(StandardCharsets.UTF_8))
