@@ -9,13 +9,13 @@ data class ProductStock(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
-
-    @OneToOne(mappedBy = "productStock", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
+//    @OneToOne(mappedBy = "productStock", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
+//    val product: Product,
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id")
     val product: Product,
-
     @Column(name = "stock")
-    val stock: Int,
-
+    var stock: Int,
     @Column(name = "product_name")
-    val productName: String
-): BaseTimeEntity()
+    val productName: String,
+) : BaseTimeEntity()
