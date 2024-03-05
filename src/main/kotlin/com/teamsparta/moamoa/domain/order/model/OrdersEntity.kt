@@ -38,6 +38,8 @@ class OrdersEntity(
     @Column(name = "status")
     var status:OrdesStatus = OrdesStatus.COMPLETED
 
+    @Column(name = "deleted_at")
+    var deletedAt:LocalDateTime? = null
 
 }
 fun OrdersEntity.toResponse():ResponseOrderDto{
@@ -51,4 +53,6 @@ fun OrdersEntity.toResponse():ResponseOrderDto{
         discount = discount,
         quantity = quantity
     )
+
+
 }
