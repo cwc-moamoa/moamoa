@@ -11,18 +11,19 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 
-
 @Service
 class ReviewServiceImpl(
     private val reviewRepository: ReviewRepository,
-    private val productRepository: ProductRepository
-): ReviewService {
-
+    private val productRepository: ProductRepository,
+) : ReviewService {
     @Transactional
-    override fun createReview(productId: Long, createReviewRequest: CreateReviewRequest
+    override fun createReview(
+        productId: Long,
+        createReviewRequest: CreateReviewRequest,
     ): ReviewResponse {
-        val product = productRepository.findByIdOrNull(productId)
-            ?: throw ModelNotFoundException("Product", productId)
+        val product =
+            productRepository.findByIdOrNull(productId)
+                ?: throw ModelNotFoundException("Product", productId)
 
         val review = createReviewRequest.toReview(product)
 
@@ -31,23 +32,30 @@ class ReviewServiceImpl(
     }
 
     @Transactional
-    override fun updateReview(reviewId: Long, request: UpdateReviewRequest
+    override fun updateReview(
+        reviewId: Long,
+        request: UpdateReviewRequest,
     ): ReviewResponse {
-        val review = reviewRepository.findByIdOrNull(reviewId)
-            ?: throw ModelNotFoundException("Review", reviewId)
+        val review =
+            reviewRepository.findByIdOrNull(reviewId)
+                ?: throw ModelNotFoundException("Review", reviewId)
 
-        review.content = request.content
+        request.toUpdateReview(review)
 
-        return ReviewResponse.toReviewResponse(review)
+        val updatedReview = reviewRepository.save(review)
+
+        return ReviewResponse.toReviewResponse(updatedReview)
     }
+
+    // deleteat  null 값만 찾게 수정중...........
 
     @Transactional
     override fun deleteReview(reviewId: Long) {
-        val review = reviewRepository.findByIdOrNull(reviewId)
-            ?: throw ModelNotFoundException("Review", reviewId)
+        val review =
+            reviewRepository.findByIdOrNull(reviewId)
+                ?: throw ModelNotFoundException("Review", reviewId)
 
         review.deletedAt = LocalDateTime.now()
         reviewRepository.save(review)
     }
-
 }

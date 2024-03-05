@@ -6,6 +6,4 @@ import java.util.*
 
 interface ProductRepository : JpaRepository<Product, Long> {
     fun findByIdAndDeletedAtIsNull(id: Long): Optional<Product>
-
-
 }

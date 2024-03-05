@@ -9,8 +9,6 @@ import java.time.LocalDateTime
 
 @Service
 class ProductServiceImpl(private val productRepository: ProductRepository) : ProductService {
-
-
     override fun getAllProducts(): List<ProductResponse> {
         val products = productRepository.findAll().filter { it.deletedAt == null }
         return products.map { ProductResponse(it) }
@@ -23,33 +21,39 @@ class ProductServiceImpl(private val productRepository: ProductRepository) : Pro
 //    }
 
     override fun getProductById(id: Long): ProductResponse {
-        val product = productRepository.findByIdAndDeletedAtIsNull(id)
-            .orElseThrow { RuntimeException("Product not found or has been deleted") }
+        val product =
+            productRepository.findByIdAndDeletedAtIsNull(id)
+                .orElseThrow { RuntimeException("Product not found or has been deleted") }
 
         return ProductResponse(product)
     }
 
-
     override fun createProduct(request: ProductRequest): Product {
-        val product = Product(
-            title = request.title,
-            content = request.content,
-            imageUrl = request.imageUrl,
-            price = request.price,
-            purchaseAble = request.purchaseAble,
+        val product =
+            Product(
+                title = request.title,
+                content = request.content,
+                imageUrl = request.imageUrl,
+                price = request.price,
+                purchaseAble = request.purchaseAble,
 //            deletedAt = request.deletedAt,
-            likes = request.likes,  // 추가
-            productDiscount = request.productDiscount,  // 추가
-            ratingAverage = request.ratingAverage,  // 추가
-            sellerId = request.sellerId,  // 추가
-            userLimit = request.userLimit, // 추가된 필드
-            discount = request.discount // 추가된 필드
-        )
+                likes = request.likes, // 추가
+                productDiscount = request.productDiscount, // 추가
+                ratingAverage = request.ratingAverage, // 추가
+                sellerId = request.sellerId, // 추가
+                userLimit = request.userLimit, // 추가된 필드
+                discount = request.discount, // 추가된 필드
+            )
         return productRepository.save(product)
     }
-    override fun updateProduct(id: Long, request: ProductRequest): Product {
-        val product = productRepository.findById(id)
-            .orElseThrow { RuntimeException("Product not found") }
+
+    override fun updateProduct(
+        id: Long,
+        request: ProductRequest,
+    ): Product {
+        val product =
+            productRepository.findById(id)
+                .orElseThrow { RuntimeException("Product not found") }
 
         product.apply {
             title = request.title
@@ -64,12 +68,12 @@ class ProductServiceImpl(private val productRepository: ProductRepository) : Pro
     }
 
     override fun deleteProduct(id: Long): Product {
-        val product = productRepository.findById(id)
-            .orElseThrow { RuntimeException("Product not found") }
+        val product =
+            productRepository.findById(id)
+                .orElseThrow { RuntimeException("Product not found") }
 
         product.deletedAt = LocalDateTime.now()
 
         return productRepository.save(product)
     }
-
 }

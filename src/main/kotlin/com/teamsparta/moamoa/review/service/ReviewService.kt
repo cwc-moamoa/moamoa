@@ -5,9 +5,15 @@ import com.teamsparta.moamoa.review.dto.ReviewResponse
 import com.teamsparta.moamoa.review.dto.UpdateReviewRequest
 
 interface ReviewService {
+    fun createReview(
+        productId: Long,
+        createReviewRequest: CreateReviewRequest,
+    ): ReviewResponse
 
-    fun createReview (productId:Long, createReviewRequest: CreateReviewRequest): ReviewResponse
-    fun updateReview (reviewId: Long, request: UpdateReviewRequest): ReviewResponse
-    fun deleteReview (reviewId: Long)
+    fun updateReview(
+        reviewId: Long,
+        request: UpdateReviewRequest,
+    ): ReviewResponse
 
+    fun deleteReview(reviewId: Long)
 }
