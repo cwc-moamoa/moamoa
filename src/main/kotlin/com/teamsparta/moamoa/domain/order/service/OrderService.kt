@@ -12,4 +12,6 @@ interface OrderService {
     fun updateOrder(userId: Long,ordersId:Long,updateOrderDto: UpdateOrderDto):ResponseOrderDto
 
     fun cancelOrder(userId: Long,ordersId: Long):CancelResponseDto
+
+    fun getOrder(userId: Long,ordersId: Long):ResponseOrderDto
 }

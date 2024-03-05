@@ -8,7 +8,7 @@ import com.teamsparta.moamoa.domain.order.service.OrderService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
-import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
@@ -56,7 +56,17 @@ class OrderController(
             .body(orderService.cancelOrder(userId, ordersId))
     }
 
-    //주문 취소니까 수정으로 함 삭제면 삭제지
+    //주문 취소니까 수정으로 함 삭제면 삭제지!
+
+    @GetMapping("/{ordersId}/{userId}")
+    fun gerOrder(
+        @PathVariable ordersId: Long,
+        @PathVariable userId: Long
+    ):ResponseEntity<ResponseOrderDto>{
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(orderService.getOrder(userId,ordersId))
+    }
 
     //주문 조회
 

@@ -83,9 +83,20 @@ class OrderServiceImpl(
                 message = "주문이 취소 되었습니다"
             )
         }
+        //if중첩으로 하는게 맞는지 &&로 조지는게 맞는지 몰겠음 && 로 한번에 묶으면 좀 모지란애같음 의견제시 부탁
 
 
+    }
 
+    override fun getOrder(userId: Long, ordersId: Long): ResponseOrderDto {
+        val findUser = userRepository.findByIdOrNull(userId)?: throw ModelNotFoundException("user",userId)
+        val findOrder = orderRepository.findByIdOrNull(ordersId)?: throw ModelNotFoundException("orders",ordersId)
+
+       return if (findOrder.userId == findUser){
+           findOrder.toResponse()
+       }else{
+           throw Exception("유저와 주문정보가 일치하지 않습니다")
+       }
     }
 }
 
