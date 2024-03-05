@@ -57,7 +57,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
 
     // 테스트 코드
-    runtimeOnly("com.h2database:h2")
+    testImplementation("com.h2database:h2")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("io.kotest:kotest-runner-junit5:$kotestVersion") // 추가 !!
     testImplementation("io.kotest:kotest-assertions-core:$kotestVersion") // 추가 !!
@@ -72,7 +72,7 @@ tasks.withType<KotlinCompile> {
     }
 }
 
-tasks.withType<Test>().configureEach() { // 변경 !!
+tasks.withType<Test>().configureEach { // 변경 !!
     useJUnitPlatform()
 }
 
