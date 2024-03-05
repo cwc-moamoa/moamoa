@@ -7,6 +7,7 @@ import com.teamsparta.moamoa.domain.groupPurchase.repository.GroupPurchaseJoinUs
 import com.teamsparta.moamoa.domain.groupPurchase.repository.GroupPurchaseRepository
 import com.teamsparta.moamoa.exception.ModelNotFoundException
 import jakarta.transaction.Transactional
+import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 
@@ -14,6 +15,7 @@ import java.time.LocalDateTime
 class GroupPurchaseService(
     private val groupPurchaseRepository: GroupPurchaseRepository,
     private val groupPurchaseJoinUserRepository: GroupPurchaseJoinUserRepository,
+    private val redisTemplate: RedisTemplate<String, Any>
 ) {
     //    @Transactional
 //    fun createGroupPurchase(request: CreateGroupPurchaseRequest): GroupPurchaseResponse {
@@ -41,6 +43,33 @@ class GroupPurchaseService(
 
     //    if 프로덕트id에 해당되는 groupPurchase가 없으면 방을 새로 만든다
     //    있을시 else로 joinGroupPurchase 실행?
+
+//    @Transactional
+//    fun createAndJoinOrJoinGroupPurchase(
+//        request: CreateGroupPurchaseRequest,
+//        userId: Long,
+//    ) {
+//        val groupPurchase = groupPurchaseRepository.findByProductId(request.productId)
+//
+//        if (groupPurchase == null) {
+//            val newGroupPurchase =
+//                GroupPurchaseEntity(
+//                    request.productId,
+//                    request.userLimit,
+//                    1,
+//                    request.timeLimit.plusHours(24),
+//                    request.discount,
+//                    mutableListOf(),
+//                )
+//
+//            val groupPurchaseJoinUser = GroupPurchaseJoinUserEntity(userId, newGroupPurchase)
+//
+//            newGroupPurchase.groupPurchaseUsers.add(groupPurchaseJoinUser)
+//            groupPurchaseRepository.save(newGroupPurchase)
+//        } else {
+//            joinGroupPurchase(userId, groupPurchase.id!!)
+//        }
+//    }
 
     @Transactional
     fun createAndJoinOrJoinGroupPurchase(
@@ -132,6 +161,10 @@ class GroupPurchaseService(
         groupPurchaseJoinUser.deletedAt = LocalDateTime.now()
         groupPurchaseJoinUserRepository.save(groupPurchaseJoinUser)
     }
+
+    fun saveToRedis(productId: Long, userId: Long , orderId: Long) {
+        redisTemplate.opsForHash<String,Long>()
+    } //진행중 입니다.
 
     fun GroupPurchaseEntity.toResponse(): GroupPurchaseResponse {
         return GroupPurchaseResponse(
