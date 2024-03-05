@@ -5,6 +5,8 @@ import com.teamsparta.moamoa.domain.order.dto.CreateOrderDto
 import com.teamsparta.moamoa.domain.order.dto.ResponseOrderDto
 import com.teamsparta.moamoa.domain.order.dto.UpdateOrderDto
 import com.teamsparta.moamoa.domain.order.service.OrderService
+import org.springframework.data.domain.Page
+import org.springframework.data.web.PageableDefault
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RequestMapping("/api/orders")
@@ -59,7 +62,7 @@ class OrderController(
     //주문 취소니까 수정으로 함 삭제면 삭제지!
 
     @GetMapping("/{ordersId}/{userId}")
-    fun gerOrder(
+    fun getOrder(
         @PathVariable ordersId: Long,
         @PathVariable userId: Long
     ):ResponseEntity<ResponseOrderDto>{
@@ -69,6 +72,17 @@ class OrderController(
     }
 
     //주문 조회
+
+    @GetMapping("/{userId}")
+    fun getOrderPage(
+        @PathVariable userId: Long,
+        @RequestParam(value = "page", defaultValue = "1") page:Int,
+        @RequestParam(value = "size", defaultValue = "2") size:Int
+    ):ResponseEntity<Page<ResponseOrderDto>>{
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(orderService.getOrderPage(userId,page,size))
+    }
 
     //주문 전체 조회
 

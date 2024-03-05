@@ -13,6 +13,7 @@ import com.teamsparta.moamoa.domain.product.repository.ProductRepository
 import com.teamsparta.moamoa.domain.product.repository.StockRepository
 import com.teamsparta.moamoa.domain.user.repository.UserRepository
 import com.teamsparta.moamoa.exception.ModelNotFoundException
+import org.springframework.data.domain.Page
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -98,5 +99,9 @@ class OrderServiceImpl(
            throw Exception("유저와 주문정보가 일치하지 않습니다")
        }
     }
+
+    override fun getOrderPage(userId: Long, page: Int, size: Int): Page<ResponseOrderDto> {
+        return orderRepository.getOrderPage(userId,page, size) .map { it.toResponse() }
+    }// 진행중 주문상태가 취소된 상품도 주문 완료도 뽑혀옴
 }
 
