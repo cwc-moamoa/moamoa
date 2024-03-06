@@ -20,5 +20,7 @@ abstract class BaseTimeEntity {
     @Column(nullable = true)
     var updatedAt: LocalDateTime = LocalDateTime.now()
         protected set
-}
 
+    @Column(nullable = true)
+    var deletedAt: LocalDateTime? = null
+}
