@@ -11,6 +11,8 @@ class GroupPurchaseJoinUserEntity(
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_purchase_id")
     val groupPurchase: GroupPurchaseEntity,
+    @Column(name = "order_id")
+    val orderId: Long,
 ) : BaseTimeEntity() {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
