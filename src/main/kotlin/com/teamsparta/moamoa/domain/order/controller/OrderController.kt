@@ -99,12 +99,22 @@ class OrderController(
     fun getOrderBySellerId(
         @PathVariable sellerId: Long,
         @PathVariable ordersId: Long,
-    ): ResponseEntity<ResponseOrderDto>  {
+    ): ResponseEntity<ResponseOrderDto> {
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(orderService.getOrderBySellerId(sellerId, ordersId))
     }
-    // 판매 내역 조회
 
+    // 판매 내역 조회
+    @GetMapping("/seller/{sellerId}")
+    fun getOrderPageBySellerId(
+        @PathVariable sellerId: Long,
+        @RequestParam(value = "page", defaultValue = "1") page: Int,
+        @RequestParam(value = "size", defaultValue = "2") size: Int,
+    ): ResponseEntity<Page<ResponseOrderDto>>  {
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(orderService.getOrderPageBySellerId(sellerId, page, size))
+    }
     // 판매 내역 전체 조회
 }

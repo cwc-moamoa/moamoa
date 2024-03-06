@@ -147,12 +147,18 @@ class OrderServiceImpl(
         val findSeller = sellerRepository.findByIdOrNull(sellerId) ?: throw ModelNotFoundException("seller", sellerId)
         val findOrder = orderRepository.findByIdOrNull(ordersId) ?: throw ModelNotFoundException("order", ordersId)
 
-        return if (findOrder.product.seller == findSeller)
-            {
-                findOrder.toResponse()
-            } else
-            {
-                throw Exception("판매자 불일치")
-            }
+        return if (findOrder.product.seller == findSeller) {
+            findOrder.toResponse()
+        } else {
+            throw Exception("판매자 불일치")
+        }
+    }
+
+    override fun getOrderPageBySellerId(
+        sellerId: Long,
+        page: Int,
+        size: Int,
+    ): Page<ResponseOrderDto> {
+        return orderRepository.getOrderPageBySellerId(sellerId, page, size).map { it.toResponse() }
     }
 }

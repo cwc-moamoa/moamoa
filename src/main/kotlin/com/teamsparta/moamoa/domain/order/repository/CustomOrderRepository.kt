@@ -9,4 +9,10 @@ interface CustomOrderRepository {
         page: Int,
         size: Int,
     ): Page<OrdersEntity>
+
+    fun getOrderPageBySellerId(
+        sellerId: Long,
+        page: Int,
+        size: Int,
+    ): Page<OrdersEntity>
 }

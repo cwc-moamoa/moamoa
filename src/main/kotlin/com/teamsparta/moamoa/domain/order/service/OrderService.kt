@@ -49,4 +49,11 @@ interface OrderService {
         sellerId: Long,
         ordersId: Long,
     ): ResponseOrderDto
+
+    // 판매자 주문 단건 조회
+    fun getOrderPageBySellerId(
+        sellerId: Long,
+        page: Int,
+        size: Int,
+    ): Page<ResponseOrderDto>
 }
