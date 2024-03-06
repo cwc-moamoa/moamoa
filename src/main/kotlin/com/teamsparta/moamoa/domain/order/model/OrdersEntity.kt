@@ -9,50 +9,46 @@ import java.time.LocalDateTime
 @Entity
 @Table(name = "orders")
 class OrdersEntity(
-
     @Column(name = "product_name")
-    var productName:String,
+    var productName: String,
     @Column(name = "total_price")
-    var totalPrice:Int,
+    var totalPrice: Int,
     @Column(name = "address")
-    var address:String,
+    var address: String,
     @Column(name = "created_at")
-    var createdAt:LocalDateTime,
+    var createdAt: LocalDateTime,
     @Column(name = "discount")
-    var discount:Double,
+    var discount: Double,
     @Column(name = "quantity")
-    var quantity:Int,
+    var quantity: Int,
     @ManyToOne
     @JoinColumn(name = "product_id")
-    var productId:ProductEntity,
+    var productId: ProductEntity,
     @ManyToOne
     @JoinColumn(name = "user_id")
-    var userId:UserEntity
-
-){
+    var userId: UserEntity,
+) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var ordersId:Long? = null
+    var ordersId: Long? = null
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    var status:OrdesStatus = OrdesStatus.COMPLETED
+    var status: OrdersStatus = OrdersStatus.COMPLETED
 
     @Column(name = "deleted_at")
-    var deletedAt:LocalDateTime? = null
-
+    var deletedAt: LocalDateTime? = null
 }
-fun OrdersEntity.toResponse():ResponseOrderDto{
+
+fun OrdersEntity.toResponse(): ResponseOrderDto  {
     return ResponseOrderDto(
         ordersId = ordersId!!,
         productName = productName,
         totalPrice = totalPrice,
         address = address,
         createdAt = createdAt,
-        status = OrdesStatus.COMPLETED.toString(),
+        status = status.toString(),
         discount = discount,
-        quantity = quantity
+        quantity = quantity,
     )
-
-
 }

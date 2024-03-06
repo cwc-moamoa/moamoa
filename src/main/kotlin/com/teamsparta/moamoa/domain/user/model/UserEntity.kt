@@ -7,17 +7,15 @@ import jakarta.persistence.*
 class UserEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id:Long,
+    var id: Long,
     @Column(name = "email")
-    var email:String,
+    var email: String,
     @Column(name = "password")
-    var password:String,
+    var password: String,
     @Column(name = "nickname")
-    var nickName:String,
+    var nickName: String,
     @Column(name = "address")
-    var address:String,
+    var address: String,
     @Column(name = "phone_number")
-    var phoneNumber:String,
-
-) {
-}
+    var phoneNumber: String,
+)

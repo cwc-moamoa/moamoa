@@ -7,24 +7,23 @@ import java.time.LocalDateTime
 @Table(name = "product")
 class ProductEntity(
     @Column(name = "price")
-    var price:Int,
+    var price: Int,
     @Column(name = "title")
-    var title:String,
+    var title: String,
     @Column(name = "content")
-    var content:String,
+    var content: String,
     @Column(name = "created_at")
-    var createdAt:LocalDateTime,
+    var createdAt: LocalDateTime,
     @Column(name = "rating_average")
-    var ratingAverage:Double,
+    var ratingAverage: Double,
     @Column(name = "image_url")
-    var imageUrl:String,
-
+    var imageUrl: String,
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var productId:Long? = null
+    var productId: Long? = null
 
     @Column(name = "purchase_able")
-    var purchaseAble:Boolean = false
-    //일단은 빼놓으셈
+    var purchaseAble: Boolean = false
+    // 일단은 빼놓으셈
 }
