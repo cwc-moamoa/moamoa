@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
+import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.test.context.ActiveProfiles
 import java.time.LocalDateTime
 
@@ -22,30 +23,32 @@ class GroupPurchaseServiceTest
     constructor(
         private val groupPurchaseRepository: GroupPurchaseRepository,
         private val groupPurchaseJoinUserRepository: GroupPurchaseJoinUserRepository,
+        private val redisTemplate: RedisTemplate<String, Any>,
     ) {
-        private val groupPurchaseService = GroupPurchaseService(groupPurchaseRepository, groupPurchaseJoinUserRepository)
+        private val groupPurchaseService = GroupPurchaseService(groupPurchaseRepository, groupPurchaseJoinUserRepository, redisTemplate)
 
         @Test
         fun `동시에 여러 사용자가 공동구매에 참여하는 테스트`() {
             // GIVEN
             val request =
                 CreateGroupPurchaseRequest(
-                    productId = 1L,
                     userLimit = 2,
                     timeLimit = LocalDateTime.now().plusDays(3),
                     discount = 0.2,
                 )
 
+            val productId = 1L
+
             // WHEN
             runBlocking {
-                val groupPurchase = groupPurchaseRepository.findByProductId(request.productId)
+                val groupPurchase = groupPurchaseRepository.findByProductIdAndDeletedAtIsNull(productId)
                 val jobs =
                     (1..51).map { userId ->
                         launch {
                             if (groupPurchase == null) {
-                                groupPurchaseService.createAndJoinOrJoinGroupPurchase(request, userId.toLong())
+                                groupPurchaseService.createAndJoinOrJoinGroupPurchase(request, userId.toLong(), 0L)
                             } else {
-                                groupPurchaseService.joinGroupPurchase(userId.toLong(), groupPurchase.id!!)
+                                groupPurchaseService.joinGroupPurchase(userId.toLong(), groupPurchase.id!!, 0L)
                             }
                         }
                     }
@@ -53,7 +56,7 @@ class GroupPurchaseServiceTest
             }
 
             // THEN
-            val groupPurchase = groupPurchaseRepository.findByProductId(request.productId)
+            val groupPurchase = groupPurchaseRepository.findByProductIdAndDeletedAtIsNull(productId)
             groupPurchase!!.userCount shouldBe 1
         }
     }
