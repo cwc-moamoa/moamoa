@@ -40,7 +40,7 @@ class OrdersEntity(
     var deletedAt: LocalDateTime? = null
 }
 
-fun OrdersEntity.toResponse(): ResponseOrderDto  {
+fun OrdersEntity.toResponse(): ResponseOrderDto {
     return ResponseOrderDto(
         ordersId = ordersId!!,
         productName = productName,

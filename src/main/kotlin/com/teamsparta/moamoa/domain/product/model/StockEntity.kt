@@ -17,7 +17,7 @@ class StockEntity(
     var product: ProductEntity,
 ) {
     companion object {
-        fun StockEntity.discount(num: Int): StockEntity  {
+        fun StockEntity.discount(num: Int): StockEntity {
             val discountNum = stock - num
             return StockEntity(
                 stockId = stockId,

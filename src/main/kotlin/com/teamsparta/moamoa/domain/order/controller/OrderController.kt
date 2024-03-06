@@ -38,7 +38,7 @@ class OrderController(
         @PathVariable ordersId: Long,
         @PathVariable userId: Long,
         @RequestBody updateOrderDto: UpdateOrderDto,
-    ): ResponseEntity<ResponseOrderDto>  {
+    ): ResponseEntity<ResponseOrderDto> {
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(orderService.updateOrder(userId, ordersId, updateOrderDto))
@@ -48,7 +48,7 @@ class OrderController(
     fun cancelOrder(
         @PathVariable ordersId: Long,
         @PathVariable userId: Long,
-    ): ResponseEntity<CancelResponseDto>  {
+    ): ResponseEntity<CancelResponseDto> {
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(orderService.cancelOrder(userId, ordersId))
@@ -60,7 +60,7 @@ class OrderController(
     fun getOrder(
         @PathVariable ordersId: Long,
         @PathVariable userId: Long,
-    ): ResponseEntity<ResponseOrderDto>  {
+    ): ResponseEntity<ResponseOrderDto> {
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(orderService.getOrder(userId, ordersId))
@@ -73,7 +73,7 @@ class OrderController(
         @PathVariable userId: Long,
         @RequestParam(value = "page", defaultValue = "1") page: Int,
         @RequestParam(value = "size", defaultValue = "2") size: Int,
-    ): ResponseEntity<Page<ResponseOrderDto>>  {
+    ): ResponseEntity<Page<ResponseOrderDto>> {
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(orderService.getOrderPage(userId, page, size))
@@ -86,12 +86,12 @@ class OrderController(
     @PutMapping("/status/{ordersId}/{sellerId}")
     fun orderStatusChange(
         @PathVariable ordersId: Long,
-        @PathVariable sellerId:Long,
-        @RequestParam status: OrdersStatus
-    ):ResponseEntity<ResponseOrderDto>{
+        @PathVariable sellerId: Long,
+        @RequestParam status: OrdersStatus,
+    ): ResponseEntity<ResponseOrderDto>  {
         return ResponseEntity
             .status(HttpStatus.OK)
-            .body(orderService.orderStatusChange(ordersId,sellerId,status))
+            .body(orderService.orderStatusChange(ordersId, sellerId, status))
     }
     // 주문상태 변경도 정보를 다 보여주는게 맞는거 같음
     // 판매 내역 조회

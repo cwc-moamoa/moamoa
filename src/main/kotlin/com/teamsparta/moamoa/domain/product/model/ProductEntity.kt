@@ -26,8 +26,9 @@ class ProductEntity(
 
     @Column(name = "purchase_able")
     var purchaseAble: Boolean = false
+
     // 일단은 빼놓으셈
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seller_id")
-    var seller:SellerEntity? = null
+    var seller: SellerEntity? = null
 }

@@ -22,7 +22,8 @@ class OrderServiceImpl(
     private val orderRepository: OrderRepository,
     private val productRepository: ProductRepository,
     private val stockRepository: StockRepository,
-    private val userRepository: UserRepository, private val sellerRepository: SellerRepository,
+    private val userRepository: UserRepository,
+    private val sellerRepository: SellerRepository,
 ) : OrderService {
     @Transactional
     override fun creatOrder(
@@ -52,7 +53,7 @@ class OrderServiceImpl(
         } else {
             throw Exception("재고가 모자랍니다 다시 시도")
         }
-    }//재고수량 점검 로직 합칠수도있지않나?
+    } // 재고수량 점검 로직 합칠수도있지않나?
 
     @Transactional
     override fun updateOrder(
@@ -62,14 +63,12 @@ class OrderServiceImpl(
     ): ResponseOrderDto {
         val findUser = userRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("user", userId)
         val findOrders = orderRepository.findByIdOrNull(ordersId) ?: throw ModelNotFoundException("orders", ordersId)
-        if (findOrders.userId == findUser)
-            {
-                findOrders.address = updateOrderDto.address
-                return orderRepository.save(findOrders).toResponse()
-            } else
-            {
-                throw Exception("도둑 검거 완료")
-            }
+        if (findOrders.userId == findUser) {
+            findOrders.address = updateOrderDto.address
+            return orderRepository.save(findOrders).toResponse()
+        } else {
+            throw Exception("도둑 검거 완료")
+        }
     }
 
     @Transactional
@@ -79,20 +78,24 @@ class OrderServiceImpl(
     ): CancelResponseDto {
         val findUser = userRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("user", userId)
         val findOrder = orderRepository.findByIdOrNull(ordersId) ?: throw ModelNotFoundException("orders", ordersId)
-        //val findOrderAndUser = orderRepository.findByOrdersIdAndUserId(userId,ordersId)?: throw IllegalStateException("Invalid userId or ordersId")
-         if (findUser.id == findOrder.userId.id){
-             throw Exception("주문정보가 일치하지 않습니다")
-         }
+        // val findOrderAndUser = orderRepository.findByOrdersIdAndUserId(userId,ordersId)?: throw IllegalStateException("Invalid userId or ordersId")
+        if (findUser.id == findOrder.userId.id)
+            {
+                throw Exception("주문정보가 일치하지 않습니다")
+            }
 
-        return if(findOrder.status != OrdersStatus.CANCELLED){
-            findOrder.deletedAt = LocalDateTime.now()
-               findOrder.status = OrdersStatus.CANCELLED
+        return if (findOrder.status != OrdersStatus.CANCELLED)
+            {
+                findOrder.deletedAt = LocalDateTime.now()
+                findOrder.status = OrdersStatus.CANCELLED
                 orderRepository.save(findOrder)
                 CancelResponseDto(
-                    message = "주문이 취소 되었습니다")
-        }else{
-            throw Exception("이미 취소된 주문입니다")
-        }
+                    message = "주문이 취소 되었습니다",
+                )
+            } else
+            {
+                throw Exception("이미 취소된 주문입니다")
+            }
     }
 
     override fun getOrder(
@@ -102,13 +105,11 @@ class OrderServiceImpl(
         val findUser = userRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("user", userId)
         val findOrder = orderRepository.findByIdOrNull(ordersId) ?: throw ModelNotFoundException("orders", ordersId)
 
-        return if (findOrder.userId == findUser)
-            {
-                findOrder.toResponse()
-            } else
-            {
-                throw Exception("유저와 주문정보가 일치하지 않습니다")
-            }
+        return if (findOrder.userId == findUser) {
+            findOrder.toResponse()
+        } else {
+            throw Exception("유저와 주문정보가 일치하지 않습니다")
+        }
     }
 
     override fun getOrderPage(
@@ -119,9 +120,12 @@ class OrderServiceImpl(
         return orderRepository.getOrderPage(userId, page, size).map { it.toResponse() }
     }
 
-
     @Transactional
-    override fun orderStatusChange(ordersId: Long, sellerId: Long, status: OrdersStatus): ResponseOrderDto {
+    override fun orderStatusChange(
+        ordersId: Long,
+        sellerId: Long,
+        status: OrdersStatus,
+    ): ResponseOrderDto {
         val findSeller = sellerRepository.findByIdOrNull(sellerId) ?: throw ModelNotFoundException("seller", sellerId)
         val findProductList =
             productRepository.findBySeller(findSeller)

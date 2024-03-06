@@ -11,19 +11,19 @@ import jakarta.persistence.Table
 @Table(name = "seller")
 class SellerEntity(
     @Column(name = "email")
-    var email:String,
+    var email: String,
     @Column(name = "password")
-    var password:String,
+    var password: String,
     @Column(name = "nickname")
-    var nickname:String,
+    var nickname: String,
     @Column(name = "address")
-    var address:String,
+    var address: String,
     @Column(name = "phone_number")
-    var phoneNumber:String,
+    var phoneNumber: String,
     @Column(name = "business_num")
-    var businessNum:String
+    var businessNum: String,
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var sellerId:Long? = null
+    var sellerId: Long? = null
 }
