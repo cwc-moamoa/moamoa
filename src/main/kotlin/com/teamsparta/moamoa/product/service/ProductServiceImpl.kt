@@ -1,5 +1,6 @@
 package com.teamsparta.moamoa.product.service
 
+import com.teamsparta.moamoa.exception.ModelNotFoundException
 import com.teamsparta.moamoa.exception.OutOfStockException
 import com.teamsparta.moamoa.product.dto.ProductRequest
 import com.teamsparta.moamoa.product.dto.ProductResponse
@@ -7,6 +8,7 @@ import com.teamsparta.moamoa.product.model.Product
 import com.teamsparta.moamoa.product.model.ProductStock
 import com.teamsparta.moamoa.product.repository.ProductRepository
 import com.teamsparta.moamoa.product.repository.ProductStockRepository
+import jakarta.transaction.Transactional
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
@@ -17,19 +19,20 @@ class ProductServiceImpl(
     private val productRepository: ProductRepository,
     private val productStockRepository: ProductStockRepository,
 ) : ProductService {
+    @Transactional
     override fun getAllProducts(): List<ProductResponse> {
         val products = productRepository.findAll().filter { it.deletedAt == null }
         return products.map { ProductResponse(it) }
     }
 
-    override fun getProductById(id: Long): ProductResponse {
-        val product =
-            productRepository.findByIdAndDeletedAtIsNull(id)
-                .orElseThrow { RuntimeException("Product not found or has been deleted") }
+    @Transactional
+    override fun getProductById(productId: Long): ProductResponse {
+        val product = productRepository.findByProductIdAndDeletedAtIsNull(productId)
+            .orElseThrow { ModelNotFoundException("Product", productId) }
 
         return ProductResponse(product)
     }
-
+    @Transactional
     override fun createProduct(request: ProductRequest): Product {
         val product =
             Product(
@@ -50,7 +53,7 @@ class ProductServiceImpl(
         val productStock =
             ProductStock(
                 product = product,
-                stock = request.stock, // 초기 재고 설정
+                stock = request.stock,
                 productName = request.title,
             )
 
@@ -61,13 +64,10 @@ class ProductServiceImpl(
         return product
     }
 
-    override fun updateProduct(
-        id: Long,
-        request: ProductRequest,
-    ): Product {
-        val product =
-            productRepository.findByIdAndDeletedAtIsNull(id)
-                .orElseThrow { RuntimeException("Product not found") }
+    @Transactional
+    override fun updateProduct(productId: Long, request: ProductRequest): Product {
+        val product = productRepository.findByProductIdAndDeletedAtIsNull(productId)
+            .orElseThrow { ModelNotFoundException("Product", productId) }
 
         product.apply {
             title = request.title
@@ -75,34 +75,26 @@ class ProductServiceImpl(
             imageUrl = request.imageUrl
             price = request.price
             purchaseAble = request.purchaseAble
-//            deletedAt = request.deletedAt
         }
 
         return productRepository.save(product)
     }
-
-    override fun deleteProduct(id: Long): Product {
-        val product =
-            productRepository.findById(id)
-                .orElseThrow { RuntimeException("Product not found") }
+    @Transactional
+    override fun deleteProduct(productId: Long): Product {
+        val product = productRepository.findByProductIdAndDeletedAtIsNull(productId)
+            .orElseThrow { ModelNotFoundException("Product", productId) }
 
         product.deletedAt = LocalDateTime.now()
 
         return productRepository.save(product)
     }
-    // 재고??
+    @Transactional
+    override fun decreaseStock(productId: Long, quantity: Int) {
+        val product = productRepository.findById(productId)
+            .orElseThrow { ModelNotFoundException("Product", productId) }
 
-    override fun decreaseStock(
-        productId: Long,
-        quantity: Int,
-    ) {
-        val product =
-            productRepository.findById(productId)
-                .orElseThrow { RuntimeException("Product not found") }
-
-        val productStock =
-            product.productStock
-                ?: throw RuntimeException("ProductStock not found")
+        val productStock = product.productStock
+            ?: throw RuntimeException("ProductStock not found")
 
         if (productStock.stock < quantity) {
             throw OutOfStockException("Not enough stock")
@@ -111,20 +103,15 @@ class ProductServiceImpl(
         productStock.stock -= quantity
         productStockRepository.save(productStock)
 
-        // 재고가 0이면 매진 처리
+
         if (productStock.stock == 0) {
             product.isSoldOut = true
             productRepository.save(product)
         }
     }
 
+    @Transactional
     override fun getPaginatedProductList(pageable: Pageable): Page<Product> {
         return productRepository.findByPageable(pageable)
-    }// 페이징 아직 오류 해결못함
+    }
 }
-
-//    override fun getProductById(id: Long): ProductResponse {
-//        val product = productRepository.findById(id)
-//            .orElseThrow { RuntimeException("Product not found") }
-//        return ProductResponse(product)
-//    }

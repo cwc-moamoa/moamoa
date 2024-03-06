@@ -11,7 +11,7 @@ data class ProductRequest(
     val ratingAverage: Double,
     val sellerId: Long,
 //    val deletedAt: LocalDateTime?, 이거 있으면 안됨
-    val userLimit: Int, // 추가된 필드
-    val discount: Double, // 추가된 필드
+    val userLimit: Int,
+    val discount: Double,
     val stock: Int, // 재고?
 )

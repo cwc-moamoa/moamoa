@@ -46,11 +46,11 @@ class ProductController(
         return ResponseEntity.ok(ProductResponse(updatedProduct))
     }
 
-    @PutMapping("/{id}/delete")
+    @PutMapping("/{productId}/delete")
     fun deleteProduct(
-        @PathVariable id: Long,
+        @PathVariable productId: Long,
     ): ResponseEntity<ProductResponse> {
-        val product = productService.deleteProduct(id)
+        val product = productService.deleteProduct(productId)
         return ResponseEntity.ok(ProductResponse(product))
     }
 
@@ -63,9 +63,3 @@ class ProductController(
     }
 }
 
-//    @GetMapping("/{productId}")
-//    fun getProduct(@PathVariable productId: Long): ResponseEntity<Product> {
-//        val product = productRepository.findById(productId)
-//            .orElseThrow { ModelNotFoundException("Product", productId) }
-//        return ResponseEntity.ok(product)
-//    }

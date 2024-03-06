@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository
 import java.util.*
 
 interface ProductRepository : JpaRepository<Product, Long>, CustomProductRepository {
-    fun findByIdAndDeletedAtIsNull(id: Long): Optional<Product>
+    fun findByProductIdAndDeletedAtIsNull(productId: Long): Optional<Product>
 }

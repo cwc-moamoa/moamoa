@@ -1,5 +1,6 @@
 package com.teamsparta.moamoa.product.model
 
+import com.fasterxml.jackson.annotation.JsonManagedReference
 import com.teamsparta.moamoa.infra.BaseTimeEntity
 import jakarta.persistence.*
 import java.time.LocalDateTime
@@ -9,7 +10,7 @@ import java.time.LocalDateTime
 data class Product(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null,
+    val productId: Long? = null,
     @Column(name = "sellerId", nullable = false)
     val sellerId: Long,
     @Column(name = "price", nullable = false)
@@ -28,6 +29,8 @@ data class Product(
     val productDiscount: Double,
     @Column(name = "likes", nullable = true)
     val likes: Int,
+//    @OneToMany(mappedBy = "product", cascade = [CascadeType.ALL])
+//    var likes: MutableList<Like> = mutableListOf(),
     @Column(name = "deleted_at")
     var deletedAt: LocalDateTime? = null,
     @Column(name = "userLimit")
@@ -38,6 +41,7 @@ data class Product(
 //    @JoinColumn(name = "product_stock_id")
 //    var productStock: ProductStock? = null,
     @OneToOne(mappedBy = "product", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
+    @JsonManagedReference
     var productStock: ProductStock? = null,
     // 재고처리?
     @Column(name = "is_sold_out", nullable = false)

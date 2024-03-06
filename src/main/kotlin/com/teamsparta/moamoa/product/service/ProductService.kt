@@ -9,19 +9,18 @@ import org.springframework.data.domain.Pageable
 interface ProductService {
     fun getAllProducts(): List<ProductResponse>
 
-//    fun getProductById(id: Long): ProductResponse
     fun createProduct(request: ProductRequest): Product
 
     fun updateProduct(
-        id: Long,
+        productId: Long,
         request: ProductRequest,
     ): Product
 
-    fun deleteProduct(id: Long): Product
+    fun deleteProduct(productId: Long): Product
 
-    fun getProductById(id: Long): ProductResponse
+    fun getProductById(productId: Long): ProductResponse
 
-// 재고
+// 재고감소임
     fun decreaseStock(
         productId: Long,
         quantity: Int,
