@@ -1,5 +1,6 @@
 package com.teamsparta.moamoa.domain.product.model
 
+import com.teamsparta.moamoa.domain.seller.model.SellerEntity
 import jakarta.persistence.*
 import java.time.LocalDateTime
 
@@ -26,4 +27,7 @@ class ProductEntity(
     @Column(name = "purchase_able")
     var purchaseAble: Boolean = false
     // 일단은 빼놓으셈
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "seller_id")
+    var seller:SellerEntity? = null
 }

@@ -23,7 +23,7 @@ class OrdersEntity(
     var quantity: Int,
     @ManyToOne
     @JoinColumn(name = "product_id")
-    var productId: ProductEntity,
+    var product: ProductEntity,
     @ManyToOne
     @JoinColumn(name = "user_id")
     var userId: UserEntity,

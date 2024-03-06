@@ -1,8 +1,6 @@
 package com.teamsparta.moamoa.domain.order.controller
-import com.teamsparta.moamoa.domain.order.dto.CancelResponseDto
-import com.teamsparta.moamoa.domain.order.dto.CreateOrderDto
-import com.teamsparta.moamoa.domain.order.dto.ResponseOrderDto
-import com.teamsparta.moamoa.domain.order.dto.UpdateOrderDto
+import com.teamsparta.moamoa.domain.order.dto.*
+import com.teamsparta.moamoa.domain.order.model.OrdersStatus
 import com.teamsparta.moamoa.domain.order.service.OrderService
 import org.springframework.data.domain.Page
 import org.springframework.http.HttpStatus
@@ -85,7 +83,17 @@ class OrderController(
 
     // ---------------- sellerEntity 만들고 해~ -----------------------
     // 주문 추적상태 업데이트
-
+    @PutMapping("/status/{ordersId}/{sellerId}")
+    fun orderStatusChange(
+        @PathVariable ordersId: Long,
+        @PathVariable sellerId:Long,
+        @RequestParam status: OrdersStatus
+    ):ResponseEntity<ResponseOrderDto>{
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(orderService.orderStatusChange(ordersId,sellerId,status))
+    }
+    // 주문상태 변경도 정보를 다 보여주는게 맞는거 같음
     // 판매 내역 조회
 
     // 판매 내역 전체 조회

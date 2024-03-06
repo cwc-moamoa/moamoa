@@ -14,7 +14,7 @@ class StockEntity(
     var productName: String,
     @OneToOne
     @JoinColumn(name = "product_id")
-    var productId: ProductEntity,
+    var product: ProductEntity,
 ) {
     companion object {
         fun StockEntity.discount(num: Int): StockEntity  {
@@ -23,7 +23,7 @@ class StockEntity(
                 stockId = stockId,
                 stock = discountNum,
                 productName = productName,
-                productId = productId,
+                product = product,
             )
         }
     }

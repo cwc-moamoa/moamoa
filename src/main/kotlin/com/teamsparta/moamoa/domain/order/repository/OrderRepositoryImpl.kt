@@ -7,7 +7,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.stereotype.Repository
 
-@Repository
+
 class OrderRepositoryImpl : CustomOrderRepository, QueryDslSupport() {
     private val orders = QOrdersEntity.ordersEntity
 
