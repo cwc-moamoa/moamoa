@@ -6,9 +6,9 @@ import com.teamsparta.moamoa.domain.user.dto.UserSignInResponse
 import com.teamsparta.moamoa.domain.user.dto.UserSignUpRequest
 
 interface UserService {
-    fun userSignUp(userSignUpRequest: UserSignUpRequest): UserResponse
+    fun signUpUser(userSignUpRequest: UserSignUpRequest): UserResponse
 
-    fun userSignIn(userSignInRequest: UserSignInRequest): UserSignInResponse
+    fun signInUser(userSignInRequest: UserSignInRequest): UserSignInResponse
 
-    fun userDelete(userId: Long): UserResponse
+    fun deleteUser(userId: Long): UserResponse
 }
