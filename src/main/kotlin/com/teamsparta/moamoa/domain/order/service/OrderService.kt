@@ -43,4 +43,10 @@ interface OrderService {
         sellerId: Long,
         status: OrdersStatus,
     ): ResponseOrderDto
+
+    // 판매자 주문 상태값 변경
+    fun getOrderBySellerId(
+        sellerId: Long,
+        ordersId: Long,
+    ): ResponseOrderDto
 }

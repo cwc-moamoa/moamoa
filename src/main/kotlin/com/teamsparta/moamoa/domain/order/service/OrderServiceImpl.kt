@@ -79,23 +79,20 @@ class OrderServiceImpl(
         val findUser = userRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("user", userId)
         val findOrder = orderRepository.findByIdOrNull(ordersId) ?: throw ModelNotFoundException("orders", ordersId)
         // val findOrderAndUser = orderRepository.findByOrdersIdAndUserId(userId,ordersId)?: throw IllegalStateException("Invalid userId or ordersId")
-        if (findUser.id == findOrder.userId.id)
-            {
-                throw Exception("주문정보가 일치하지 않습니다")
-            }
+        if (findUser.id == findOrder.userId.id) {
+            throw Exception("주문정보가 일치하지 않습니다")
+        }
 
-        return if (findOrder.status != OrdersStatus.CANCELLED)
-            {
-                findOrder.deletedAt = LocalDateTime.now()
-                findOrder.status = OrdersStatus.CANCELLED
-                orderRepository.save(findOrder)
-                CancelResponseDto(
-                    message = "주문이 취소 되었습니다",
-                )
-            } else
-            {
-                throw Exception("이미 취소된 주문입니다")
-            }
+        return if (findOrder.status != OrdersStatus.CANCELLED) {
+            findOrder.deletedAt = LocalDateTime.now()
+            findOrder.status = OrdersStatus.CANCELLED
+            orderRepository.save(findOrder)
+            CancelResponseDto(
+                message = "주문이 취소 되었습니다",
+            )
+        } else {
+            throw Exception("이미 취소된 주문입니다")
+        }
     }
 
     override fun getOrder(
@@ -141,5 +138,21 @@ class OrderServiceImpl(
         } else {
             throw Exception("변경 권한이 없습니다")
         }
+    }
+
+    override fun getOrderBySellerId(
+        sellerId: Long,
+        ordersId: Long,
+    ): ResponseOrderDto {
+        val findSeller = sellerRepository.findByIdOrNull(sellerId) ?: throw ModelNotFoundException("seller", sellerId)
+        val findOrder = orderRepository.findByIdOrNull(ordersId) ?: throw ModelNotFoundException("order", ordersId)
+
+        return if (findOrder.product.seller == findSeller)
+            {
+                findOrder.toResponse()
+            } else
+            {
+                throw Exception("판매자 불일치")
+            }
     }
 }

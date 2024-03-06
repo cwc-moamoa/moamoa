@@ -88,12 +88,22 @@ class OrderController(
         @PathVariable ordersId: Long,
         @PathVariable sellerId: Long,
         @RequestParam status: OrdersStatus,
-    ): ResponseEntity<ResponseOrderDto>  {
+    ): ResponseEntity<ResponseOrderDto> {
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(orderService.orderStatusChange(ordersId, sellerId, status))
     }
     // 주문상태 변경도 정보를 다 보여주는게 맞는거 같음
+
+    @GetMapping("/seller{sellerId}/{ordersId}")
+    fun getOrderBySellerId(
+        @PathVariable sellerId: Long,
+        @PathVariable ordersId: Long,
+    ): ResponseEntity<ResponseOrderDto>  {
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(orderService.getOrderBySellerId(sellerId, ordersId))
+    }
     // 판매 내역 조회
 
     // 판매 내역 전체 조회
