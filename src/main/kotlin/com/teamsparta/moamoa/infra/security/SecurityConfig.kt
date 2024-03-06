@@ -13,13 +13,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity
 class SecurityConfig(
     private val jwtAuthenticationFilter: JwtAuthenticationFilter,
     private val authenticationEntrypoint: AuthenticationEntryPoint,
-    private val accessDeniedHandler: AccessDeniedHandler
+    private val accessDeniedHandler: AccessDeniedHandler,
 ) {
-
     @Bean
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
         return http
@@ -28,19 +26,19 @@ class SecurityConfig(
             .csrf { it.disable() }
             .authorizeHttpRequests {
                 it.requestMatchers(
-                    "/signin",
-                    "/signup",
+                    "/users",
+                    "/users/signup",
+                    "/users/signin",
                     "/swagger-ui/**",
                     "/v3/api-docs/**",
-                ).permitAll()
+                    ).permitAll()
                     .anyRequest().authenticated()
             }
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
-            .exceptionHandling{
+            .exceptionHandling {
                 it.authenticationEntryPoint(authenticationEntrypoint)
-                it.accessDeniedHandler(accessDeniedHandler) // 추가!!
+                it.accessDeniedHandler(accessDeniedHandler)
             }
             .build()
     }
-
 }
