@@ -13,30 +13,32 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/users")
-class UserController (
-    private val userService: UserService
+class UserController(
+    private val userService: UserService,
 ) {
-
     @PostMapping("/signup")
-    fun userSignUp(@RequestBody userSignUpRequest: UserSignUpRequest): ResponseEntity<UserResponse> {
+    fun signUpUser(
+        @RequestBody userSignUpRequest: UserSignUpRequest,
+    ): ResponseEntity<UserResponse> {
         return ResponseEntity
             .status(HttpStatus.OK)
-            .body(userService.userSignUp(userSignUpRequest))
+            .body(userService.signUpUser(userSignUpRequest))
     }
 
     @PostMapping("/signin")
-    fun userSignIn(@RequestBody userSignInRequest: UserSignInRequest): ResponseEntity<UserSignInResponse> {
+    fun signInUser(
+        @RequestBody userSignInRequest: UserSignInRequest,
+    ): ResponseEntity<UserSignInResponse> {
         return ResponseEntity
             .status(HttpStatus.OK)
-            .body(userService.userSignIn(userSignInRequest))
+            .body(userService.signInUser(userSignInRequest))
     }
 
     @DeleteMapping
-    fun userDelete(
-        @AuthenticationPrincipal userPrincipal: UserPrincipal
+    fun deleteUser(
+        @AuthenticationPrincipal userPrincipal: UserPrincipal,
     ): ResponseEntity<UserResponse> {
         return ResponseEntity.status(HttpStatus.NO_CONTENT)
-            .body(userService.userDelete(userPrincipal.id))
+            .body(userService.deleteUser(userPrincipal.id))
     }
-
 }
