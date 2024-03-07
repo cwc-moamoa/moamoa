@@ -2,6 +2,7 @@ package com.teamsparta.moamoa.product.model
 
 import com.fasterxml.jackson.annotation.JsonManagedReference
 import com.teamsparta.moamoa.infra.BaseTimeEntity
+// import com.teamsparta.moamoa.like.model.Like
 import jakarta.persistence.*
 import java.time.LocalDateTime
 
@@ -29,8 +30,8 @@ data class Product(
     val productDiscount: Double,
     @Column(name = "likes", nullable = true)
     val likes: Int,
-//    @OneToMany(mappedBy = "product", cascade = [CascadeType.ALL])
-//    var likes: MutableList<Like> = mutableListOf(),
+//    @Column(name = "likesCount")
+//    var likesCount: Int = 0 ,
     @Column(name = "deleted_at")
     var deletedAt: LocalDateTime? = null,
     @Column(name = "userLimit")

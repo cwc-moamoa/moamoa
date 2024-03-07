@@ -59,7 +59,6 @@ class ProductController(
         @PageableDefault(size = 15, sort = ["id"]) pageable: Pageable,
     ): ResponseEntity<Page<Product>> {
         val products = productService.getPaginatedProductList(pageable)
-        return ResponseEntity.status(HttpStatus.OK).body(products)// 페이징 아직 오류 해결못함
+        return ResponseEntity.status(HttpStatus.OK).body(products) // 페이징 아직 오류 해결못함
     }
 }
-
