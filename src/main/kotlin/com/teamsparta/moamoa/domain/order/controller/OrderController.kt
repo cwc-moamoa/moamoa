@@ -33,37 +33,37 @@ class OrderController(
             .body(orderService.creatOrder(userId, productId, createOrderDto))
     }
 
-    @PutMapping("/{ordersId}/{userId}")
+    @PutMapping("/{orderId}/{userId}")
     fun updateOrder(
-        @PathVariable ordersId: Long,
+        @PathVariable orderId: Long,
         @PathVariable userId: Long,
         @RequestBody updateOrderDto: UpdateOrderDto,
     ): ResponseEntity<ResponseOrderDto> {
         return ResponseEntity
             .status(HttpStatus.OK)
-            .body(orderService.updateOrder(userId, ordersId, updateOrderDto))
+            .body(orderService.updateOrder(userId, orderId, updateOrderDto))
     }
 
-    @PutMapping("/cancel/{ordersId}/{userId}")
+    @PutMapping("/cancel/{orderId}/{userId}")
     fun cancelOrder(
-        @PathVariable ordersId: Long,
+        @PathVariable orderId: Long,
         @PathVariable userId: Long,
     ): ResponseEntity<CancelResponseDto> {
         return ResponseEntity
             .status(HttpStatus.OK)
-            .body(orderService.cancelOrder(userId, ordersId))
+            .body(orderService.cancelOrder(userId, orderId))
     }
 
     // 주문 취소니까 수정으로 함 삭제면 삭제지!
 
-    @GetMapping("/{ordersId}/{userId}")
+    @GetMapping("/{orderId}/{userId}")
     fun getOrder(
-        @PathVariable ordersId: Long,
+        @PathVariable orderId: Long,
         @PathVariable userId: Long,
     ): ResponseEntity<ResponseOrderDto> {
         return ResponseEntity
             .status(HttpStatus.OK)
-            .body(orderService.getOrder(userId, ordersId))
+            .body(orderService.getOrder(userId, orderId))
     }
 
     // 주문 조회
@@ -83,26 +83,26 @@ class OrderController(
 
     // ---------------- sellerEntity 만들고 해~ -----------------------
     // 주문 추적상태 업데이트
-    @PutMapping("/status/{ordersId}/{sellerId}")
+    @PutMapping("/status/{orderId}/{sellerId}")
     fun orderStatusChange(
-        @PathVariable ordersId: Long,
+        @PathVariable orderId: Long,
         @PathVariable sellerId: Long,
         @RequestParam status: OrdersStatus,
     ): ResponseEntity<ResponseOrderDto> {
         return ResponseEntity
             .status(HttpStatus.OK)
-            .body(orderService.orderStatusChange(ordersId, sellerId, status))
+            .body(orderService.orderStatusChange(orderId, sellerId, status))
     }
     // 주문상태 변경도 정보를 다 보여주는게 맞는거 같음
 
-    @GetMapping("/seller{sellerId}/{ordersId}")
+    @GetMapping("/seller{sellerId}/{orderId}")
     fun getOrderBySellerId(
         @PathVariable sellerId: Long,
-        @PathVariable ordersId: Long,
+        @PathVariable orderId: Long,
     ): ResponseEntity<ResponseOrderDto> {
         return ResponseEntity
             .status(HttpStatus.OK)
-            .body(orderService.getOrderBySellerId(sellerId, ordersId))
+            .body(orderService.getOrderBySellerId(sellerId, orderId))
     }
 
     // 판매 내역 조회
@@ -111,7 +111,7 @@ class OrderController(
         @PathVariable sellerId: Long,
         @RequestParam(value = "page", defaultValue = "1") page: Int,
         @RequestParam(value = "size", defaultValue = "2") size: Int,
-    ): ResponseEntity<Page<ResponseOrderDto>>  {
+    ): ResponseEntity<Page<ResponseOrderDto>> {
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(orderService.getOrderPageBySellerId(sellerId, page, size))

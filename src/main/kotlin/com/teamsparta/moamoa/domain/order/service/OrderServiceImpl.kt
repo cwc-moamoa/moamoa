@@ -8,7 +8,7 @@ import com.teamsparta.moamoa.domain.order.repository.OrderRepository
 import com.teamsparta.moamoa.domain.product.model.StockEntity.Companion.discount
 import com.teamsparta.moamoa.domain.product.repository.ProductRepository
 import com.teamsparta.moamoa.domain.product.repository.StockRepository
-import com.teamsparta.moamoa.domain.seller.model.SellerRepository
+import com.teamsparta.moamoa.domain.seller.repository.SellerRepository
 import com.teamsparta.moamoa.domain.user.repository.UserRepository
 import com.teamsparta.moamoa.exception.ModelNotFoundException
 import org.springframework.data.domain.Page
@@ -58,11 +58,11 @@ class OrderServiceImpl(
     @Transactional
     override fun updateOrder(
         userId: Long,
-        ordersId: Long,
+        orderId: Long,
         updateOrderDto: UpdateOrderDto,
     ): ResponseOrderDto {
         val findUser = userRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("user", userId)
-        val findOrders = orderRepository.findByIdOrNull(ordersId) ?: throw ModelNotFoundException("orders", ordersId)
+        val findOrders = orderRepository.findByIdOrNull(orderId) ?: throw ModelNotFoundException("orders", orderId)
         if (findOrders.userId == findUser) {
             findOrders.address = updateOrderDto.address
             return orderRepository.save(findOrders).toResponse()
@@ -74,10 +74,10 @@ class OrderServiceImpl(
     @Transactional
     override fun cancelOrder(
         userId: Long,
-        ordersId: Long,
+        orderId: Long,
     ): CancelResponseDto {
         val findUser = userRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("user", userId)
-        val findOrder = orderRepository.findByIdOrNull(ordersId) ?: throw ModelNotFoundException("orders", ordersId)
+        val findOrder = orderRepository.findByIdOrNull(orderId) ?: throw ModelNotFoundException("orders", orderId)
         // val findOrderAndUser = orderRepository.findByOrdersIdAndUserId(userId,ordersId)?: throw IllegalStateException("Invalid userId or ordersId")
         if (findUser.id == findOrder.userId.id) {
             throw Exception("주문정보가 일치하지 않습니다")
@@ -97,10 +97,10 @@ class OrderServiceImpl(
 
     override fun getOrder(
         userId: Long,
-        ordersId: Long,
+        orderId: Long,
     ): ResponseOrderDto {
         val findUser = userRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("user", userId)
-        val findOrder = orderRepository.findByIdOrNull(ordersId) ?: throw ModelNotFoundException("orders", ordersId)
+        val findOrder = orderRepository.findByIdOrNull(orderId) ?: throw ModelNotFoundException("orders", orderId)
 
         return if (findOrder.userId == findUser) {
             findOrder.toResponse()
@@ -119,7 +119,7 @@ class OrderServiceImpl(
 
     @Transactional
     override fun orderStatusChange(
-        ordersId: Long,
+        orderId: Long,
         sellerId: Long,
         status: OrdersStatus,
     ): ResponseOrderDto {
@@ -129,7 +129,7 @@ class OrderServiceImpl(
         if (findProductList.isEmpty()) {
             throw ModelNotFoundException("product", sellerId)
         }
-        val findOrder = orderRepository.findByIdOrNull(ordersId) ?: throw ModelNotFoundException("order", ordersId)
+        val findOrder = orderRepository.findByIdOrNull(orderId) ?: throw ModelNotFoundException("order", orderId)
         val findResult = findProductList.find { it?.productId == findOrder.product.productId }
 
         return if (findResult != null) {
@@ -142,10 +142,10 @@ class OrderServiceImpl(
 
     override fun getOrderBySellerId(
         sellerId: Long,
-        ordersId: Long,
+        orderId: Long,
     ): ResponseOrderDto {
         val findSeller = sellerRepository.findByIdOrNull(sellerId) ?: throw ModelNotFoundException("seller", sellerId)
-        val findOrder = orderRepository.findByIdOrNull(ordersId) ?: throw ModelNotFoundException("order", ordersId)
+        val findOrder = orderRepository.findByIdOrNull(orderId) ?: throw ModelNotFoundException("order", orderId)
 
         return if (findOrder.product.seller == findSeller) {
             findOrder.toResponse()

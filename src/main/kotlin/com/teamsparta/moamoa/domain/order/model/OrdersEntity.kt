@@ -30,7 +30,7 @@ class OrdersEntity(
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var ordersId: Long? = null
+    var orderId: Long? = null
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
@@ -42,7 +42,7 @@ class OrdersEntity(
 
 fun OrdersEntity.toResponse(): ResponseOrderDto {
     return ResponseOrderDto(
-        ordersId = ordersId!!,
+        orderId = orderId!!,
         productName = productName,
         totalPrice = totalPrice,
         address = address,

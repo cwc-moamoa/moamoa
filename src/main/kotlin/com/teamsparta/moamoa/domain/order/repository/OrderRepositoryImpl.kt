@@ -33,17 +33,6 @@ class OrderRepositoryImpl : CustomOrderRepository, QueryDslSupport() {
         page: Int,
         size: Int,
     ): Page<OrdersEntity> {
-//        val findProduct = queryFactory.selectFrom(product)
-//            .where(product.seller.sellerId.eq(sellerId))
-//        val result = queryFactory.selectFrom(orders)
-//            .where(orders.product.eq(findProduct))
-//            .offset((page-1).toLong())
-//            .limit(size.toLong())
-//            .orderBy(orders.product.seller.sellerId.asc())
-//            .fetch()
-
-        // 쿼리를 두개 쪼개서 쓰고 있기 때문에 오류가 남 join을 사용해보자
-
         val join =
             queryFactory.selectFrom(orders)
                 .join(orders.product, product).fetchJoin()
@@ -53,6 +42,7 @@ class OrderRepositoryImpl : CustomOrderRepository, QueryDslSupport() {
             join
                 .offset((page - 1).toLong())
                 .limit(size.toLong())
+                .orderBy(orders.product.seller.sellerId.asc())
                 .fetch()
         return PageImpl(result)
     }

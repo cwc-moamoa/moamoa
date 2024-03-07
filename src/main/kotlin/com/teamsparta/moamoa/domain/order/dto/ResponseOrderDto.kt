@@ -3,7 +3,7 @@ package com.teamsparta.moamoa.domain.order.dto
 import java.time.LocalDateTime
 
 data class ResponseOrderDto(
-    val ordersId: Long,
+    val orderId: Long,
     val productName: String,
     val totalPrice: Int,
     val address: String,
