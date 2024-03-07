@@ -50,6 +50,7 @@ dependencies {
     kapt("jakarta.annotation:jakarta.annotation-api")
     kapt("jakarta.persistence:jakarta.persistence-api")
 
+
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.3")
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.3")
     runtimeOnly("org.postgresql:postgresql")
@@ -71,6 +72,7 @@ tasks.withType<KotlinCompile> {
         jvmTarget = "17"
     }
 }
+
 
 tasks.withType<Test>().configureEach { // 변경 !!
     useJUnitPlatform()
