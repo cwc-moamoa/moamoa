@@ -9,15 +9,6 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/groupPurchases")
 class GroupPurchaseController(private val groupPurchaseService: GroupPurchaseService) {
-    //    @PostMapping("/createAndJoin")
-//    fun createAndJoin(
-//        @RequestBody request: CreateGroupPurchaseRequest,
-//        @RequestParam userId: Long,
-//    ): ResponseEntity<GroupPurchaseResponse> {
-//        val groupPurchaseResponse = groupPurchaseService.createAndJoinGroupPurchase(request, userId)
-//        return ResponseEntity.status(HttpStatus.OK).body(groupPurchaseResponse)
-//    }
-
     @PostMapping("/createAndJoin")
     fun createAndJoinOrJoin(
         @RequestBody request: CreateGroupPurchaseRequest,

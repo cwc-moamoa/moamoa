@@ -17,57 +17,6 @@ class GroupPurchaseService(
     private val groupPurchaseJoinUserRepository: GroupPurchaseJoinUserRepository,
     private val redisTemplate: RedisTemplate<String, Any>,
 ) {
-    //    @Transactional
-//    fun createGroupPurchase(request: CreateGroupPurchaseRequest): GroupPurchaseResponse {
-//        val groupPurchase = GroupPurchaseEntity(
-//            request.productId, request.userLimit, 0, request.timeLimit, request.discount, mutableListOf()
-//        )
-//        val saveGroupPurchase = groupPurchaseRepository.save(groupPurchase)
-//        return saveGroupPurchase.toResponse()
-//    }
-
-//    @Transactional
-//    fun createAndJoinGroupPurchase(request: CreateGroupPurchaseRequest , userId: Long ): GroupPurchaseResponse {
-//        val groupPurchase = GroupPurchaseEntity(
-//            request.productId, request.userLimit, 1, request.timeLimit, request.discount, mutableListOf()
-//        )
-//
-//        val groupPurchaseJoinUser = GroupPurchaseJoinUserEntity(userId, groupPurchase)
-//
-//        groupPurchase.groupPurchaseUsers.add(groupPurchaseJoinUser)
-//
-//        val savedGroupPurchase = groupPurchaseRepository.save(groupPurchase)
-//
-//        return savedGroupPurchase.toResponse()
-//    }
-
-//    @Transactional
-//    fun createAndJoinOrJoinGroupPurchase(
-//        request: CreateGroupPurchaseRequest,
-//        userId: Long,
-//    ) {
-//        val groupPurchase = groupPurchaseRepository.findByProductId(request.productId)
-//
-//        if (groupPurchase == null) {
-//            val newGroupPurchase =
-//                GroupPurchaseEntity(
-//                    request.productId,
-//                    request.userLimit,
-//                    1,
-//                    request.timeLimit.plusHours(24),
-//                    request.discount,
-//                    mutableListOf(),
-//                )
-//
-//            val groupPurchaseJoinUser = GroupPurchaseJoinUserEntity(userId, newGroupPurchase)
-//
-//            newGroupPurchase.groupPurchaseUsers.add(groupPurchaseJoinUser)
-//            groupPurchaseRepository.save(newGroupPurchase)
-//        } else {
-//            joinGroupPurchase(userId, groupPurchase.id!!)
-//        }
-//    }
-
     @Transactional
     fun createAndJoinOrJoinGroupPurchase(
         request: CreateGroupPurchaseRequest, // 추후 product 완료시 정보를 자동으로 받아오게 변경
@@ -96,7 +45,6 @@ class GroupPurchaseService(
             redisTemplate.delete(orderId.toString())
         } else {
             joinGroupPurchase(userId, groupPurchase.id!!, orderId)
-            redisTemplate.delete(orderId.toString())
         }
     }
 
@@ -138,6 +86,7 @@ class GroupPurchaseService(
 
             groupPurchaseJoinUserRepository.saveAll(userSoftDelete)
         }
+        redisTemplate.delete(orderId.toString())
     }
 
     @Transactional
