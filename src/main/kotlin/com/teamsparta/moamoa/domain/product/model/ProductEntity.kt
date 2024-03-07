@@ -2,7 +2,6 @@ package com.teamsparta.moamoa.domain.product.model
 
 import com.teamsparta.moamoa.domain.seller.model.SellerEntity
 import jakarta.persistence.*
-import java.time.LocalDateTime
 
 @Entity
 @Table(name = "product")
@@ -13,8 +12,6 @@ class ProductEntity(
     var title: String,
     @Column(name = "content")
     var content: String,
-    @Column(name = "created_at")
-    var createdAt: LocalDateTime,
     @Column(name = "rating_average")
     var ratingAverage: Double,
     @Column(name = "image_url")

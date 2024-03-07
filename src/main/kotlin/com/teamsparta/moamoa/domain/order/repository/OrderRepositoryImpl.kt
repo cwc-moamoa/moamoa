@@ -20,10 +20,10 @@ class OrderRepositoryImpl : CustomOrderRepository, QueryDslSupport() {
     ): Page<OrdersEntity> {
         val result =
             queryFactory.selectFrom(orders)
-                .where(orders.userId.id.eq(userId))
+                .where(orders.user.id.eq(userId))
                 .offset((page - 1).toLong())
                 .limit(size.toLong())
-                .orderBy(orders.userId.id.asc())
+                .orderBy(orders.user.id.asc())
                 .fetch()
         return PageImpl(result)
     }

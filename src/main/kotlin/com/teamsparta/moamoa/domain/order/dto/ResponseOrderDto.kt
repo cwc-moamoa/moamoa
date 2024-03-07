@@ -8,6 +8,7 @@ data class ResponseOrderDto(
     val totalPrice: Int,
     val address: String,
     val createdAt: LocalDateTime,
+    val updatedAt: LocalDateTime,
     val status: String,
     val discount: Double,
     val quantity: Int,

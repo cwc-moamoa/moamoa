@@ -43,11 +43,10 @@ class OrderServiceImpl(
                     productName = findProduct.title,
                     totalPrice = findProduct.price * createOrderDto.quantity,
                     address = createOrderDto.address,
-                    createdAt = LocalDateTime.now(),
                     discount = 0.0,
                     product = findProduct,
                     quantity = createOrderDto.quantity,
-                    userId = findUser,
+                    user = findUser,
                 ),
             ).toResponse()
         } else {
@@ -63,7 +62,7 @@ class OrderServiceImpl(
     ): ResponseOrderDto {
         val findUser = userRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("user", userId)
         val findOrders = orderRepository.findByIdOrNull(orderId) ?: throw ModelNotFoundException("orders", orderId)
-        if (findOrders.userId == findUser) {
+        if (findOrders.user == findUser) {
             findOrders.address = updateOrderDto.address
             return orderRepository.save(findOrders).toResponse()
         } else {
@@ -78,8 +77,8 @@ class OrderServiceImpl(
     ): CancelResponseDto {
         val findUser = userRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("user", userId)
         val findOrder = orderRepository.findByIdOrNull(orderId) ?: throw ModelNotFoundException("orders", orderId)
-        // val findOrderAndUser = orderRepository.findByOrdersIdAndUserId(userId,ordersId)?: throw IllegalStateException("Invalid userId or ordersId")
-        if (findUser.id == findOrder.userId.id) {
+
+        if (findUser.id != findOrder.user.id) {
             throw Exception("주문정보가 일치하지 않습니다")
         }
 
@@ -93,6 +92,7 @@ class OrderServiceImpl(
         } else {
             throw Exception("이미 취소된 주문입니다")
         }
+        // 업데이트 시간 디테일 너무 투마치 ㅋㅋ
     }
 
     override fun getOrder(
@@ -102,7 +102,7 @@ class OrderServiceImpl(
         val findUser = userRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("user", userId)
         val findOrder = orderRepository.findByIdOrNull(orderId) ?: throw ModelNotFoundException("orders", orderId)
 
-        return if (findOrder.userId == findUser) {
+        return if (findOrder.user == findUser) {
             findOrder.toResponse()
         } else {
             throw Exception("유저와 주문정보가 일치하지 않습니다")
