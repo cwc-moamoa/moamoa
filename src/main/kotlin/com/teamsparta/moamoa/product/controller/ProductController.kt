@@ -46,6 +46,7 @@ class ProductController(
         return ResponseEntity.ok(ProductResponse(updatedProduct))
     }
 
+
     @PutMapping("/{productId}/delete")
     fun deleteProduct(
         @PathVariable productId: Long,

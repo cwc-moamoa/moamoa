@@ -11,7 +11,7 @@ import java.time.LocalDateTime
 data class Product(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val productId: Long? = null,
+    val id: Long? = null,
     @Column(name = "sellerId", nullable = false)
     val sellerId: Long,
     @Column(name = "price", nullable = false)
@@ -32,6 +32,8 @@ data class Product(
     val likes: Int,
 //    @Column(name = "likesCount")
 //    var likesCount: Int = 0 ,
+//    @Column(name ="isDeleted",nullable = false)
+//    var isDeleted: Boolean
     @Column(name = "deleted_at")
     var deletedAt: LocalDateTime? = null,
     @Column(name = "userLimit")

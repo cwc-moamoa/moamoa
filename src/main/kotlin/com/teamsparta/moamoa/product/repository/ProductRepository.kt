@@ -8,5 +8,5 @@ interface ProductRepository : JpaRepository<Product, Long>, CustomProductReposit
     fun findByProductIdAndDeletedAtIsNull(productId: Long): Optional<Product>
 }
 // interface ProductRepository : JpaRepository<Product, Long>, CustomProductRepository {
-//    fun findByProductIdAndDeletedAtIsNull(productId: Long): Optional<Product>
+//    fun findByProductIdAndDeletedAtIsNull(id: Long): Optional<Product>
 // }

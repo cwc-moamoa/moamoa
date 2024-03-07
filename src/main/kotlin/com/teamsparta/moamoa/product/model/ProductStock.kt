@@ -9,7 +9,7 @@ import jakarta.persistence.*
 data class ProductStock(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val stockId: Long? = null,
+    val id: Long? = null,
 //    @OneToOne(mappedBy = "productStock", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
 //    val product: Product,
     @OneToOne(fetch = FetchType.LAZY)

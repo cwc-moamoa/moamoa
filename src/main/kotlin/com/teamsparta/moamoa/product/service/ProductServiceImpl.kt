@@ -20,17 +20,13 @@ class ProductServiceImpl(
     private val productStockRepository: ProductStockRepository,
 ) : ProductService {
     @Transactional
-    override fun getAllProducts(): List<ProductResponse> {
-        val products = productRepository.findAll().filter { it.deletedAt == null }
-        return products.map { ProductResponse(it) }
-    }
+
 
     @Transactional
     override fun getProductById(productId: Long): ProductResponse {
         val product =
             productRepository.findByProductIdAndDeletedAtIsNull(productId)
                 .orElseThrow { ModelNotFoundException("Product", productId) }
-
         return ProductResponse(product)
     }
 
@@ -76,6 +72,7 @@ class ProductServiceImpl(
             productRepository.findByProductIdAndDeletedAtIsNull(productId)
                 .orElseThrow { ModelNotFoundException("Product", productId) }
 
+
         product.apply {
             title = request.title
             content = request.content
@@ -86,6 +83,7 @@ class ProductServiceImpl(
 
         return productRepository.save(product)
     }
+
 
     @Transactional
     override fun deleteProduct(productId: Long): Product {
