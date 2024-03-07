@@ -20,6 +20,10 @@ class ProductServiceImpl(
     private val productStockRepository: ProductStockRepository,
 ) : ProductService {
     @Transactional
+    override fun getAllProducts(): List<ProductResponse> {
+        val products = productRepository.findAll().filter { it.deletedAt == null }
+        return products.map { ProductResponse(it) }
+    }
 
 
     @Transactional
