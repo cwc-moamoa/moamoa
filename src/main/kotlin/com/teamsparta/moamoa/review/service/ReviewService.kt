@@ -7,19 +7,13 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 
 interface ReviewService {
-    fun createReview(
-        productId: Long,
-        createReviewRequest: CreateReviewRequest,
-    ): ReviewResponse
+    fun createReview(productId: Long, createReviewRequest: CreateReviewRequest, ): ReviewResponse
 
-    fun updateReview(
-        reviewId: Long,
-        request: UpdateReviewRequest,
-    ): ReviewResponse
+    fun updateReview(reviewId: Long, request: UpdateReviewRequest): ReviewResponse
 
     fun getReviewById(reviewId: Long): ReviewResponse
 
-    fun getAllReviews(pageable: Pageable): Page<ReviewResponse>
+    fun getPaginatedReviewList(pageable: Pageable): Page<ReviewResponse>
 
     fun deleteReview(reviewId: Long)
 }

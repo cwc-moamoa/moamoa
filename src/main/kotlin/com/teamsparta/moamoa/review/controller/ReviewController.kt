@@ -6,6 +6,8 @@ import com.teamsparta.moamoa.review.dto.UpdateReviewRequest
 import com.teamsparta.moamoa.review.service.ReviewService
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
+import org.springframework.data.web.PageableDefault
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -34,21 +36,22 @@ class ReviewController(
     }
 
     @GetMapping("/{reviewId}")
-    fun geteReviewById(
+    fun getReviewById(
         @PathVariable reviewId: Long,
     ): ResponseEntity<ReviewResponse> {
         val review = reviewService.getReviewById(reviewId)
         return ResponseEntity.ok(review)
     }
 
+
     @GetMapping
-    fun getAllReviews(
-        @PathVariable productId: Long,
-        pageable: Pageable,
+    fun getPaginatedReviewList(
+        @PageableDefault(size = 15, sort = ["id"], direction = Sort.Direction.ASC) pageable: Pageable,
     ): ResponseEntity<Page<ReviewResponse>> {
-        val reviews = reviewService.getAllReviews(pageable)
+        val reviews = reviewService.getPaginatedReviewList(pageable)
         return ResponseEntity.ok(reviews)
     }
+
 
     @PutMapping("/{reviewId}")
     fun updateReview(

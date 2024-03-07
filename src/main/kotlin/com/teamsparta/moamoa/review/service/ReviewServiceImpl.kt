@@ -43,10 +43,8 @@ class ReviewServiceImpl(
     }
 
     @Transactional(readOnly = true)
-    override fun getAllReviews(pageable: Pageable): Page<ReviewResponse> {
-        // 삭제되지 않은 리뷰만 조회
-        val reviews = reviewRepository.findAllByDeletedAtIsNull(pageable)
-        // 조회된 Review 엔티티를 ReviewResponse DTO로 변환
+    override fun getPaginatedReviewList(pageable: Pageable): Page<ReviewResponse> {
+        val reviews = reviewRepository.findAll(pageable) // 조건 없이 모든 리뷰 조회
         return reviews.map { review -> ReviewResponse.toReviewResponse(review) }
     }
 
