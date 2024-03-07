@@ -4,9 +4,12 @@ import com.teamsparta.moamoa.review.dto.CreateReviewRequest
 import com.teamsparta.moamoa.review.dto.ReviewResponse
 import com.teamsparta.moamoa.review.dto.UpdateReviewRequest
 import com.teamsparta.moamoa.review.service.ReviewService
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
@@ -28,6 +31,23 @@ class ReviewController(
         return ResponseEntity
             .status(HttpStatus.CREATED)
             .body(result)
+    }
+
+    @GetMapping("/{reviewId}")
+    fun geteReviewById(
+        @PathVariable reviewId: Long,
+    ): ResponseEntity<ReviewResponse> {
+        val review = reviewService.getReviewById(reviewId)
+        return ResponseEntity.ok(review)
+    }
+
+    @GetMapping
+    fun getAllReviews(
+        @PathVariable productId: Long,
+        pageable: Pageable,
+    ): ResponseEntity<Page<ReviewResponse>> {
+        val reviews = reviewService.getAllReviews(pageable)
+        return ResponseEntity.ok(reviews)
     }
 
     @PutMapping("/{reviewId}")

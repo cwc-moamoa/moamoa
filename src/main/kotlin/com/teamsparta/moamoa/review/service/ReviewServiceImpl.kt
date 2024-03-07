@@ -6,6 +6,8 @@ import com.teamsparta.moamoa.review.dto.CreateReviewRequest
 import com.teamsparta.moamoa.review.dto.ReviewResponse
 import com.teamsparta.moamoa.review.dto.UpdateReviewRequest
 import com.teamsparta.moamoa.review.repository.ReviewRepository
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -32,13 +34,34 @@ class ReviewServiceImpl(
     }
 
     @Transactional
+    override fun getReviewById(reviewId: Long): ReviewResponse {
+        val review =
+            reviewRepository.findByIdOrNull(reviewId)
+                ?: throw ModelNotFoundException("Review", reviewId)
+
+        return ReviewResponse.toReviewResponse(review)
+    }
+
+    @Transactional(readOnly = true)
+    override fun getAllReviews(pageable: Pageable): Page<ReviewResponse> {
+        // 삭제되지 않은 리뷰만 조회
+        val reviews = reviewRepository.findAllByDeletedAtIsNull(pageable)
+        // 조회된 Review 엔티티를 ReviewResponse DTO로 변환
+        return reviews.map { review -> ReviewResponse.toReviewResponse(review) }
+    }
+
+    @Transactional
     override fun updateReview(
         reviewId: Long,
         request: UpdateReviewRequest,
     ): ReviewResponse {
         val review =
-            reviewRepository.findByIdOrNull(reviewId)
+            reviewRepository.findByIdAndDeletedAtIsNull(reviewId)
                 ?: throw ModelNotFoundException("Review", reviewId)
+
+//        if (review.deletedAt != null) {
+//            throw ReviewDeleteException(reviewId)
+//        }
 
         request.toUpdateReview(review)
 
@@ -46,8 +69,6 @@ class ReviewServiceImpl(
 
         return ReviewResponse.toReviewResponse(updatedReview)
     }
-
-    // deleteat  null 값만 찾게 수정중...........
 
     @Transactional
     override fun deleteReview(reviewId: Long) {
