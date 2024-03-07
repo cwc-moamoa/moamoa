@@ -4,6 +4,9 @@ import com.teamsparta.moamoa.product.model.Product
 import org.springframework.data.jpa.repository.JpaRepository
 import java.util.*
 
-interface ProductRepository : JpaRepository<Product, Long> {
-    fun findByIdAndDeletedAtIsNull(id: Long): Optional<Product>
+interface ProductRepository : JpaRepository<Product, Long>, CustomProductRepository {
+    fun findByProductIdAndDeletedAtIsNull(productId: Long): Optional<Product>
 }
+// interface ProductRepository : JpaRepository<Product, Long>, CustomProductRepository {
+//    fun findByProductIdAndDeletedAtIsNull(id: Long): Optional<Product>
+// }

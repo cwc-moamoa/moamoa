@@ -1,33 +1,36 @@
 package com.teamsparta.moamoa.product.service
 
+import com.teamsparta.moamoa.exception.ModelNotFoundException
+import com.teamsparta.moamoa.exception.OutOfStockException
 import com.teamsparta.moamoa.product.dto.ProductRequest
 import com.teamsparta.moamoa.product.dto.ProductResponse
 import com.teamsparta.moamoa.product.model.Product
+import com.teamsparta.moamoa.product.model.ProductStock
 import com.teamsparta.moamoa.product.repository.ProductRepository
+import com.teamsparta.moamoa.product.repository.ProductStockRepository
+import jakarta.transaction.Transactional
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 
 @Service
-class ProductServiceImpl(private val productRepository: ProductRepository) : ProductService {
-    override fun getAllProducts(): List<ProductResponse> {
-        val products = productRepository.findAll().filter { it.deletedAt == null }
-        return products.map { ProductResponse(it) }
-    }
+class ProductServiceImpl(
+    private val productRepository: ProductRepository,
+    private val productStockRepository: ProductStockRepository,
+) : ProductService {
+    @Transactional
 
-//    override fun getProductById(id: Long): ProductResponse {
-//        val product = productRepository.findById(id)
-//            .orElseThrow { RuntimeException("Product not found") }
-//        return ProductResponse(product)
-//    }
 
-    override fun getProductById(id: Long): ProductResponse {
+    @Transactional
+    override fun getProductById(productId: Long): ProductResponse {
         val product =
-            productRepository.findByIdAndDeletedAtIsNull(id)
-                .orElseThrow { RuntimeException("Product not found or has been deleted") }
-
+            productRepository.findByProductIdAndDeletedAtIsNull(productId)
+                .orElseThrow { ModelNotFoundException("Product", productId) }
         return ProductResponse(product)
     }
 
+    @Transactional
     override fun createProduct(request: ProductRequest): Product {
         val product =
             Product(
@@ -36,24 +39,39 @@ class ProductServiceImpl(private val productRepository: ProductRepository) : Pro
                 imageUrl = request.imageUrl,
                 price = request.price,
                 purchaseAble = request.purchaseAble,
-//            deletedAt = request.deletedAt,
-                likes = request.likes, // 추가
-                productDiscount = request.productDiscount, // 추가
-                ratingAverage = request.ratingAverage, // 추가
-                sellerId = request.sellerId, // 추가
-                userLimit = request.userLimit, // 추가된 필드
-                discount = request.discount, // 추가된 필드
+//                likesCount  = request.likes,
+                likes = request.likes,
+                productDiscount = request.productDiscount,
+                ratingAverage = request.ratingAverage,
+                sellerId = request.sellerId,
+                userLimit = request.userLimit,
+                discount = request.discount,
+                // deletedAt = null 필요없을듯
             )
-        return productRepository.save(product)
+
+        val productStock =
+            ProductStock(
+                product = product,
+                stock = request.stock,
+                productName = request.title,
+            )
+
+        product.productStock = productStock
+
+        productRepository.save(product)
+
+        return product
     }
 
+    @Transactional
     override fun updateProduct(
-        id: Long,
+        productId: Long,
         request: ProductRequest,
     ): Product {
         val product =
-            productRepository.findById(id)
-                .orElseThrow { RuntimeException("Product not found") }
+            productRepository.findByProductIdAndDeletedAtIsNull(productId)
+                .orElseThrow { ModelNotFoundException("Product", productId) }
+
 
         product.apply {
             title = request.title
@@ -61,19 +79,51 @@ class ProductServiceImpl(private val productRepository: ProductRepository) : Pro
             imageUrl = request.imageUrl
             price = request.price
             purchaseAble = request.purchaseAble
-//            deletedAt = request.deletedAt
         }
 
         return productRepository.save(product)
     }
 
-    override fun deleteProduct(id: Long): Product {
+
+    @Transactional
+    override fun deleteProduct(productId: Long): Product {
         val product =
-            productRepository.findById(id)
-                .orElseThrow { RuntimeException("Product not found") }
+            productRepository.findByProductIdAndDeletedAtIsNull(productId)
+                .orElseThrow { ModelNotFoundException("Product", productId) }
 
         product.deletedAt = LocalDateTime.now()
 
         return productRepository.save(product)
     }
-}
+
+    @Transactional
+    override fun decreaseStock(
+        productId: Long,
+        quantity: Int,
+    ) {
+        val product =
+            productRepository.findById(productId)
+                .orElseThrow { ModelNotFoundException("Product", productId) }
+
+        val productStock =
+            product.productStock
+                ?: throw RuntimeException("ProductStock not found")
+
+        if (productStock.stock < quantity) {
+            throw OutOfStockException("Not enough stock")
+        }
+
+        productStock.stock -= quantity
+        productStockRepository.save(productStock)
+
+        if (productStock.stock == 0) {
+            product.isSoldOut = true
+            productRepository.save(product)
+        }
+    }
+
+    @Transactional
+    override fun getPaginatedProductList(pageable: Pageable): Page<Product> {
+        return productRepository.findByPageable(pageable)
+    }
+} // 되나?

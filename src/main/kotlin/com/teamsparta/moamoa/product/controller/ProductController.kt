@@ -2,7 +2,12 @@ package com.teamsparta.moamoa.product.controller
 
 import com.teamsparta.moamoa.product.dto.ProductRequest
 import com.teamsparta.moamoa.product.dto.ProductResponse
+import com.teamsparta.moamoa.product.model.Product
 import com.teamsparta.moamoa.product.service.ProductService
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
+import org.springframework.data.web.PageableDefault
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
@@ -16,12 +21,6 @@ class ProductController(
         return productService.getAllProducts()
     }
 
-//    @GetMapping("/{productId}")
-//    fun getProduct(@PathVariable productId: Long): ResponseEntity<Product> {
-//        val product = productRepository.findById(productId)
-//            .orElseThrow { ModelNotFoundException("Product", productId) }
-//        return ResponseEntity.ok(product)
-//    }
     @GetMapping("/{productId}")
     fun getProduct(
         @PathVariable productId: Long,
@@ -47,11 +46,20 @@ class ProductController(
         return ResponseEntity.ok(ProductResponse(updatedProduct))
     }
 
-    @PutMapping("/{id}/delete")
+
+    @PutMapping("/{productId}/delete")
     fun deleteProduct(
-        @PathVariable id: Long,
+        @PathVariable productId: Long,
     ): ResponseEntity<ProductResponse> {
-        val product = productService.deleteProduct(id)
+        val product = productService.deleteProduct(productId)
         return ResponseEntity.ok(ProductResponse(product))
+    }
+
+    @GetMapping("/pages")
+    fun getPaginatedProductList(
+        @PageableDefault(size = 15, sort = ["id"]) pageable: Pageable,
+    ): ResponseEntity<Page<Product>> {
+        val products = productService.getPaginatedProductList(pageable)
+        return ResponseEntity.status(HttpStatus.OK).body(products) // 페이징 아직 오류 해결못함
     }
 }
