@@ -29,7 +29,7 @@ class ProductServiceImpl(
     @Transactional
     override fun getProductById(productId: Long): ProductResponse {
         val product =
-            productRepository.findByProductIdAndDeletedAtIsNull(productId)
+            productRepository.findByIdAndDeletedAtIsNull(productId)
                 .orElseThrow { ModelNotFoundException("Product", productId) }
         return ProductResponse(product)
     }
@@ -73,7 +73,7 @@ class ProductServiceImpl(
         request: ProductRequest,
     ): Product {
         val product =
-            productRepository.findByProductIdAndDeletedAtIsNull(productId)
+            productRepository.findByIdAndDeletedAtIsNull(productId)
                 .orElseThrow { ModelNotFoundException("Product", productId) }
 
 
@@ -92,7 +92,7 @@ class ProductServiceImpl(
     @Transactional
     override fun deleteProduct(productId: Long): Product {
         val product =
-            productRepository.findByProductIdAndDeletedAtIsNull(productId)
+            productRepository.findByIdAndDeletedAtIsNull(productId)
                 .orElseThrow { ModelNotFoundException("Product", productId) }
 
         product.deletedAt = LocalDateTime.now()
@@ -128,6 +128,6 @@ class ProductServiceImpl(
 
     @Transactional
     override fun getPaginatedProductList(pageable: Pageable): Page<Product> {
-        return productRepository.findByPageable(pageable)
+        return productRepository.findAllByDeletedAtIsNull(pageable)
     }
 } // 되나?

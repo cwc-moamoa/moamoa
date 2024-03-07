@@ -18,7 +18,7 @@ data class ProductResponse(
     var deletedAt: LocalDateTime?,
 ) {
     constructor(product: Product) : this(
-        id = product.productId,
+        id = product.id,
         title = product.title,
         content = product.content,
         imageUrl = product.imageUrl,

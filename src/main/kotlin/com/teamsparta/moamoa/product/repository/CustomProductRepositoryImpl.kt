@@ -26,11 +26,11 @@ class CustomProductRepositoryImpl : QueryDslSupport(), CustomProductRepository {
                 val property = sort.property
 
                 when (property) {
-                    "id" -> if (direction.isAscending) query.orderBy(product.productId.asc()) else query.orderBy(product.productId.desc())
+                    "id" -> if (direction.isAscending) query.orderBy(product.id.asc()) else query.orderBy(product.id.desc())
                 }
             }
         } else {
-            query.orderBy(product.productId.asc())
+            query.orderBy(product.id.asc())
         }
 
         val contents = query.fetch()
