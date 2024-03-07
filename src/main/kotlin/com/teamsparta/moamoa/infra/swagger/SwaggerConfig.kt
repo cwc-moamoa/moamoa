@@ -10,12 +10,11 @@ import org.springframework.context.annotation.Configuration
 
 @Configuration
 class SwaggerConfig {
-
     @Bean
     fun openAPI(): OpenAPI {
         return OpenAPI()
             .addSecurityItem(
-                SecurityRequirement().addList("Bearer Authentication")
+                SecurityRequirement().addList("Bearer Authentication"),
             )
             .components(
                 Components().addSecuritySchemes(
@@ -25,14 +24,14 @@ class SwaggerConfig {
                         .scheme("Bearer")
                         .bearerFormat("JWT")
                         .`in`(SecurityScheme.In.HEADER)
-                        .name("Authorization")
-                )
+                        .name("Authorization"),
+                ),
             )
             .info(
                 Info()
-                    .title("Course API")
-                    .description("Course API schema")
-                    .version("1.0.0")
+                    .title("MoaMoa API")
+                    .description("MoaMoa API schema")
+                    .version("1.0.0"),
             )
     }
 }

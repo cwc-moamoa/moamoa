@@ -6,11 +6,11 @@ import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.web.authentication.WebAuthenticationDetails
 import java.io.Serializable
 
+
 class JwtAuthenticationToken(
     private val userPrincipal: UserPrincipal,
     details: WebAuthenticationDetails,
-    ) : AbstractAuthenticationToken(emptyList<GrantedAuthority>()), Serializable {
-
+) : AbstractAuthenticationToken(emptyList<GrantedAuthority>()), Serializable {
     init {
         super.setAuthenticated(true)
         super.setDetails(details)

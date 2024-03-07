@@ -10,11 +10,11 @@ import org.springframework.stereotype.Component
 import java.lang.Error
 
 @Component
-class CustomAuthenticationEntrypoint: AuthenticationEntryPoint {
+class CustomAuthenticationEntrypoint : AuthenticationEntryPoint {
     override fun commence(
         request: HttpServletRequest,
         response: HttpServletResponse,
-        authException: AuthenticationException
+        authException: AuthenticationException,
     ) {
         response.status = HttpServletResponse.SC_UNAUTHORIZED
         response.contentType = MediaType.APPLICATION_JSON_VALUE

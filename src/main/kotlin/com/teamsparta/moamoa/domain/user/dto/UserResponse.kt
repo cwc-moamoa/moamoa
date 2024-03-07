@@ -8,11 +8,9 @@ data class UserResponse(
     val nickname: String,
     var address: String,
     var phoneNumber: String,
-)
-{
-
+) {
     companion object {
-        fun toResponse(user: User): UserResponse{
+        fun toResponse(user: User): UserResponse  {
             return UserResponse(
                 user.id!!,
                 user.email,

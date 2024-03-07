@@ -7,7 +7,6 @@ import org.hibernate.validator.constraints.Length
 import org.springframework.security.crypto.password.PasswordEncoder
 
 data class UserSignUpRequest(
-
     @field:NotBlank(message = "이메일 입력은 필수입니다. ")
     @field:Email(message = "이메일 형식이 아닙니다.")
     val email: String,
@@ -17,19 +16,14 @@ data class UserSignUpRequest(
     var nickname: String,
     var address: String,
     var phoneNumber: String,
-)
-
-{
-
-    fun toEntity(passwordEncoder: PasswordEncoder): User
-    {
+) {
+    fun toEntity(passwordEncoder: PasswordEncoder): User {
         return User(
             email = email,
             password = passwordEncoder.encode(password),
             nickname = nickname,
             address = address,
             phoneNumber = phoneNumber,
-
         )
     }
 }

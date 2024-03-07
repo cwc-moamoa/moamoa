@@ -9,5 +9,5 @@ import org.springframework.cache.annotation.EnableCaching
 class MoamoaApplication
 
 fun main(args: Array<String>) {
-	runApplication<MoamoaApplication>(*args)
+    runApplication<MoamoaApplication>(*args)
 }
