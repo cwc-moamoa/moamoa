@@ -1,7 +1,7 @@
-package com.teamsparta.moamoa.review.dto
+package com.teamsparta.moamoa.domain.review.dto
 
-import com.teamsparta.moamoa.product.model.Product
-import com.teamsparta.moamoa.review.model.Review
+import com.teamsparta.moamoa.domain.product.model.Product
+import com.teamsparta.moamoa.domain.review.model.Review
 
 data class CreateReviewRequest(
     val title: String,
