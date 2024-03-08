@@ -1,9 +1,11 @@
 package com.teamsparta.moamoa.exception
 
+
 import com.teamsparta.moamoa.exception.dto.ErrorResponseDto
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ExceptionHandler
+import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestControllerAdvice
 
 @RestControllerAdvice
@@ -27,5 +29,11 @@ class GlobalExceptionHandler {
         return ResponseEntity
             .status(HttpStatus.BAD_REQUEST)
             .body(ErrorResponseDto(e.message))
+    }
+
+    @ExceptionHandler(OutOfStockException::class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    fun handleOutOfStockException(e: OutOfStockException): ErrorResponse {
+        return ErrorResponse("OutOfStock", e.message ?: "Out of stock")
     }
 }
