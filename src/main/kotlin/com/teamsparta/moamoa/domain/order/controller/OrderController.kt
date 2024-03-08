@@ -116,5 +116,14 @@ class OrderController(
             .status(HttpStatus.OK)
             .body(orderService.getOrderPageBySellerId(sellerId, page, size))
     }
-    // 판매 내역 전체 조회
+
+    @PostMapping("/saveToRedis")
+    fun saveDataToRedis(
+        @RequestParam productId: String,
+        @RequestParam userId: String,
+        @RequestParam orderId: String,
+    ): ResponseEntity<Unit> {
+        orderService.saveToRedis(productId, userId, orderId) // 여기 순서 중요함!!
+        return ResponseEntity.status(HttpStatus.OK).build()
+    }
 }

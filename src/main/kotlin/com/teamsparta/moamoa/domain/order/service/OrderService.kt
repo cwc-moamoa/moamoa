@@ -56,4 +56,10 @@ interface OrderService {
         page: Int,
         size: Int,
     ): Page<ResponseOrderDto>
+
+    fun saveToRedis(
+        productId: String,
+        userId: String,
+        orderId: String,
+    )
 }
