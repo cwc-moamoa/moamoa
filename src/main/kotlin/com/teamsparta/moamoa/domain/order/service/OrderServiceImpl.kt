@@ -12,6 +12,7 @@ import com.teamsparta.moamoa.domain.seller.repository.SellerRepository
 import com.teamsparta.moamoa.domain.user.repository.UserRepository
 import com.teamsparta.moamoa.exception.ModelNotFoundException
 import org.springframework.data.domain.Page
+import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -24,6 +25,7 @@ class OrderServiceImpl(
     private val stockRepository: StockRepository,
     private val userRepository: UserRepository,
     private val sellerRepository: SellerRepository,
+    private val redisTemplate: RedisTemplate<String, Any>
 ) : OrderService {
     @Transactional
     override fun creatOrder(
@@ -52,7 +54,22 @@ class OrderServiceImpl(
         } else {
             throw Exception("재고가 모자랍니다 다시 시도")
         }
-    } // 재고수량 점검 로직 합칠수도있지않나?
+    }
+    //이 로직이 끝날을때, saveToRedis를 실행해서, 지금 만들어서 response된 orderid + 여기 해당하는 productId와 userId를 같이 저장하는게 목표.
+    //아래 saveToRedis가 직접 값을 입력하는게 아닌, 값을 받아오기.
+
+    override fun saveToRedis(
+        productId: String,
+        userId: String,
+        orderId: String,
+    )  {
+        val hashKey: String = orderId
+
+        redisTemplate.opsForHash<String, String>().put(hashKey, "productId", productId)
+        redisTemplate.opsForHash<String, String>().put(hashKey, "userId", userId)
+        redisTemplate.opsForHash<String, String>().put(hashKey, "orderId", orderId)
+    }
+
 
     @Transactional
     override fun updateOrder(
