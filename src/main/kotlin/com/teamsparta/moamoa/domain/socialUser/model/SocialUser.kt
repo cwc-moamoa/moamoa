@@ -18,15 +18,17 @@ class SocialUser(
     @Enumerated(EnumType.STRING)
     val provider: OAuth2Provider,
     val providerId: String,
-    val nickname: String
+    val nickname: String,
+    val email: String?
 ) {
 
     companion object {
-        fun ofKakao(id: String, nickname: String): SocialUser {
+        fun ofKakao(id: String, nickname: String, email: String?): SocialUser {
             return SocialUser(
                 provider = OAuth2Provider.KAKAO,
                 providerId = id,
-                nickname = nickname
+                nickname = nickname,
+                email = email
             )
         }
     }
