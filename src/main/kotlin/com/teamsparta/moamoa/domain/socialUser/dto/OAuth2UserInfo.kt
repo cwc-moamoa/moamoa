@@ -8,7 +8,8 @@ import java.lang.RuntimeException
 data class OAuth2UserInfo(
     val id: String,
     val provider: String,
-    val nickname: String
+    val nickname: String,
+    val email: String,
 ) : OAuth2User {
 
     override fun getName(): String {
@@ -36,11 +37,14 @@ data class OAuth2UserInfo(
             val userNameAttributeName =
                 userRequest.clientRegistration.providerDetails.userInfoEndpoint.userNameAttributeName
             val nickname = profile["nickname"] ?: ""
+            val account = originUser.attributes["kakao_account"] as Map <*, *>
+            val email = account["email"] ?: ""
 
             return OAuth2UserInfo(
                 id = (originUser.attributes[userNameAttributeName] as Long).toString(),
                 provider = provider.uppercase(),
                 nickname = nickname as String,
+                email = email as String
             )
         }
     }
