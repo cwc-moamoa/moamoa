@@ -1,6 +1,5 @@
 package com.teamsparta.moamoa.domain.groupPurchase.controller
 
-import com.teamsparta.moamoa.domain.groupPurchase.dto.CreateGroupPurchaseRequest
 import com.teamsparta.moamoa.domain.groupPurchase.service.GroupPurchaseService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -13,7 +12,7 @@ class GroupPurchaseController(private val groupPurchaseService: GroupPurchaseSer
 //    fun createAndJoinOrJoin(
 //        @RequestBody request: CreateGroupPurchaseRequest,
 //        @RequestParam userId: Long,
-////        @RequestParam orderId: Long,
+// //        @RequestParam orderId: Long,
 //    ): ResponseEntity<String> {
 //        groupPurchaseService.createAndJoinOrJoinGroupPurchase(request, userId)
 //        return ResponseEntity.status(HttpStatus.OK).body("공동구매 매칭 성공")
@@ -37,5 +36,4 @@ class GroupPurchaseController(private val groupPurchaseService: GroupPurchaseSer
         groupPurchaseService.leaveGroupPurchase(userId, groupPurchaseId)
         return ResponseEntity.status(HttpStatus.OK).build()
     }
-
 }
