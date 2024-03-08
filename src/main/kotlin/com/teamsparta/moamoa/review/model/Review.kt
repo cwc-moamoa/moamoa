@@ -22,4 +22,6 @@ class Review(
     var imageUrl: String? = null,
     @Column(name = "deleted_at")
     var deletedAt: LocalDateTime? = null,
+    @Column(name = "likesCount")
+    var likesCount: Int = 0 ,
 ) : BaseTimeEntity()

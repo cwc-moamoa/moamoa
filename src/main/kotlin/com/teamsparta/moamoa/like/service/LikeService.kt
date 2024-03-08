@@ -1,9 +1,11 @@
-// package com.teamsparta.moamoa.like.service
-//
-// import com.teamsparta.moamoa.like.dto.LikeRequest
-// import com.teamsparta.moamoa.like.dto.LikeResponse
-//
-// interface LikeService {
-//    fun addLike(productId: Long, userId: Long)
-//    fun removeLike(productId: Long, userId: Long)
-// }
+ package com.teamsparta.moamoa.like.service
+
+ interface LikeService {
+     fun addLikeToProduct(productId: Long)
+     fun removeLikeFromProduct(productId: Long)
+     fun addLikeToReview(reviewId: Long)
+     fun removeLikeFromReview(reviewId: Long)
+}//     fun addLikeToProduct(userId: Long, productId: Long)
+// fun removeLikeFromProduct(userId: Long, productId: Long)
+// fun addLikeToReview(userId: Long, reviewId: Long)
+// fun removeLikeFromReview(userId: Long, reviewId: Long)

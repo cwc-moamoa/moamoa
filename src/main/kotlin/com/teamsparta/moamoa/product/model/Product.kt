@@ -28,12 +28,11 @@ data class Product(
     var imageUrl: String,
     @Column(name = "productDiscount", nullable = true)
     val productDiscount: Double,
-    @Column(name = "likes", nullable = true)
-    val likes: Int,
-//    @Column(name = "likesCount")
-//    var likesCount: Int = 0 ,
-//    @Column(name ="isDeleted",nullable = false)
-//    var isDeleted: Boolean
+//    @Column(name = "likes", nullable = true)
+//    val likes: Int,
+    @Column(name = "likesCount")
+    var likesCount: Int = 0 ,
+
     @Column(name = "deleted_at")
     var deletedAt: LocalDateTime? = null,
     @Column(name = "userLimit")

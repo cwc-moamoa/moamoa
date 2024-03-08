@@ -13,8 +13,8 @@ data class ProductResponse(
     val productDiscount: Double,
     val purchaseAble: Boolean,
     val ratingAverage: Double,
-    val likes: Int,
-//    val isDeleted: Boolean
+    val likesCount: Int,
+    //    val isDeleted: Boolean
     var deletedAt: LocalDateTime?,
 ) {
     constructor(product: Product) : this(
@@ -27,7 +27,7 @@ data class ProductResponse(
         productDiscount = product.productDiscount,
         purchaseAble = product.purchaseAble,
         ratingAverage = product.ratingAverage,
-        likes = product.likes,
+        likesCount = product.likesCount,
 //        isDeleted = product.isDeleted
         deletedAt = product.deletedAt,
     )
