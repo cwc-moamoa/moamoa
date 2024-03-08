@@ -20,7 +20,7 @@ class OAuth2LoginSuccessHandler(
         authentication: Authentication
     ) {
         val userInfo = authentication.principal as OAuth2UserInfo
-        val accessToken = jwtHelper.generateAccessToken(userInfo.id)
+        val accessToken = jwtHelper.generateAccessToken(userInfo.id, userInfo.nickname, userInfo.email)
         response.contentType = MediaType.APPLICATION_JSON_VALUE
         response.writer.write(accessToken) }
 }

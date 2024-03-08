@@ -38,6 +38,7 @@ class UserServiceImpl(
             accessToken =
                 jwtPlugin.generateAccessToken(
                     subject = user.id.toString(),
+                    nickname = user.nickname,
                     email = user.email,
                 ),
         )
