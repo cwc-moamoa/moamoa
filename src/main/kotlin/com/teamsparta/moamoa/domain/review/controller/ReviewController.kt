@@ -1,9 +1,9 @@
-package com.teamsparta.moamoa.review.controller
+package com.teamsparta.moamoa.domain.review.controller
 
-import com.teamsparta.moamoa.review.dto.CreateReviewRequest
-import com.teamsparta.moamoa.review.dto.ReviewResponse
-import com.teamsparta.moamoa.review.dto.UpdateReviewRequest
-import com.teamsparta.moamoa.review.service.ReviewService
+import com.teamsparta.moamoa.domain.review.dto.CreateReviewRequest
+import com.teamsparta.moamoa.domain.review.dto.ReviewResponse
+import com.teamsparta.moamoa.domain.review.dto.UpdateReviewRequest
+import com.teamsparta.moamoa.domain.review.service.ReviewService
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
@@ -43,7 +43,6 @@ class ReviewController(
         return ResponseEntity.ok(review)
     }
 
-
     @GetMapping
     fun getPaginatedReviewList(
         @PageableDefault(size = 15, sort = ["id"], direction = Sort.Direction.ASC) pageable: Pageable,
@@ -51,7 +50,6 @@ class ReviewController(
         val reviews = reviewService.getPaginatedReviewList(pageable)
         return ResponseEntity.ok(reviews)
     }
-
 
     @PutMapping("/{reviewId}")
     fun updateReview(

@@ -1,6 +1,6 @@
-package com.teamsparta.moamoa.product.dto
+package com.teamsparta.moamoa.domain.product.dto
 
-import com.teamsparta.moamoa.product.model.Product
+import com.teamsparta.moamoa.domain.product.model.Product
 import java.time.LocalDateTime
 
 data class ProductResponse(

@@ -1,6 +1,6 @@
-package com.teamsparta.moamoa.review.dto
+package com.teamsparta.moamoa.domain.review.dto
 
-import com.teamsparta.moamoa.review.model.Review
+import com.teamsparta.moamoa.domain.review.model.Review
 
 class ReviewResponse(
     var id: Long?,

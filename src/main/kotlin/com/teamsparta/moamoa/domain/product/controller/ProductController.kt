@@ -1,9 +1,9 @@
-package com.teamsparta.moamoa.product.controller
+package com.teamsparta.moamoa.domain.product.controller
 
-import com.teamsparta.moamoa.product.dto.ProductRequest
-import com.teamsparta.moamoa.product.dto.ProductResponse
-import com.teamsparta.moamoa.product.model.Product
-import com.teamsparta.moamoa.product.service.ProductService
+import com.teamsparta.moamoa.domain.product.dto.ProductRequest
+import com.teamsparta.moamoa.domain.product.dto.ProductResponse
+import com.teamsparta.moamoa.domain.product.model.Product
+import com.teamsparta.moamoa.domain.product.service.ProductService
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
@@ -46,7 +46,6 @@ class ProductController(
         return ResponseEntity.ok(ProductResponse(updatedProduct))
     }
 
-
     @PutMapping("/{productId}/delete")
     fun deleteProduct(
         @PathVariable productId: Long,
@@ -58,8 +57,8 @@ class ProductController(
     @GetMapping("/pages")
     fun getPaginatedProductList(
         @PageableDefault(size = 15, sort = ["id"]) pageable: Pageable,
-    ): ResponseEntity<Page<Product>> {
+    ): ResponseEntity<Page<ProductResponse>> {
         val products = productService.getPaginatedProductList(pageable)
-        return ResponseEntity.status(HttpStatus.OK).body(products) // 페이징 아직 오류 해결못함
+        return ResponseEntity.status(HttpStatus.OK).body(products)
     }
 }

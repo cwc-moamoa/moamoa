@@ -1,14 +1,14 @@
-package com.teamsparta.moamoa.product.service
+package com.teamsparta.moamoa.domain.product.service
 
-import com.teamsparta.moamoa.product.dto.ProductRequest
-import com.teamsparta.moamoa.product.dto.ProductResponse
-import com.teamsparta.moamoa.product.model.Product
+import com.teamsparta.moamoa.domain.product.dto.ProductRequest
+import com.teamsparta.moamoa.domain.product.dto.ProductResponse
+import com.teamsparta.moamoa.domain.product.model.Product
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 
 interface ProductService {
     fun getAllProducts(): List<ProductResponse>
-  
+
     fun createProduct(request: ProductRequest): Product
 
     fun updateProduct(
@@ -26,5 +26,5 @@ interface ProductService {
         quantity: Int,
     )
 
-    fun getPaginatedProductList(pageable: Pageable): Page<Product>
+    fun getPaginatedProductList(pageable: Pageable): Page<ProductResponse>
 }

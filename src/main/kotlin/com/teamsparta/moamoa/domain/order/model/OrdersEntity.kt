@@ -1,8 +1,8 @@
 package com.teamsparta.moamoa.domain.order.model
 
 import com.teamsparta.moamoa.domain.order.dto.ResponseOrderDto
-import com.teamsparta.moamoa.domain.product.model.ProductEntity
-import com.teamsparta.moamoa.domain.user.model.UserEntity
+import com.teamsparta.moamoa.domain.product.model.Product
+import com.teamsparta.moamoa.domain.user.model.User
 import com.teamsparta.moamoa.infra.BaseTimeEntity
 import jakarta.persistence.*
 
@@ -15,18 +15,16 @@ class OrdersEntity(
     var totalPrice: Int,
     @Column(name = "address")
     var address: String,
-//    @Column(name = "created_at")
-//    var createdAt: LocalDateTime,
     @Column(name = "discount")
     var discount: Double,
     @Column(name = "quantity")
     var quantity: Int,
     @ManyToOne
     @JoinColumn(name = "product_id")
-    var product: ProductEntity,
+    var product: Product,
     @ManyToOne
     @JoinColumn(name = "user_id")
-    var user: UserEntity,
+    var user: User,
 ) : BaseTimeEntity() {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,9 +33,6 @@ class OrdersEntity(
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     var status: OrdersStatus = OrdersStatus.COMPLETED
-
-//    @Column(name = "deleted_at")
-//    var deletedAt: LocalDateTime? = null
 }
 
 fun OrdersEntity.toResponse(): ResponseOrderDto {

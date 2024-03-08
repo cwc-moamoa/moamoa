@@ -1,4 +1,4 @@
-package com.teamsparta.moamoa.product.dto
+package com.teamsparta.moamoa.domain.product.dto
 
 data class ProductRequest(
     val title: String,

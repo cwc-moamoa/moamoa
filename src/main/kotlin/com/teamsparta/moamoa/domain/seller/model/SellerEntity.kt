@@ -1,11 +1,7 @@
 package com.teamsparta.moamoa.domain.seller.model
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
-import jakarta.persistence.Id
-import jakarta.persistence.Table
+import com.teamsparta.moamoa.domain.product.model.Product
+import jakarta.persistence.*
 
 @Entity
 @Table(name = "seller")
@@ -22,8 +18,10 @@ class SellerEntity(
     var phoneNumber: String,
     @Column(name = "business_num")
     var businessNum: String,
+    @OneToMany(mappedBy = "seller", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
+    var products: MutableList<Product> = mutableListOf()
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var sellerId: Long? = null
+    val id: Long? = null
 }

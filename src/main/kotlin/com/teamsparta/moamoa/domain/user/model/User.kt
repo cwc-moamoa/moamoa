@@ -1,8 +1,7 @@
-package com.teamsparta.moamoa.user.model
+package com.teamsparta.moamoa.domain.user.model
 
 import com.teamsparta.moamoa.infra.BaseTimeEntity
 import jakarta.persistence.*
-import java.time.LocalDateTime
 
 @Table(name = "app_user")
 @Entity
@@ -20,8 +19,5 @@ class User(
 ) : BaseTimeEntity() {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long? = null
-
-    @Column(name = "deleted_at")
-    var deletedAt: LocalDateTime? = null
+    val id: Long? = null
 }

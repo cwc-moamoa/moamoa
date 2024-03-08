@@ -35,5 +35,4 @@ class RedisConfig() {
     }
 }
 
-
 // Redis 사용시 활성화

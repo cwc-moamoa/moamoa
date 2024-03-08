@@ -5,9 +5,9 @@ import com.teamsparta.moamoa.domain.order.model.OrdersEntity
 import com.teamsparta.moamoa.domain.order.model.OrdersStatus
 import com.teamsparta.moamoa.domain.order.model.toResponse
 import com.teamsparta.moamoa.domain.order.repository.OrderRepository
-import com.teamsparta.moamoa.domain.product.model.StockEntity.Companion.discount
+import com.teamsparta.moamoa.domain.product.model.ProductStock.Companion.discount
 import com.teamsparta.moamoa.domain.product.repository.ProductRepository
-import com.teamsparta.moamoa.domain.product.repository.StockRepository
+import com.teamsparta.moamoa.domain.product.repository.ProductStockRepository
 import com.teamsparta.moamoa.domain.seller.repository.SellerRepository
 import com.teamsparta.moamoa.domain.user.repository.UserRepository
 import com.teamsparta.moamoa.exception.ModelNotFoundException
@@ -22,10 +22,10 @@ import java.time.LocalDateTime
 class OrderServiceImpl(
     private val orderRepository: OrderRepository,
     private val productRepository: ProductRepository,
-    private val stockRepository: StockRepository,
+    private val productStockRepository: ProductStockRepository,
     private val userRepository: UserRepository,
     private val sellerRepository: SellerRepository,
-    private val redisTemplate: RedisTemplate<String, Any>
+    private val redisTemplate: RedisTemplate<String, Any>,
 ) : OrderService {
     @Transactional
     override fun creatOrder(
@@ -36,10 +36,10 @@ class OrderServiceImpl(
         val findUser = userRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("user", userId)
         val findProduct =
             productRepository.findByIdOrNull(productId) ?: throw ModelNotFoundException("product", productId)
-        val stockCheck = stockRepository.findByProduct(findProduct) ?: throw Exception("없어~")
+        val stockCheck = productStockRepository.findByProduct(findProduct) ?: throw Exception("없어~")
 
         return if (stockCheck.stock > 0 && stockCheck.stock > createOrderDto.quantity) {
-            stockRepository.save(stockCheck.discount(createOrderDto.quantity)) // 재고 날리고 저장
+            productStockRepository.save(stockCheck.discount(createOrderDto.quantity)) // 재고 날리고 저장
             orderRepository.save(
                 OrdersEntity(
                     productName = findProduct.title,
@@ -55,21 +55,20 @@ class OrderServiceImpl(
             throw Exception("재고가 모자랍니다 다시 시도")
         }
     }
-    //이 로직이 끝날을때, saveToRedis를 실행해서, 지금 만들어서 response된 orderid + 여기 해당하는 productId와 userId를 같이 저장하는게 목표.
-    //아래 saveToRedis가 직접 값을 입력하는게 아닌, 값을 받아오기.
+    // 이 로직이 끝날을때, saveToRedis를 실행해서, 지금 만들어서 response된 orderid + 여기 해당하는 productId와 userId를 같이 저장하는게 목표.
+    // 아래 saveToRedis가 직접 값을 입력하는게 아닌, 값을 받아오기.
 
     override fun saveToRedis(
         productId: String,
         userId: String,
         orderId: String,
-    )  {
+    ) {
         val hashKey: String = orderId
 
         redisTemplate.opsForHash<String, String>().put(hashKey, "productId", productId)
         redisTemplate.opsForHash<String, String>().put(hashKey, "userId", userId)
         redisTemplate.opsForHash<String, String>().put(hashKey, "orderId", orderId)
     }
-
 
     @Transactional
     override fun updateOrder(
@@ -119,7 +118,7 @@ class OrderServiceImpl(
         val findUser = userRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("user", userId)
         val findOrder = orderRepository.findByIdOrNull(orderId) ?: throw ModelNotFoundException("orders", orderId)
 
-        return if (findOrder.user == findUser) {
+        return if (findOrder.user.id == findUser.id) {
             findOrder.toResponse()
         } else {
             throw Exception("유저와 주문정보가 일치하지 않습니다")
@@ -142,12 +141,12 @@ class OrderServiceImpl(
     ): ResponseOrderDto {
         val findSeller = sellerRepository.findByIdOrNull(sellerId) ?: throw ModelNotFoundException("seller", sellerId)
         val findProductList =
-            productRepository.findBySeller(findSeller)
+            productRepository.findBySellerId(findSeller)
         if (findProductList.isEmpty()) {
             throw ModelNotFoundException("product", sellerId)
         }
         val findOrder = orderRepository.findByIdOrNull(orderId) ?: throw ModelNotFoundException("order", orderId)
-        val findResult = findProductList.find { it?.productId == findOrder.product.productId }
+        val findResult = findProductList.find { it.id == findOrder.product.id }
 
         return if (findResult != null) {
             findOrder.status = status
@@ -164,7 +163,7 @@ class OrderServiceImpl(
         val findSeller = sellerRepository.findByIdOrNull(sellerId) ?: throw ModelNotFoundException("seller", sellerId)
         val findOrder = orderRepository.findByIdOrNull(orderId) ?: throw ModelNotFoundException("order", orderId)
 
-        return if (findOrder.product.seller == findSeller) {
+        return if (findOrder.product.seller.id == findSeller.id) {
             findOrder.toResponse()
         } else {
             throw Exception("판매자 불일치")
