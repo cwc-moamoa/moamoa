@@ -9,15 +9,15 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/groupPurchases")
 class GroupPurchaseController(private val groupPurchaseService: GroupPurchaseService) {
-    @PostMapping("/createAndJoin")
-    fun createAndJoinOrJoin(
-        @RequestBody request: CreateGroupPurchaseRequest,
-        @RequestParam userId: Long,
-        @RequestParam orderId: Long,
-    ): ResponseEntity<String> {
-        groupPurchaseService.createAndJoinOrJoinGroupPurchase(request, userId, orderId)
-        return ResponseEntity.status(HttpStatus.OK).body("공동구매 매칭 성공")
-    }
+//    @PostMapping("/createAndJoin")
+//    fun createAndJoinOrJoin(
+//        @RequestBody request: CreateGroupPurchaseRequest,
+//        @RequestParam userId: Long,
+////        @RequestParam orderId: Long,
+//    ): ResponseEntity<String> {
+//        groupPurchaseService.createAndJoinOrJoinGroupPurchase(request, userId)
+//        return ResponseEntity.status(HttpStatus.OK).body("공동구매 매칭 성공")
+//    }
 
     @PostMapping("/join")
     fun join(
@@ -38,13 +38,4 @@ class GroupPurchaseController(private val groupPurchaseService: GroupPurchaseSer
         return ResponseEntity.status(HttpStatus.OK).build()
     }
 
-    @PostMapping("/saveToRedis")
-    fun saveDataToRedis(
-        @RequestParam productId: String,
-        @RequestParam userId: String,
-        @RequestParam orderId: String,
-    ): ResponseEntity<Unit> {
-        groupPurchaseService.saveToRedis(productId, userId, orderId) // 여기 순서 중요함!!
-        return ResponseEntity.status(HttpStatus.OK).build()
-    }
 }

@@ -17,38 +17,38 @@ class GroupPurchaseService(
     private val groupPurchaseJoinUserRepository: GroupPurchaseJoinUserRepository,
     private val redisTemplate: RedisTemplate<String, Any>,
 ) {
-    @Transactional
-    fun createAndJoinOrJoinGroupPurchase(
-        request: CreateGroupPurchaseRequest, // 추후 product 완료시 정보를 자동으로 받아오게 변경
-        userId: Long, // 추후 order 완료시 정보를 자동으로 받아오게 변경
-        orderId: Long, // 추후 order 완료시 정보를 자동으로 받아오게 변경
-    ) {
-        val uniqueOrderId = redisTemplate.opsForHash<String, String>().get(orderId.toString(), "productId") ?: throw Exception("redis에 정보가 없다 애송이")
-        val productId = uniqueOrderId.toLong()
-        val groupPurchase = groupPurchaseRepository.findByProductIdAndDeletedAtIsNull(productId)
+//    @Transactional
+//    fun createAndJoinOrJoinGroupPurchase(
+//        request: CreateGroupPurchaseRequest, // 추후 product 완료시 정보를 자동으로 받아오게 변경
+//        userId: Long, // 추후 order 완료시 정보를 자동으로 받아오게 변경
+////        orderId: Long, // 추후 order 완료시 정보를 자동으로 받아오게 변경
+//    ) {
+//        val orderId = // 방금 끝난 주문의 orderId 를 받아옴
+//        val uniqueOrderId = redisTemplate.opsForHash<String, String>().get(orderId.toString(), "productId") ?: throw Exception("redis에 정보가 없다 애송이")
+//        val productId = uniqueOrderId.toLong()
+//        val groupPurchase = groupPurchaseRepository.findByProductIdAndDeletedAtIsNull(productId)
+//
+//        if (groupPurchase == null) {
+//            val newGroupPurchase =
+//                GroupPurchaseEntity(
+//                    productId,
+//                    request.userLimit,
+//                    1,
+//                    request.timeLimit.plusHours(24),
+//                    request.discount,
+//                    mutableListOf(),
+//                )
+//
+//            val groupPurchaseJoinUser = GroupPurchaseJoinUserEntity(userId, newGroupPurchase, order.id)
+//
+//            newGroupPurchase.groupPurchaseUsers.add(groupPurchaseJoinUser)
+//            groupPurchaseRepository.save(newGroupPurchase)
+//            redisTemplate.delete(orderId.toString())
+//        } else {
+//            joinGroupPurchase(userId, groupPurchase.id!!, orderId)
+//        }
+//    }
 
-        if (groupPurchase == null) {
-            val newGroupPurchase =
-                GroupPurchaseEntity(
-                    productId,
-                    request.userLimit,
-                    1,
-                    request.timeLimit.plusHours(24),
-                    request.discount,
-                    mutableListOf(),
-                )
-
-            val groupPurchaseJoinUser = GroupPurchaseJoinUserEntity(userId, newGroupPurchase, orderId)
-
-            newGroupPurchase.groupPurchaseUsers.add(groupPurchaseJoinUser)
-            groupPurchaseRepository.save(newGroupPurchase)
-            redisTemplate.delete(orderId.toString())
-        } else {
-            joinGroupPurchase(userId, groupPurchase.id!!, orderId)
-        }
-    }
-
-    @Transactional
     fun joinGroupPurchase(
         userId: Long,
         groupPurchaseId: Long,
@@ -112,18 +112,6 @@ class GroupPurchaseService(
 
         groupPurchaseJoinUser.deletedAt = LocalDateTime.now()
         groupPurchaseJoinUserRepository.save(groupPurchaseJoinUser)
-    }
-
-    fun saveToRedis(
-        productId: String,
-        userId: String,
-        orderId: String,
-    ) {
-        val hashKey: String = orderId
-
-        redisTemplate.opsForHash<String, String>().put(hashKey, "productId", productId)
-        redisTemplate.opsForHash<String, String>().put(hashKey, "userId", userId)
-        redisTemplate.opsForHash<String, String>().put(hashKey, "orderId", orderId)
     }
 
     fun GroupPurchaseEntity.toResponse(): GroupPurchaseResponse {
