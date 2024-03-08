@@ -1,8 +1,8 @@
-package com.teamsparta.moamoa.product.repository
+package com.teamsparta.moamoa.domain.product.repository
 
+import com.teamsparta.moamoa.domain.product.model.Product
+import com.teamsparta.moamoa.domain.product.model.QProduct
 import com.teamsparta.moamoa.infra.QueryDslSupport
-import com.teamsparta.moamoa.product.model.Product
-import com.teamsparta.moamoa.product.model.QProduct
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable

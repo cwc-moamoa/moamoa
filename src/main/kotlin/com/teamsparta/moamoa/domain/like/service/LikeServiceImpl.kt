@@ -1,9 +1,9 @@
-// package com.teamsparta.moamoa.like.service
+package com.teamsparta.moamoa.domain.like.service
 //
 // import com.teamsparta.moamoa.like.model.Like
 // import com.teamsparta.moamoa.like.repository.LikeRepository
-// import com.teamsparta.moamoa.product.repository.ProductRepository
-// import com.teamsparta.moamoa.user.repository.UserRepository
+// import com.teamsparta.moamoa.domain.product.repository.ProductRepository
+// import com.teamsparta.moamoa.domain.user.repository.UserRepository
 // import org.springframework.stereotype.Service
 //
 // @Service

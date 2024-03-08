@@ -1,6 +1,5 @@
 package com.teamsparta.moamoa.exception
 
-
 import com.teamsparta.moamoa.exception.dto.ErrorResponseDto
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
