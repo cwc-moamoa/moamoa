@@ -1,8 +1,8 @@
-// package com.teamsparta.moamoa.like.repository
+package com.teamsparta.moamoa.domain.like.repository
 //
 // import com.teamsparta.moamoa.like.model.Like
-// import com.teamsparta.moamoa.product.model.Product
-// import com.teamsparta.moamoa.user.model.User
+// import com.teamsparta.moamoa.domain.product.model.Product
+// import com.teamsparta.moamoa.domain.user.model.User
 // import org.springframework.data.jpa.repository.JpaRepository
 // import java.util.*
 //

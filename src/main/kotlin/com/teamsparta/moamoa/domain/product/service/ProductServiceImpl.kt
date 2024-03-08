@@ -1,16 +1,18 @@
 package com.teamsparta.moamoa.domain.product.service
 
-import com.teamsparta.moamoa.exception.ModelNotFoundException
-import com.teamsparta.moamoa.exception.OutOfStockException
 import com.teamsparta.moamoa.domain.product.dto.ProductRequest
 import com.teamsparta.moamoa.domain.product.dto.ProductResponse
 import com.teamsparta.moamoa.domain.product.model.Product
 import com.teamsparta.moamoa.domain.product.model.ProductStock
 import com.teamsparta.moamoa.domain.product.repository.ProductRepository
 import com.teamsparta.moamoa.domain.product.repository.ProductStockRepository
+import com.teamsparta.moamoa.domain.seller.repository.SellerRepository
+import com.teamsparta.moamoa.exception.ModelNotFoundException
+import com.teamsparta.moamoa.exception.OutOfStockException
 import jakarta.transaction.Transactional
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 
@@ -18,13 +20,13 @@ import java.time.LocalDateTime
 class ProductServiceImpl(
     private val productRepository: ProductRepository,
     private val productStockRepository: ProductStockRepository,
+    private val sellerRepository: SellerRepository
 ) : ProductService {
     @Transactional
     override fun getAllProducts(): List<ProductResponse> {
         val products = productRepository.findAll().filter { it.deletedAt == null }
         return products.map { ProductResponse(it) }
     }
-
 
     @Transactional
     override fun getProductById(productId: Long): ProductResponse {
@@ -36,6 +38,9 @@ class ProductServiceImpl(
 
     @Transactional
     override fun createProduct(request: ProductRequest): Product {
+        val seller = sellerRepository.findByIdOrNull(request.sellerId)
+            ?: throw ModelNotFoundException("seller", request.sellerId)
+
         val product =
             Product(
                 title = request.title,
@@ -47,10 +52,9 @@ class ProductServiceImpl(
                 likes = request.likes,
                 productDiscount = request.productDiscount,
                 ratingAverage = request.ratingAverage,
-                sellerId = request.sellerId,
                 userLimit = request.userLimit,
                 discount = request.discount,
-                // deletedAt = null 필요없을듯
+                seller = seller
             )
 
         val productStock =
@@ -76,7 +80,6 @@ class ProductServiceImpl(
             productRepository.findByIdAndDeletedAtIsNull(productId)
                 .orElseThrow { ModelNotFoundException("Product", productId) }
 
-
         product.apply {
             title = request.title
             content = request.content
@@ -87,7 +90,6 @@ class ProductServiceImpl(
 
         return productRepository.save(product)
     }
-
 
     @Transactional
     override fun deleteProduct(productId: Long): Product {
@@ -127,7 +129,7 @@ class ProductServiceImpl(
     }
 
     @Transactional
-    override fun getPaginatedProductList(pageable: Pageable): Page<Product> {
+    override fun getPaginatedProductList(pageable: Pageable): Page<ProductResponse> {
         return productRepository.findAllByDeletedAtIsNull(pageable)
     }
 } // 되나?

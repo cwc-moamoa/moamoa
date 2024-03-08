@@ -1,4 +1,4 @@
-// package com.teamsparta.moamoa.like.service
+package com.teamsparta.moamoa.domain.like.service
 //
 // import com.teamsparta.moamoa.like.dto.LikeRequest
 // import com.teamsparta.moamoa.like.dto.LikeResponse

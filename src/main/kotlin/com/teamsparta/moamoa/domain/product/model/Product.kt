@@ -1,10 +1,10 @@
 package com.teamsparta.moamoa.domain.product.model
 
 import com.fasterxml.jackson.annotation.JsonManagedReference
+import com.teamsparta.moamoa.domain.seller.model.SellerEntity
 import com.teamsparta.moamoa.infra.BaseTimeEntity
 // import com.teamsparta.moamoa.like.model.Like
 import jakarta.persistence.*
-import java.time.LocalDateTime
 
 @Entity
 @Table(name = "product")
@@ -12,8 +12,9 @@ data class Product(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
-    @Column(name = "sellerId", nullable = false)
-    val sellerId: Long,
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "sellerId", nullable = false)
+    var seller: SellerEntity,
     @Column(name = "price", nullable = false)
     var price: Int,
     @Column(name = "title", nullable = false)
@@ -32,21 +33,13 @@ data class Product(
     val likes: Int,
 //    @Column(name = "likesCount")
 //    var likesCount: Int = 0 ,
-//    @Column(name ="isDeleted",nullable = false)
-//    var isDeleted: Boolean
-    @Column(name = "deleted_at")
-    var deletedAt: LocalDateTime? = null,
     @Column(name = "userLimit")
     val userLimit: Int,
     @Column(name = "discount")
     val discount: Double,
-//    @OneToOne(cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
-//    @JoinColumn(name = "product_stock_id")
-//    var productStock: ProductStock? = null,
     @OneToOne(mappedBy = "product", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
     @JsonManagedReference
     var productStock: ProductStock? = null,
-    // 재고처리?
     @Column(name = "is_sold_out", nullable = false)
     var isSoldOut: Boolean = false,
 ) : BaseTimeEntity()

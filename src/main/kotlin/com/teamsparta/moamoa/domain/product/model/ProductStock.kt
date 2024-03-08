@@ -10,8 +10,6 @@ data class ProductStock(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
-//    @OneToOne(mappedBy = "productStock", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
-//    val product: Product,
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     @JsonBackReference
@@ -20,4 +18,16 @@ data class ProductStock(
     var stock: Int,
     @Column(name = "product_name")
     val productName: String,
-) : BaseTimeEntity()
+) : BaseTimeEntity() {
+    companion object {
+        fun ProductStock.discount(num: Int): ProductStock {
+            val discountNum = stock - num
+            return ProductStock(
+                id = id!!,
+                stock = discountNum,
+                productName = productName,
+                product = product,
+            )
+        }
+    }
+}

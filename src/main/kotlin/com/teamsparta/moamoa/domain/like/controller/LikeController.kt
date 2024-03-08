@@ -1,4 +1,4 @@
-// package com.teamsparta.moamoa.like.controller
+// package com.teamsparta.moamoa.domain.like.controller
 //
 // import com.teamsparta.moamoa.like.service.LikeService
 // import org.springframework.http.HttpStatus

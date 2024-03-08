@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable
 
 interface ProductService {
     fun getAllProducts(): List<ProductResponse>
-  
+
     fun createProduct(request: ProductRequest): Product
 
     fun updateProduct(
@@ -26,5 +26,5 @@ interface ProductService {
         quantity: Int,
     )
 
-    fun getPaginatedProductList(pageable: Pageable): Page<Product>
+    fun getPaginatedProductList(pageable: Pageable): Page<ProductResponse>
 }

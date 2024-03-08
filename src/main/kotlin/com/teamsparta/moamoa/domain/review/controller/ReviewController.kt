@@ -43,7 +43,6 @@ class ReviewController(
         return ResponseEntity.ok(review)
     }
 
-
     @GetMapping
     fun getPaginatedReviewList(
         @PageableDefault(size = 15, sort = ["id"], direction = Sort.Direction.ASC) pageable: Pageable,
@@ -51,7 +50,6 @@ class ReviewController(
         val reviews = reviewService.getPaginatedReviewList(pageable)
         return ResponseEntity.ok(reviews)
     }
-
 
     @PutMapping("/{reviewId}")
     fun updateReview(

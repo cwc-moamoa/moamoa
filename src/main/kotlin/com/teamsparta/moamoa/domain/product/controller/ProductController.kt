@@ -46,7 +46,6 @@ class ProductController(
         return ResponseEntity.ok(ProductResponse(updatedProduct))
     }
 
-
     @PutMapping("/{productId}/delete")
     fun deleteProduct(
         @PathVariable productId: Long,
@@ -58,8 +57,8 @@ class ProductController(
     @GetMapping("/pages")
     fun getPaginatedProductList(
         @PageableDefault(size = 15, sort = ["id"]) pageable: Pageable,
-    ): ResponseEntity<Page<Product>> {
+    ): ResponseEntity<Page<ProductResponse>> {
         val products = productService.getPaginatedProductList(pageable)
-        return ResponseEntity.status(HttpStatus.OK).body(products) // 페이징 아직 오류 해결못함
+        return ResponseEntity.status(HttpStatus.OK).body(products)
     }
 }

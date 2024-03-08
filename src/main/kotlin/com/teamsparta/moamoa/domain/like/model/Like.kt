@@ -1,9 +1,9 @@
 package com.teamsparta.moamoa.domain.like.model
 
 // import com.teamsparta.moamoa.infra.BaseTimeEntity
-// import com.teamsparta.moamoa.product.model.Product
-// import com.teamsparta.moamoa.review.model.Review
-// import com.teamsparta.moamoa.user.model.User
+// import com.teamsparta.moamoa.domain.product.model.Product
+// import com.teamsparta.moamoa.domain.review.model.Review
+// import com.teamsparta.moamoa.domain.user.model.User
 // import jakarta.persistence.*
 
 // @Entity

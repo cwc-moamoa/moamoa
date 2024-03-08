@@ -8,5 +8,8 @@ import org.springframework.data.jpa.repository.JpaRepository
 interface ReviewRepository : JpaRepository<Review, Long> {
     fun findByIdAndDeletedAtIsNull(reviewId: Long): Review?
 
-    fun findAllByProductIdAndDeletedAtIsNull(productId: Long, pageable: Pageable): Page<Review>
+    fun findAllByProductIdAndDeletedAtIsNull(
+        productId: Long,
+        pageable: Pageable,
+    ): Page<Review>
 }
