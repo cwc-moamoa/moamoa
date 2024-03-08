@@ -49,7 +49,7 @@ dependencies {
     kapt("com.querydsl:querydsl-apt:$queryDslVersion:jakarta")
     kapt("jakarta.annotation:jakarta.annotation-api")
     kapt("jakarta.persistence:jakarta.persistence-api")
-    implementation ("com.github.iamport:iamport-rest-client-java:0.2.21")
+    implementation("com.github.iamport:iamport-rest-client-java:0.2.21")
 
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.3")
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.3")
@@ -72,7 +72,6 @@ tasks.withType<KotlinCompile> {
         jvmTarget = "17"
     }
 }
-
 
 tasks.withType<Test>().configureEach { // 변경 !!
     useJUnitPlatform()
@@ -98,4 +97,3 @@ repositories {
     mavenCentral()
     maven(url = "https://jitpack.io")
 }
-
