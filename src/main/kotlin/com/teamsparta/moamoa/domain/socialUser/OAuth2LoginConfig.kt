@@ -1,5 +1,6 @@
 package com.teamsparta.moamoa.domain.socialUser
 
+/*
 import com.teamsparta.moamoa.domain.socialUser.service.OAuth2LoginSuccessHandler
 import com.teamsparta.moamoa.domain.socialUser.service.OAuth2UserService
 import org.springframework.context.annotation.Bean
@@ -34,3 +35,5 @@ class OAuth2LoginConfig(
             }.build()
     }
 }
+
+*/
