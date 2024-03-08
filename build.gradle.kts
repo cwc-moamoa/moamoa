@@ -29,6 +29,10 @@ repositories {
 
 val queryDslVersion = "5.0.0"
 
+val kotestVersion = "5.5.5" // 추가!
+
+val mockkVersion = "1.13.8" // 추가!
+
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
@@ -45,19 +49,21 @@ dependencies {
     kapt("com.querydsl:querydsl-apt:$queryDslVersion:jakarta")
     kapt("jakarta.annotation:jakarta.annotation-api")
     kapt("jakarta.persistence:jakarta.persistence-api")
+    implementation("com.github.iamport:iamport-rest-client-java:0.2.21")
 
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.3")
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.3")
     runtimeOnly("org.postgresql:postgresql")
-    implementation("com.h2database:h2")
+// 	implementation("com.h2database:h2")
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
 
     // 테스트 코드
-    runtimeOnly("com.h2database:h2")
+    testImplementation("com.h2database:h2")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("io.mockk:mockk:1.13.9")
-    testImplementation("io.kotest:kotest-runner-junit5:5.7.2")
-    testImplementation("io.kotest:kotest-assertions-core:5.7.2")
+    testImplementation("io.kotest:kotest-runner-junit5:$kotestVersion") // 추가 !!
+    testImplementation("io.kotest:kotest-assertions-core:$kotestVersion") // 추가 !!
+    testImplementation("io.kotest.extensions:kotest-extensions-spring:1.1.3") // 추가 !!
+    testImplementation("io.mockk:mockk:$mockkVersion") // 추가 !!
 }
 
 tasks.withType<KotlinCompile> {
@@ -67,7 +73,7 @@ tasks.withType<KotlinCompile> {
     }
 }
 
-tasks.withType<Test> {
+tasks.withType<Test>().configureEach { // 변경 !!
     useJUnitPlatform()
 }
 
@@ -85,4 +91,9 @@ allOpen {
     annotation("jakarta.persistence.Entity")
     annotation("jakarta.persistence.MappedSuperclass")
     annotation("jakarta.persistence.Embeddable")
+}
+
+repositories {
+    mavenCentral()
+    maven(url = "https://jitpack.io")
 }
