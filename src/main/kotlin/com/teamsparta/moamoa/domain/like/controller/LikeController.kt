@@ -1,47 +1,44 @@
- package com.teamsparta.moamoa.like.controller
+package com.teamsparta.moamoa.domain.like.controller
 
- import com.teamsparta.moamoa.like.dto.ProductLikeRequest
- import com.teamsparta.moamoa.like.dto.ReviewLikeRequest
- import com.teamsparta.moamoa.like.service.LikeService
- import org.springframework.http.HttpStatus
- import org.springframework.http.ResponseEntity
- import org.springframework.web.bind.annotation.*
+import com.teamsparta.moamoa.domain.like.service.LikeService
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.*
 
- @RestController
- @RequestMapping("/likes")
- class LikeController(private val likeService: LikeService) {
+@RestController
+@RequestMapping("/likes")
+class LikeController(private val likeService: LikeService) {
+    @PostMapping("/product/{productId}/user/{userId}")
+    fun addLikeToProduct(
+        @PathVariable productId: Long,
+        @PathVariable userId: Long,
+    ) {
+        likeService.addLikeToProduct(productId, userId)
+    }
 
+    @DeleteMapping("/product/{productId}/user/{userId}")
+    fun removeLikeFromProduct(
+        @PathVariable productId: Long,
+        @PathVariable userId: Long,
+    ): ResponseEntity<Void> {
+        likeService.removeLikeFromProduct(productId, userId)
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
+    }
 
-     @PostMapping("/likes/product")
-     fun addLikeToProduct(@RequestBody request: ProductLikeRequest) {
-         likeService.addLikeToProduct(request.productId)
-     }
+    @PostMapping("/review/{reviewId}/user/{userId}")
+    fun addLikeToReview(
+        @PathVariable reviewId: Long,
+        @PathVariable userId: Long,
+    ) {
+        likeService.addLikeToReview(reviewId, userId)
+    }
 
-     @DeleteMapping("/likes/product/{productId}")
-     fun removeLikeFromProduct(@PathVariable productId: Long): ResponseEntity<Void> {
-         likeService.removeLikeFromProduct(productId)
-         return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
-     }
-
-     @PostMapping("/likes/review")
-     fun addLikeToReview(@RequestBody request: ReviewLikeRequest) {
-         likeService.addLikeToReview(request.reviewId)
-     }
-
-
-     @DeleteMapping("/likes/review/{reviewId}")
-     fun removeLikeFromReview(@PathVariable reviewId: Long): ResponseEntity<Void> {
-         likeService.removeLikeFromReview(reviewId)
-         return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
-     }
-
-
- }
-//     @GetMapping("/users/{userId}/likes/products")
-//     fun getLikedProducts(@PathVariable userId: Long): List<LikeResponse> {
-//         return likeService.getLikedProducts(userId)
-//     }
-//     @GetMapping("/users/{userId}/likes/reviews")
-//     fun getLikedReviews(@PathVariable userId: Long): List<LikeResponse> {
-//         return likeService.getLikedReviews(userId)
-//     }
+    @DeleteMapping("/review/{reviewId}/user/{userId}")
+    fun removeLikeFromReview(
+        @PathVariable reviewId: Long,
+        @PathVariable userId: Long,
+    ): ResponseEntity<Void> {
+        likeService.removeLikeFromReview(reviewId, userId)
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
+    }
+}

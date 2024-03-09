@@ -1,9 +1,8 @@
-package com.teamsparta.moamoa.review.model
+package com.teamsparta.moamoa.domain.review.model
 
+import com.teamsparta.moamoa.domain.product.model.Product
 import com.teamsparta.moamoa.infra.BaseTimeEntity
-import com.teamsparta.moamoa.product.model.Product
 import jakarta.persistence.*
-import java.time.LocalDateTime
 
 @Entity
 class Review(
@@ -20,8 +19,6 @@ class Review(
     var name: String,
     @Column(name = "image_url")
     var imageUrl: String? = null,
-    @Column(name = "deleted_at")
-    var deletedAt: LocalDateTime? = null,
-    @Column(name = "likesCount")
-    var likesCount: Int = 0 ,
+    @Column(name = "likes")
+    var likes: Int = 0,
 ) : BaseTimeEntity()

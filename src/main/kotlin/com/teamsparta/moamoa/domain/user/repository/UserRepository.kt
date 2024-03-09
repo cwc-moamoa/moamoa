@@ -8,6 +8,6 @@ interface UserRepository : JpaRepository<User, Long> {
     fun existsByEmail(email: String): Boolean
 
     fun findByEmail(email: String): User?
-    fun findByIdAndDeletedAtIsNull(id: Long): Optional<User>
 
+    fun findByIdAndDeletedAtIsNull(id: Long): Optional<User>
 }

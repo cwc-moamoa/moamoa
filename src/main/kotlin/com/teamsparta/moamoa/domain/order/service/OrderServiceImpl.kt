@@ -12,7 +12,6 @@ import com.teamsparta.moamoa.domain.seller.repository.SellerRepository
 import com.teamsparta.moamoa.domain.user.repository.UserRepository
 import com.teamsparta.moamoa.exception.ModelNotFoundException
 import org.springframework.data.domain.Page
-import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -25,7 +24,7 @@ class OrderServiceImpl(
     private val productStockRepository: ProductStockRepository,
     private val userRepository: UserRepository,
     private val sellerRepository: SellerRepository,
-    private val redisTemplate: RedisTemplate<String, Any>,
+//    private val redisTemplate: RedisTemplate<String, Any>,
 ) : OrderService {
     @Transactional
     override fun creatOrder(
@@ -65,9 +64,9 @@ class OrderServiceImpl(
     ) {
         val hashKey: String = orderId
 
-        redisTemplate.opsForHash<String, String>().put(hashKey, "productId", productId)
-        redisTemplate.opsForHash<String, String>().put(hashKey, "userId", userId)
-        redisTemplate.opsForHash<String, String>().put(hashKey, "orderId", orderId)
+//        redisTemplate.opsForHash<String, String>().put(hashKey, "productId", productId)
+//        redisTemplate.opsForHash<String, String>().put(hashKey, "userId", userId)
+//        redisTemplate.opsForHash<String, String>().put(hashKey, "orderId", orderId)
     }
 
     @Transactional
