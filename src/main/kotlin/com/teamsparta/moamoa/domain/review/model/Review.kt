@@ -3,7 +3,6 @@ package com.teamsparta.moamoa.domain.review.model
 import com.teamsparta.moamoa.domain.product.model.Product
 import com.teamsparta.moamoa.infra.BaseTimeEntity
 import jakarta.persistence.*
-import java.time.LocalDateTime
 
 @Entity
 class Review(
