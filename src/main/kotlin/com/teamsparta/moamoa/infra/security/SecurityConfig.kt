@@ -12,6 +12,7 @@ import org.springframework.security.web.AuthenticationEntryPoint
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.access.AccessDeniedHandler
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
+
 @Configuration
 @EnableWebSecurity
 class SecurityConfig(
@@ -19,7 +20,7 @@ class SecurityConfig(
     private val authenticationEntryPoint: AuthenticationEntryPoint,
     private val accessDeniedHandler: AccessDeniedHandler,
     private val oAuth2UserService: OAuth2UserService,
-    private val oAuth2LoginSuccessHandler: OAuth2LoginSuccessHandler
+    private val oAuth2LoginSuccessHandler: OAuth2LoginSuccessHandler,
 ) {
     @Bean
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
@@ -30,14 +31,14 @@ class SecurityConfig(
             .headers { it.frameOptions { options -> options.sameOrigin() } }
             .authorizeHttpRequests {
                 it.requestMatchers(
-                    "/users",
-                    "/users/signup",
-                    "/users/signin",
+                    "/sellers",
+                    "/sellers/signup",
+                    "/sellers/signin",
                     "/swagger-ui/**",
                     "/v3/api-docs/**",
                     "/oauth2/login",
                     "/oauth2/callback/**",
-                    "/h2-console/**"
+                    "/h2-console/**",
                 ).permitAll()
                     .anyRequest().authenticated()
             }
@@ -61,9 +62,6 @@ class SecurityConfig(
             .build()
     }
 }
-
-
-
 
 /* @Configuration
 @EnableWebSecurity

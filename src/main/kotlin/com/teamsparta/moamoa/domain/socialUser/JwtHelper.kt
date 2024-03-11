@@ -5,9 +5,13 @@ import org.springframework.stereotype.Component
 
 @Component
 class JwtHelper(
-    private val jwtPlugin: JwtPlugin
+    private val jwtPlugin: JwtPlugin,
 ) {
-    fun generateAccessToken(subject: String, nickname: String, email: String): String {
+    fun generateAccessToken(
+        subject: String,
+        nickname: String,
+        email: String,
+    ): String {
         return jwtPlugin.generateAccessToken(subject, nickname, email)
     }
 }

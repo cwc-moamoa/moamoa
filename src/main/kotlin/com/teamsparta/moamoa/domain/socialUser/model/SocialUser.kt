@@ -10,30 +10,31 @@ import jakarta.persistence.Id
 
 @Entity
 class SocialUser(
-
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "social_user_id")
     var id: Long? = null,
-
     @Enumerated(EnumType.STRING)
     val provider: OAuth2Provider,
     val providerId: String,
     val nickname: String,
-    val email: String?
+    val email: String?,
 ) {
-
     companion object {
-        fun ofKakao(id: String, nickname: String, email: String?): SocialUser {
+        fun ofKakao(
+            id: String,
+            nickname: String,
+            email: String?,
+        ): SocialUser {
             return SocialUser(
                 provider = OAuth2Provider.KAKAO,
                 providerId = id,
                 nickname = nickname,
-                email = email
+                email = email,
             )
         }
     }
 }
 
 enum class OAuth2Provider {
-    KAKAO
+    KAKAO,
 }

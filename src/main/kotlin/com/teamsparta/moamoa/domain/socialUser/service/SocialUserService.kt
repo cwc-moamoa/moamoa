@@ -8,9 +8,8 @@ import org.springframework.stereotype.Service
 
 @Service
 class SocialUserService(
-    private val socialUserRepository: SocialUserRepository
+    private val socialUserRepository: SocialUserRepository,
 ) {
-
     fun registerIfAbsent(userInfo: OAuth2UserInfo): SocialUser {
         val provider = OAuth2Provider.valueOf(userInfo.provider)
         return if (!socialUserRepository.existsByProviderAndProviderId(provider, userInfo.id)) {

@@ -17,7 +17,6 @@ class JwtPlugin(
     @Value("\${auth.jwt.secret}") private val secret: String,
     @Value("\${auth.jwt.accessTokenExpirationHour}") private val accessTokenExpirationHour: Long,
 ) {
-
     fun validateToken(jwt: String): Result<Jws<Claims>> {
         return kotlin.runCatching {
             val key = Keys.hmacShaKeyFor(secret.toByteArray(StandardCharsets.UTF_8))
@@ -28,7 +27,7 @@ class JwtPlugin(
     fun generateAccessToken(
         subject: String,
         nickname: String,
-        email: String
+        email: String,
     ): String {
         return generateToken(subject, nickname, email, Duration.ofHours(accessTokenExpirationHour))
     }
@@ -56,5 +55,4 @@ class JwtPlugin(
             .signWith(key)
             .compact()
     }
-
 }

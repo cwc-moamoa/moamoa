@@ -17,11 +17,9 @@ class Seller(
     @Column(name = "phone_number")
     var phoneNumber: String,
     @Column(name = "biz_reg_number")
-    var bizRegistrationNumber: String
-
+    var bizRegistrationNumber: String,
 ) : BaseTimeEntity() {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
-
 }

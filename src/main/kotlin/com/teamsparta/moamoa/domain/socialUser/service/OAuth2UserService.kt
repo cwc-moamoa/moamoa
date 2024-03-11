@@ -8,12 +8,11 @@ import org.springframework.stereotype.Service
 
 @Service
 class OAuth2UserService(
-    private val socialUserService: SocialUserService
+    private val socialUserService: SocialUserService,
 ) : DefaultOAuth2UserService() {
-
     override fun loadUser(userRequest: OAuth2UserRequest): OAuth2User {
         val originUser = super.loadUser(userRequest)
-        val provider = userRequest.clientRegistration.clientName  // "KAKAO"
+        val provider = userRequest.clientRegistration.clientName // "KAKAO"
         return OAuth2UserInfo.of(provider, userRequest, originUser)
             .also { socialUserService.registerIfAbsent(it) }
     }

@@ -11,7 +11,6 @@ data class OAuth2UserInfo(
     val nickname: String,
     val email: String,
 ) : OAuth2User {
-
     override fun getName(): String {
         return "$provider:$id"
     }
@@ -25,26 +24,34 @@ data class OAuth2UserInfo(
     }
 
     companion object {
-        fun of(provider: String, userRequest: OAuth2UserRequest, originUser: OAuth2User): OAuth2UserInfo {
+        fun of(
+            provider: String,
+            userRequest: OAuth2UserRequest,
+            originUser: OAuth2User,
+        ): OAuth2UserInfo {
             return when (provider) {
                 "KAKAO", "kakao" -> ofKakao(provider, userRequest, originUser)
                 else -> throw RuntimeException("지원하지 않는 OAuth Provider 입니다.")
             }
         }
 
-        private fun ofKakao(provider: String, userRequest: OAuth2UserRequest, originUser: OAuth2User): OAuth2UserInfo {
+        private fun ofKakao(
+            provider: String,
+            userRequest: OAuth2UserRequest,
+            originUser: OAuth2User,
+        ): OAuth2UserInfo {
             val profile = originUser.attributes["properties"] as Map<*, *>
             val userNameAttributeName =
                 userRequest.clientRegistration.providerDetails.userInfoEndpoint.userNameAttributeName
             val nickname = profile["nickname"] ?: ""
-            val account = originUser.attributes["kakao_account"] as Map <*, *>
+            val account = originUser.attributes["kakao_account"] as Map<*, *>
             val email = account["email"] ?: ""
 
             return OAuth2UserInfo(
                 id = (originUser.attributes[userNameAttributeName] as Long).toString(),
                 provider = provider.uppercase(),
                 nickname = nickname as String,
-                email = email as String
+                email = email as String,
             )
         }
     }
