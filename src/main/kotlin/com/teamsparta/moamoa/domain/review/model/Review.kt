@@ -19,4 +19,6 @@ class Review(
     var name: String,
     @Column(name = "image_url")
     var imageUrl: String? = null,
+    @Column(name = "likes")
+    var likes: Int = 0,
 ) : BaseTimeEntity()

@@ -3,7 +3,7 @@ package com.teamsparta.moamoa.domain.product.model
 import com.fasterxml.jackson.annotation.JsonManagedReference
 import com.teamsparta.moamoa.domain.seller.model.SellerEntity
 import com.teamsparta.moamoa.infra.BaseTimeEntity
-// import com.teamsparta.moamoa.like.model.Like
+// import com.teamsparta.moamoa.domain.like.model.Like
 import jakarta.persistence.*
 
 @Entity
@@ -29,10 +29,10 @@ data class Product(
     var imageUrl: String,
     @Column(name = "productDiscount", nullable = true)
     val productDiscount: Double,
-    @Column(name = "likes", nullable = true)
-    val likes: Int,
-//    @Column(name = "likesCount")
-//    var likesCount: Int = 0 ,
+    //    @Column(name = "likes", nullable = true)
+//    val likes: Int,
+    @Column(name = "likes")
+    var likes: Int = 0,
     @Column(name = "userLimit")
     val userLimit: Int,
     @Column(name = "discount")

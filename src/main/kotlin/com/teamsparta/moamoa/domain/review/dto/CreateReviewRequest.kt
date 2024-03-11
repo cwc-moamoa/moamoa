@@ -16,6 +16,7 @@ data class CreateReviewRequest(
             name = name,
             imageUrl = imageUrl,
             product = product,
+            likes = 0,
         )
     }
 }

@@ -19,7 +19,7 @@ class SellerEntity(
     @Column(name = "business_num")
     var businessNum: String,
     @OneToMany(mappedBy = "seller", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
-    var products: MutableList<Product> = mutableListOf()
+    var products: MutableList<Product> = mutableListOf(),
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

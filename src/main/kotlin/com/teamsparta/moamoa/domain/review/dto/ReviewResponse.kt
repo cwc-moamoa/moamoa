@@ -8,6 +8,7 @@ class ReviewResponse(
     var content: String,
     var imageUrl: String,
     var name: String,
+    var likes: Int, // 좋아요랑 연결
 ) {
     companion object {
         fun toReviewResponse(review: Review): ReviewResponse {
@@ -17,6 +18,7 @@ class ReviewResponse(
                 content = review.content,
                 imageUrl = review.imageUrl ?: "",
                 name = review.name,
+                likes = review.likes, // 좋아요랑 연결
             )
         }
     }
