@@ -45,10 +45,10 @@ class ReviewController(
 
     @GetMapping
     fun getPaginatedReviewList(
-        @PathVariable productId: Long, // 예를 들어, 경로에 {productId}가 포함된 경우
+        @PathVariable productId: Long,
         @PageableDefault(size = 15, sort = ["id"], direction = Sort.Direction.ASC) pageable: Pageable,
     ): ResponseEntity<Page<ReviewResponse>> {
-        val reviews = reviewService.getPaginatedReviewList(productId, pageable) // productId 사용 예
+        val reviews = reviewService.getPaginatedReviewList(productId, pageable)
         return ResponseEntity.ok(reviews)
     }
 

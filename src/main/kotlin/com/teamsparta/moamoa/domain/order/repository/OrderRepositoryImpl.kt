@@ -10,8 +10,8 @@ import org.springframework.data.domain.PageImpl
 
 class OrderRepositoryImpl : CustomOrderRepository, QueryDslSupport() {
     private val orders = QOrdersEntity.ordersEntity
-    private val product = QProduct.product
     private val seller = QSellerEntity.sellerEntity
+    private val product = QProduct.product
 
     override fun getOrderPage(
         userId: Long,
@@ -44,5 +44,6 @@ class OrderRepositoryImpl : CustomOrderRepository, QueryDslSupport() {
                 .orderBy(orders.product.id.asc())
                 .fetch()
         return PageImpl(result)
+
     }
 }

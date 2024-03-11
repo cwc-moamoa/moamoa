@@ -23,9 +23,10 @@ class ReviewServiceImpl(
         productId: Long,
         createReviewRequest: CreateReviewRequest,
     ): ReviewResponse {
+        // 삭제되지 않은 상품을 조회하고, 조회된 상품이 없을 시 예외처리
         val product =
-            productRepository.findByIdOrNull(productId)
-                ?: throw ModelNotFoundException("Product", productId)
+            productRepository.findByIdAndDeletedAtIsNull(productId)
+                .orElseThrow { ModelNotFoundException("Product not found or deleted", productId) }
 
         val review = createReviewRequest.toReview(product)
 
@@ -36,16 +37,16 @@ class ReviewServiceImpl(
     @Transactional
     override fun getReviewById(reviewId: Long): ReviewResponse {
         val review =
-            reviewRepository.findByIdOrNull(reviewId)
+            reviewRepository.findByIdAndDeletedAtIsNull(reviewId)
                 ?: throw ModelNotFoundException("Review", reviewId)
 
         return ReviewResponse.toReviewResponse(review)
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     override fun getPaginatedReviewList(productId: Long, pageable: Pageable): Page<ReviewResponse> {
-        val reviews = reviewRepository.findAllByProductIdAndDeletedAtIsNull(productId, pageable)
-        return reviews.map { review -> ReviewResponse.toReviewResponse(review) }
+        val reviewPage = reviewRepository.findAllByProductIdAndDeletedAtIsNull(productId, pageable)
+        return reviewPage.map { review -> ReviewResponse.toReviewResponse(review) }
     }
 
     @Transactional
