@@ -62,37 +62,3 @@ class SecurityConfig(
             .build()
     }
 }
-
-/* @Configuration
-@EnableWebSecurity
-class SecurityConfig(
-    private val jwtAuthenticationFilter: JwtAuthenticationFilter,
-    private val authenticationEntrypoint: AuthenticationEntryPoint,
-    private val accessDeniedHandler: AccessDeniedHandler,
-) {
-    @Bean
-    fun filterChain(http: HttpSecurity): SecurityFilterChain {
-        return http
-            .httpBasic { it.disable() }
-            .formLogin { it.disable() }
-            .csrf { it.disable() }
-            .authorizeHttpRequests {
-                it.requestMatchers(
-                    "/users",
-                    "/users/signup",
-                    "/users/signin",
-                    "/swagger-ui/**",
-                    "/v3/api-docs/**",
-                ).permitAll()
-                    .anyRequest().authenticated()
-            }
-            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
-            .exceptionHandling {
-                it.authenticationEntryPoint(authenticationEntrypoint)
-                it.accessDeniedHandler(accessDeniedHandler)
-            }
-            .build()
-    }
-}
-
-*/

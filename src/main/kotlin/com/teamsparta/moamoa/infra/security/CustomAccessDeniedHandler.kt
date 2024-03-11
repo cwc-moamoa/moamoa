@@ -1,7 +1,7 @@
 package com.teamsparta.moamoa.infra.security
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.teamsparta.moamoa.exception.ErrorResponse
+import com.teamsparta.moamoa.exception.dto.ErrorResponseDto
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.http.MediaType
@@ -21,7 +21,7 @@ class CustomAccessDeniedHandler : AccessDeniedHandler {
         response.characterEncoding = "UTF-8"
 
         val objectMapper = ObjectMapper()
-        val jsonString = objectMapper.writeValueAsString(ErrorResponse("No permission to run API"))
+        val jsonString = objectMapper.writeValueAsString(ErrorResponseDto("No permission to run API"))
         response.writer.write(jsonString)
     }
 }

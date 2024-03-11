@@ -1,6 +1,7 @@
 package com.teamsparta.moamoa.domain.product.model
 
 import com.fasterxml.jackson.annotation.JsonManagedReference
+import com.teamsparta.moamoa.domain.seller.model.Seller
 import com.teamsparta.moamoa.domain.seller.model.SellerEntity
 import com.teamsparta.moamoa.infra.BaseTimeEntity
 // import com.teamsparta.moamoa.domain.like.model.Like
@@ -14,7 +15,7 @@ data class Product(
     val id: Long? = null,
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sellerId", nullable = false)
-    var seller: SellerEntity,
+    var seller: Seller,
     @Column(name = "price", nullable = false)
     var price: Int,
     @Column(name = "title", nullable = false)

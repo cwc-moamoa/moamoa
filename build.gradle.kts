@@ -50,8 +50,9 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-aop")
     runtimeOnly("org.postgresql:postgresql")
     implementation("com.h2database:h2")
-    implementation("org.springframework.boot:spring-boot-starter-thymeleaf"
+    implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
      // 테스트 코드
+
     testImplementation("com.h2database:h2")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("io.kotest:kotest-runner-junit5:$kotestVersion") // 추가 !!
@@ -66,6 +67,7 @@ dependencies {
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.3")
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.3")
 }
+
 tasks.withType<KotlinCompile> {
     kotlinOptions {
         freeCompilerArgs += "-Xjsr305=strict"
