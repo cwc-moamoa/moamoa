@@ -1,5 +1,6 @@
 package com.teamsparta.moamoa.exception
 
 data class ErrorResponse(
-    val message: String?,
+    val error: String,
+    val message: String,
 )

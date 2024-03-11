@@ -23,11 +23,11 @@ configurations {
     }
 }
 
-repositories {
-    mavenCentral()
-}
-
 val queryDslVersion = "5.0.0"
+
+val kotestVersion = "5.5.5" // 추가!
+
+val mockkVersion = "1.13.8" // 추가!
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
@@ -46,11 +46,18 @@ dependencies {
     kapt("com.querydsl:querydsl-apt:$queryDslVersion:jakarta")
     kapt("jakarta.annotation:jakarta.annotation-api")
     kapt("jakarta.persistence:jakarta.persistence-api")
-    implementation("org.springframework.boot:spring-boot-starter-aop")
 
+    implementation("org.springframework.boot:spring-boot-starter-aop")
     runtimeOnly("org.postgresql:postgresql")
     implementation("com.h2database:h2")
-    implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
+    implementation("org.springframework.boot:spring-boot-starter-thymeleaf"
+     // 테스트 코드
+    testImplementation("com.h2database:h2")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("io.kotest:kotest-runner-junit5:$kotestVersion") // 추가 !!
+    testImplementation("io.kotest:kotest-assertions-core:$kotestVersion") // 추가 !!
+    testImplementation("io.kotest.extensions:kotest-extensions-spring:1.1.3") // 추가 !!
+    testImplementation("io.mockk:mockk:$mockkVersion") // 추가 !!
 
     // Security, jjwt 라이브러리 추가
     implementation("org.springframework.boot:spring-boot-starter-security")
@@ -58,15 +65,7 @@ dependencies {
     implementation("io.jsonwebtoken:jjwt-api:0.12.3")
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.3")
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.3")
-
-    // 테스트 코드
-    runtimeOnly("com.h2database:h2")
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("io.mockk:mockk:1.13.9")
-    testImplementation("io.kotest:kotest-runner-junit5:5.7.2")
-    testImplementation("io.kotest:kotest-assertions-core:5.7.2")
 }
-
 tasks.withType<KotlinCompile> {
     kotlinOptions {
         freeCompilerArgs += "-Xjsr305=strict"
@@ -74,8 +73,8 @@ tasks.withType<KotlinCompile> {
     }
 }
 
-tasks.withType<Test> {
-    useJUnitPlatform()
+tasks.withType<Test>().configureEach { // 변경 !!
+useJUnitPlatform()
 }
 
 tasks.bootBuildImage {
@@ -92,4 +91,9 @@ allOpen {
     annotation("jakarta.persistence.Entity")
     annotation("jakarta.persistence.MappedSuperclass")
     annotation("jakarta.persistence.Embeddable")
+}
+
+repositories {
+    mavenCentral()
+    maven(url = "https://jitpack.io")
 }
