@@ -15,7 +15,7 @@ import java.time.LocalDateTime
 class GroupPurchaseService(
     private val groupPurchaseRepository: GroupPurchaseRepository,
     private val groupPurchaseJoinUserRepository: GroupPurchaseJoinUserRepository,
-    private val redisTemplate: RedisTemplate<String, Any>,
+//    private val redisTemplate: RedisTemplate<String, Any>,
 ) {
 //    @Transactional
 //    fun createAndJoinOrJoinGroupPurchase(
@@ -86,7 +86,7 @@ class GroupPurchaseService(
 
             groupPurchaseJoinUserRepository.saveAll(userSoftDelete)
         }
-        redisTemplate.delete(orderId.toString())
+//        redisTemplate.delete(orderId.toString())
     }
 
     @Transactional

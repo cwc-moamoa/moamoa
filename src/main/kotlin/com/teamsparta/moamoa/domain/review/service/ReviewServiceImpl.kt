@@ -43,8 +43,8 @@ class ReviewServiceImpl(
     }
 
     @Transactional(readOnly = true)
-    override fun getPaginatedReviewList(pageable: Pageable): Page<ReviewResponse> {
-        val reviews = reviewRepository.findAll(pageable) // 조건 없이 모든 리뷰 조회
+    override fun getPaginatedReviewList(productId: Long, pageable: Pageable): Page<ReviewResponse> {
+        val reviews = reviewRepository.findAllByProductIdAndDeletedAtIsNull(productId, pageable)
         return reviews.map { review -> ReviewResponse.toReviewResponse(review) }
     }
 
