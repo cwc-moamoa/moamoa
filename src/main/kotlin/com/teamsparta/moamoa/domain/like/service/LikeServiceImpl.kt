@@ -27,16 +27,15 @@ class LikeServiceImpl(
 
         if (product.deletedAt != null) {
             throw Exception("없는 상품입니다")
-        } // 이게 소프트 딜리트 감지임
+        }
 
         val user =
             userRepository.findById(userId)
                 .orElseThrow { throw ModelNotFoundException("User", userId) }
 
-        if (likeRepository.findByProductAndUser(product, user) == null) {
-            likeRepository.save(Like(product = product, user = user, status = true)) // 여기가 널이여야만 생성하는거
+        if (likeRepository.findByProductAndUser(product, user) == null) { // 여기가 해당 상품에 유저가 널이여야, 좋아요를 안해야한다는거
+            likeRepository.save(Like(product = product, user = user, status = true))
 
-            // 이게 증가 로직임
             product.likes++
             productRepository.save(product)
         }
@@ -55,9 +54,8 @@ class LikeServiceImpl(
                 .orElseThrow { throw ModelNotFoundException("User", userId) }
 
         likeRepository.findByProductAndUser(product, user)?.let {
-            likeRepository.delete(it)
+            likeRepository.delete(it) // findByProductAndUser로 Like가 null이 아니라면 해당 "좋아요" 기록을 삭제
 
-            // 아래가 감소의 로직임 기록해두자
             if (product.likes > 0) {
                 product.likes--
                 productRepository.save(product)

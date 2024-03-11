@@ -20,7 +20,7 @@ class LikeController(private val likeService: LikeService) {
     fun removeLikeFromProduct(
         @PathVariable productId: Long,
         @PathVariable userId: Long,
-    ): ResponseEntity<Void> {
+    ): ResponseEntity<String> {
         likeService.removeLikeFromProduct(productId, userId)
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
     }
@@ -37,7 +37,7 @@ class LikeController(private val likeService: LikeService) {
     fun removeLikeFromReview(
         @PathVariable reviewId: Long,
         @PathVariable userId: Long,
-    ): ResponseEntity<Void> {
+    ): ResponseEntity<String> {
         likeService.removeLikeFromReview(reviewId, userId)
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
     }

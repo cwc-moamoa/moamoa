@@ -29,8 +29,6 @@ data class Product(
     var imageUrl: String,
     @Column(name = "productDiscount", nullable = true)
     val productDiscount: Double,
-    //    @Column(name = "likes", nullable = true)
-//    val likes: Int,
     @Column(name = "likes")
     var likes: Int = 0,
     @Column(name = "userLimit")

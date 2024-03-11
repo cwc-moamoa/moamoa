@@ -14,4 +14,6 @@ interface ProductRepository : JpaRepository<Product, Long>, CustomProductReposit
     fun findAllByDeletedAtIsNull(pageable: Pageable): Page<ProductResponse>
 
     fun findBySellerId(seller: SellerEntity): List<Product>
+
+    fun findAllByDeletedAtIsNullOrderByLikesDesc(): List<Product> // 좋아요순 검색을 위해 추가함
 }

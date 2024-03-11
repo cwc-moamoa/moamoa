@@ -52,7 +52,7 @@ class ProductServiceImpl(
                 imageUrl = request.imageUrl,
                 price = request.price,
                 purchaseAble = request.purchaseAble,
-                likes = request.likes,
+//                likes = request.likes,
                 productDiscount = request.productDiscount,
                 ratingAverage = request.ratingAverage,
                 userLimit = request.userLimit,
@@ -89,7 +89,7 @@ class ProductServiceImpl(
                 ?: throw ModelNotFoundException("seller", sellerId)
 
         if (seller != product.seller) {
-            throw IllegalArgumentException("The seller does not have permission to update this product")
+            throw IllegalArgumentException("권한이 없습니다")
         }
 
         product.apply {
@@ -105,8 +105,8 @@ class ProductServiceImpl(
 
     @Transactional
     override fun deleteProduct(
-        sellerId: Long,
         productId: Long,
+        sellerId: Long,
     ): Product {
         val product =
             productRepository.findByIdAndDeletedAtIsNull(productId)

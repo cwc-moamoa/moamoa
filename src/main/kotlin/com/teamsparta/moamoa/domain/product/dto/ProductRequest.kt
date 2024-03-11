@@ -6,7 +6,7 @@ data class ProductRequest(
     val imageUrl: String,
     val price: Int,
     val purchaseAble: Boolean,
-    val likes: Int,
+//    val likes: Int,
     val productDiscount: Double,
     val ratingAverage: Double,
 //    val deletedAt: LocalDateTime?, 이거 있으면 안됨
