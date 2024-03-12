@@ -1,5 +1,6 @@
 package com.teamsparta.moamoa.domain.review.service
 
+import com.teamsparta.moamoa.domain.image.service.ImageService
 import com.teamsparta.moamoa.domain.product.repository.ProductRepository
 import com.teamsparta.moamoa.domain.review.dto.CreateReviewRequest
 import com.teamsparta.moamoa.domain.review.dto.ReviewResponse
@@ -11,12 +12,13 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.multipart.MultipartFile
 import java.time.LocalDateTime
 
 @Service
 class ReviewServiceImpl(
     private val reviewRepository: ReviewRepository,
-    private val productRepository: ProductRepository,
+    private val productRepository: ProductRepository
 ) : ReviewService {
     @Transactional
     override fun createReview(

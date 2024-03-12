@@ -51,6 +51,9 @@ dependencies {
     kapt("jakarta.persistence:jakarta.persistence-api")
     implementation("com.github.iamport:iamport-rest-client-java:0.2.21")
 
+    // S3 의존성 추가
+    implementation("org.springframework.cloud:spring-cloud-starter-aws:2.0.1.RELEASE")
+
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.3")
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.3")
     runtimeOnly("org.postgresql:postgresql")

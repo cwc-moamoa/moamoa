@@ -7,7 +7,7 @@ data class CreateReviewRequest(
     val title: String,
     val content: String,
     val name: String,
-    val imageUrl: String,
+    val imageUrl: String?,
 ) {
     fun toReview(product: Product): Review {
         return Review(
