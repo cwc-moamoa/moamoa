@@ -2,10 +2,12 @@ package com.teamsparta.moamoa.domain.seller.model
 
 import com.teamsparta.moamoa.infra.BaseTimeEntity
 import jakarta.persistence.*
+import jakarta.validation.constraints.Email
 
 @Table(name = "seller")
 @Entity
 class Seller(
+
     @Column(name = "email")
     var email: String,
     @Column(name = "password")

@@ -2,7 +2,7 @@ package com.teamsparta.moamoa.domain.like.model
 
 import com.teamsparta.moamoa.domain.product.model.Product
 import com.teamsparta.moamoa.domain.review.model.Review
-import com.teamsparta.moamoa.domain.user.model.User
+import com.teamsparta.moamoa.domain.socialUser.model.SocialUser
 import com.teamsparta.moamoa.infra.BaseTimeEntity
 import jakarta.persistence.*
 
@@ -19,7 +19,7 @@ data class Like(
     val review: Review? = null,
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    val user: User,
+    val user: SocialUser,
     @Column(name = "status")
     var status: Boolean = false,
 ) : BaseTimeEntity()

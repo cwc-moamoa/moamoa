@@ -6,6 +6,7 @@ import com.teamsparta.moamoa.domain.seller.dto.SellerSignInResponse
 import com.teamsparta.moamoa.domain.seller.dto.SellerSignUpRequest
 import com.teamsparta.moamoa.domain.seller.service.SellerService
 import com.teamsparta.moamoa.infra.security.UserPrincipal
+import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
@@ -18,7 +19,7 @@ class SellerController(
 ) {
     @PostMapping("/signup")
     fun signUpSeller(
-        @RequestBody sellerSignUpRequest: SellerSignUpRequest,
+        @Valid @RequestBody sellerSignUpRequest: SellerSignUpRequest,
     ): ResponseEntity<SellerResponse> {
         return ResponseEntity
             .status(HttpStatus.OK)

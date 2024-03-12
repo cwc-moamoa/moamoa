@@ -4,7 +4,7 @@ import com.teamsparta.moamoa.domain.like.model.Like
 import com.teamsparta.moamoa.domain.like.repository.LikeRepository
 import com.teamsparta.moamoa.domain.product.repository.ProductRepository
 import com.teamsparta.moamoa.domain.review.repository.ReviewRepository
-import com.teamsparta.moamoa.domain.user.repository.UserRepository
+import com.teamsparta.moamoa.domain.socialUser.repository.SocialUserRepository
 import com.teamsparta.moamoa.exception.ModelNotFoundException
 import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
@@ -14,7 +14,7 @@ class LikeServiceImpl(
     private val productRepository: ProductRepository,
     private val likeRepository: LikeRepository,
     private val reviewRepository: ReviewRepository,
-    private val userRepository: UserRepository,
+    private val socialUserRepository: SocialUserRepository,
 ) : LikeService {
     @Transactional
     override fun addLikeToProduct(
@@ -30,7 +30,7 @@ class LikeServiceImpl(
         }
 
         val user =
-            userRepository.findById(userId)
+            socialUserRepository.findById(userId)
                 .orElseThrow { throw ModelNotFoundException("User", userId) }
 
         if (likeRepository.findByProductAndUser(product, user) == null) { // 여기가 해당 상품에 유저가 널이여야, 좋아요를 안해야한다는거
@@ -50,7 +50,7 @@ class LikeServiceImpl(
             productRepository.findById(productId)
                 .orElseThrow { throw ModelNotFoundException("Product", productId) }
         val user =
-            userRepository.findById(userId)
+            socialUserRepository.findById(userId)
                 .orElseThrow { throw ModelNotFoundException("User", userId) }
 
         likeRepository.findByProductAndUser(product, user)?.let {
@@ -77,7 +77,7 @@ class LikeServiceImpl(
         }
 
         val user =
-            userRepository.findById(userId)
+            socialUserRepository.findById(userId)
                 .orElseThrow { throw ModelNotFoundException("User", userId) }
 
         if (likeRepository.findByReviewAndUser(review, user) == null) {
@@ -96,7 +96,7 @@ class LikeServiceImpl(
             reviewRepository.findById(reviewId)
                 .orElseThrow { throw ModelNotFoundException("Review", reviewId) }
         val user =
-            userRepository.findById(userId)
+            socialUserRepository.findById(userId)
                 .orElseThrow { throw ModelNotFoundException("User", userId) }
 
         likeRepository.findByReviewAndUser(review, user)?.let {

@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/likes")
 class LikeController(private val likeService: LikeService) {
-    @PostMapping("/product/{productId}/user/{userId}")
+    @PostMapping("/product/{productId}/socialuser/{socialuserId}")
     fun addLikeToProduct(
         @PathVariable productId: Long,
         @PathVariable userId: Long,

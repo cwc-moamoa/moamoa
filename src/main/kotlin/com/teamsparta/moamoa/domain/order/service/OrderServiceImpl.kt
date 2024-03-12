@@ -9,7 +9,7 @@ import com.teamsparta.moamoa.domain.product.model.ProductStock.Companion.discoun
 import com.teamsparta.moamoa.domain.product.repository.ProductRepository
 import com.teamsparta.moamoa.domain.product.repository.ProductStockRepository
 import com.teamsparta.moamoa.domain.seller.repository.SellerRepository
-import com.teamsparta.moamoa.domain.user.repository.UserRepository
+import com.teamsparta.moamoa.domain.socialUser.repository.SocialUserRepository
 import com.teamsparta.moamoa.exception.ModelNotFoundException
 import org.springframework.data.domain.Page
 import org.springframework.data.repository.findByIdOrNull
@@ -22,7 +22,7 @@ class OrderServiceImpl(
     private val orderRepository: OrderRepository,
     private val productRepository: ProductRepository,
     private val productStockRepository: ProductStockRepository,
-    private val userRepository: UserRepository,
+    private val socialUserRepository: SocialUserRepository,
     private val sellerRepository: SellerRepository,
 //    private val redisTemplate: RedisTemplate<String, Any>,
 ) : OrderService {
@@ -32,7 +32,7 @@ class OrderServiceImpl(
         productId: Long,
         createOrderDto: CreateOrderDto,
     ): ResponseOrderDto {
-        val findUser = userRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("user", userId)
+        val findUser = socialUserRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("user", userId)
         val findProduct =
             productRepository.findByIdOrNull(productId) ?: throw ModelNotFoundException("product", productId)
         val stockCheck = productStockRepository.findByProduct(findProduct) ?: throw Exception("없어~")
@@ -75,7 +75,7 @@ class OrderServiceImpl(
         orderId: Long,
         updateOrderDto: UpdateOrderDto,
     ): ResponseOrderDto {
-        val findUser = userRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("user", userId)
+        val findUser = socialUserRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("user", userId)
         val findOrders = orderRepository.findByIdOrNull(orderId) ?: throw ModelNotFoundException("orders", orderId)
         if (findOrders.user == findUser) {
             findOrders.address = updateOrderDto.address
@@ -90,7 +90,7 @@ class OrderServiceImpl(
         userId: Long,
         orderId: Long,
     ): CancelResponseDto {
-        val findUser = userRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("user", userId)
+        val findUser = socialUserRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("user", userId)
         val findOrder = orderRepository.findByIdOrNull(orderId) ?: throw ModelNotFoundException("orders", orderId)
 
         if (findUser.id != findOrder.user.id) {
@@ -114,7 +114,7 @@ class OrderServiceImpl(
         userId: Long,
         orderId: Long,
     ): ResponseOrderDto {
-        val findUser = userRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("user", userId)
+        val findUser = socialUserRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("user", userId)
         val findOrder = orderRepository.findByIdOrNull(orderId) ?: throw ModelNotFoundException("orders", orderId)
 
         return if (findOrder.user.id == findUser.id) {

@@ -20,7 +20,7 @@ class SellerServiceImpl(
     @Transactional
     override fun signUpSeller(sellerSignUpRequest: SellerSignUpRequest): SellerResponse {
         if (sellerRepository.existsByEmail(sellerSignUpRequest.email)) {
-            throw IllegalStateException("Email is already in use")
+            throw IllegalStateException("이미 사용중인 이메일입니다. ")
         }
         if (sellerSignUpRequest.passwordCheck != sellerSignUpRequest.password) throw InvalidCredentialException()
         val seller = sellerRepository.save(sellerSignUpRequest.toEntity(passwordEncoder))
