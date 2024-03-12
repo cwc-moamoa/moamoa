@@ -2,7 +2,6 @@ package com.teamsparta.moamoa.domain.product.model
 
 import com.fasterxml.jackson.annotation.JsonManagedReference
 import com.teamsparta.moamoa.domain.seller.model.Seller
-import com.teamsparta.moamoa.domain.seller.model.SellerEntity
 import com.teamsparta.moamoa.infra.BaseTimeEntity
 // import com.teamsparta.moamoa.domain.like.model.Like
 import jakarta.persistence.*

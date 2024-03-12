@@ -13,5 +13,5 @@ interface ReviewRepository : JpaRepository<Review, Long> {
         pageable: Pageable,
     ): Page<Review>
 
-    fun findAllByDeletedAtIsNullOrderByLikesDesc(): List<Review> // 좋아요순 검색을 위해 추가함
+    fun findAllByDeletedAtIsNullOrderByLikesDesc(pageable: Pageable): List<Review> // 좋아요순 검색을 위해 추가함
 }
