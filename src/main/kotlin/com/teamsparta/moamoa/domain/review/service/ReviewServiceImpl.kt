@@ -44,7 +44,10 @@ class ReviewServiceImpl(
     }
 
     @Transactional
-    override fun getPaginatedReviewList(productId: Long, pageable: Pageable): Page<ReviewResponse> {
+    override fun getPaginatedReviewList(
+        productId: Long,
+        pageable: Pageable,
+    ): Page<ReviewResponse> {
         val reviewPage = reviewRepository.findAllByProductIdAndDeletedAtIsNull(productId, pageable)
         return reviewPage.map { review -> ReviewResponse.toReviewResponse(review) }
     }

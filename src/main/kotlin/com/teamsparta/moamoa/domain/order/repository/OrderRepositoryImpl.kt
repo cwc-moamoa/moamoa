@@ -44,6 +44,5 @@ class OrderRepositoryImpl : CustomOrderRepository, QueryDslSupport() {
                 .orderBy(orders.product.id.asc())
                 .fetch()
         return PageImpl(result)
-
     }
 }
