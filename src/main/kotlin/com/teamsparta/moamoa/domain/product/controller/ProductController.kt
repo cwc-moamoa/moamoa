@@ -2,7 +2,6 @@ package com.teamsparta.moamoa.domain.product.controller
 
 import com.teamsparta.moamoa.domain.product.dto.ProductRequest
 import com.teamsparta.moamoa.domain.product.dto.ProductResponse
-import com.teamsparta.moamoa.domain.product.model.Product
 import com.teamsparta.moamoa.domain.product.service.ProductService
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
