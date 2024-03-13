@@ -7,7 +7,7 @@ class UpdateReviewRequest(
     val content: String,
     val name: String,
     val imageUrl: String,
-    val rating: Int
+    val rating: Int,
 ) {
     fun toUpdateReview(review: Review) {
         review.title = this.title

@@ -8,7 +8,7 @@ data class CreateReviewRequest(
     val content: String,
     val name: String,
     val imageUrl: String?,
-    val rating: Int
+    val rating: Int,
 ) {
     fun toReview(product: Product): Review {
         return Review(
@@ -18,8 +18,7 @@ data class CreateReviewRequest(
             imageUrl = imageUrl,
             product = product,
             likes = 0,
-            rating = rating
+            rating = rating,
         )
     }
-
 }

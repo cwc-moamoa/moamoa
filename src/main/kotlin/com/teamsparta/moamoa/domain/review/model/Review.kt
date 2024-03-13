@@ -22,5 +22,5 @@ class Review(
     @Column(name = "likes")
     var likes: Int = 0,
     @Column(name = "rating")
-    var rating: Int
+    var rating: Int,
 ) : BaseTimeEntity()

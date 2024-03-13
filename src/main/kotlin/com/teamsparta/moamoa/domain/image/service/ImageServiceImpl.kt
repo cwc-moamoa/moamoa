@@ -13,9 +13,8 @@ import java.util.*
 
 @Service
 class ImageServiceImpl(
-    private val amazonS3Client: AmazonS3Client
-): ImageService {
-
+    private val amazonS3Client: AmazonS3Client,
+) : ImageService {
     @Value("\${bucket}")
     lateinit var bucket: String
 
@@ -33,11 +32,9 @@ class ImageServiceImpl(
 
         amazonS3Client.putObject(
             PutObjectRequest(bucket, dir + fileName, byteArrayIs, objMeta)
-                .withCannedAcl(CannedAccessControlList.PublicRead))
+                .withCannedAcl(CannedAccessControlList.PublicRead),
+        )
 
         return amazonS3Client.getUrl(bucket, dir + fileName).toString()
     }
-
-
-
 }
