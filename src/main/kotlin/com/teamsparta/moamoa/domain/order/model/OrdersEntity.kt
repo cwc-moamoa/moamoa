@@ -1,6 +1,7 @@
 package com.teamsparta.moamoa.domain.order.model
 
 import com.teamsparta.moamoa.domain.order.dto.ResponseOrderDto
+import com.teamsparta.moamoa.domain.payment.model.PaymentEntity
 import com.teamsparta.moamoa.domain.product.model.Product
 import com.teamsparta.moamoa.domain.user.model.User
 import com.teamsparta.moamoa.infra.BaseTimeEntity
@@ -12,7 +13,7 @@ class OrdersEntity(
     @Column(name = "product_name")
     var productName: String,
     @Column(name = "total_price")
-    var totalPrice: Int,
+    var totalPrice: Double,
     @Column(name = "address")
     var address: String,
     @Column(name = "discount")
@@ -25,6 +26,10 @@ class OrdersEntity(
     @ManyToOne
     @JoinColumn(name = "user_id")
     var user: User,
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "payment_id")
+    var payment: PaymentEntity,
+    var orderUid: String?,
 ) : BaseTimeEntity() {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,5 +51,6 @@ fun OrdersEntity.toResponse(): ResponseOrderDto {
         status = status.toString(),
         discount = discount,
         quantity = quantity,
+        orderUid = orderUid!!,
     )
 }
