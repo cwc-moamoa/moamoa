@@ -20,7 +20,7 @@ import java.time.LocalDateTime
 class ProductServiceImpl(
     private val productRepository: ProductRepository,
     private val productStockRepository: ProductStockRepository,
-    private val sellerRepository: SellerRepository,
+    private val sellerRepository: SellerRepository
 ) : ProductService {
     @Transactional
     override fun getAllProducts(): List<ProductResponse> {
@@ -37,10 +37,13 @@ class ProductServiceImpl(
     }
 
     @Transactional
-    override fun createProduct(request: ProductRequest): Product {
+    override fun createProduct(
+        sellerId: Long,
+        request: ProductRequest,
+    ): Product {
         val seller =
-            sellerRepository.findByIdOrNull(request.sellerId)
-                ?: throw ModelNotFoundException("seller", request.sellerId)
+            sellerRepository.findByIdOrNull(sellerId)
+                ?: throw ModelNotFoundException("seller", sellerId)
 
         val product =
             Product(
@@ -49,13 +52,11 @@ class ProductServiceImpl(
                 imageUrl = request.imageUrl,
                 price = request.price,
                 purchaseAble = request.purchaseAble,
-//                likesCount  = request.likes,
-                likes = request.likes,
+                productDiscount = request.productDiscount,
                 ratingAverage = request.ratingAverage,
                 userLimit = request.userLimit,
                 discount = request.discount,
-                seller = seller,
-                timeLimit = LocalDateTime.now().plusHours(24),
+                seller = seller
             )
 
         val productStock =
@@ -76,11 +77,20 @@ class ProductServiceImpl(
     @Transactional
     override fun updateProduct(
         productId: Long,
+        sellerId: Long,
         request: ProductRequest,
     ): Product {
         val product =
             productRepository.findByIdAndDeletedAtIsNull(productId)
                 .orElseThrow { ModelNotFoundException("Product", productId) }
+
+        val seller =
+            sellerRepository.findByIdOrNull(sellerId)
+                ?: throw ModelNotFoundException("seller", sellerId)
+
+        if (seller != product.seller) {
+            throw IllegalArgumentException("권한이 없습니다")
+        }
 
         product.apply {
             title = request.title
@@ -94,7 +104,10 @@ class ProductServiceImpl(
     }
 
     @Transactional
-    override fun deleteProduct(productId: Long): Product {
+    override fun deleteProduct(
+        productId: Long,
+        sellerId: Long,
+    ): Product {
         val product =
             productRepository.findByIdAndDeletedAtIsNull(productId)
                 .orElseThrow { ModelNotFoundException("Product", productId) }

@@ -8,7 +8,7 @@ import jakarta.persistence.*
 class Review(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "product_id", nullable = false)
     val product: Product,
     @Column(name = "title")
@@ -19,4 +19,6 @@ class Review(
     var name: String,
     @Column(name = "image_url")
     var imageUrl: String? = null,
+    @Column(name = "likes")
+    var likes: Int = 0,
 ) : BaseTimeEntity()

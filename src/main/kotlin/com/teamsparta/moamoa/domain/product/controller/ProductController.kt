@@ -27,29 +27,32 @@ class ProductController(
         return productService.getProductById(productId)
     }
 
-    @PostMapping
+    @PostMapping("/{sellerId}")
     fun createProduct(
+        @PathVariable sellerId: Long,
         @RequestBody request: ProductRequest,
     ): ResponseEntity<ProductResponse> {
-        val product = productService.createProduct(request)
+        val product = productService.createProduct(sellerId, request)
         val response = ProductResponse(product)
         return ResponseEntity.ok(response)
     }
 
-    @PutMapping("/{productId}")
+    @PutMapping("/{productId}/{sellerId}")
     fun updateProduct(
         @PathVariable productId: Long,
+        @PathVariable sellerId: Long,
         @RequestBody productRequest: ProductRequest,
     ): ResponseEntity<ProductResponse> {
-        val updatedProduct = productService.updateProduct(productId, productRequest)
+        val updatedProduct = productService.updateProduct(productId, sellerId, productRequest)
         return ResponseEntity.ok(ProductResponse(updatedProduct))
     }
 
-    @PutMapping("/{productId}/delete")
+    @PutMapping("/{productId}/{sellerId}/delete")
     fun deleteProduct(
         @PathVariable productId: Long,
+        @PathVariable sellerId: Long,
     ): ResponseEntity<ProductResponse> {
-        val product = productService.deleteProduct(productId)
+        val product = productService.deleteProduct(productId, sellerId)
         return ResponseEntity.ok(ProductResponse(product))
     }
 
