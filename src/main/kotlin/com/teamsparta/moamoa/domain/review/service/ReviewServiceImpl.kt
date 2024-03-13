@@ -20,12 +20,23 @@ class ReviewServiceImpl(
     private val reviewRepository: ReviewRepository,
     private val productRepository: ProductRepository
 ) : ReviewService {
+
+
+    private fun validateRating(rating: Int) {
+        if (rating < 1 || rating > 5) {
+            throw IllegalArgumentException("Rating must be between 1 and 5.")
+        }
+    }
+
+
+
     @Transactional
     override fun createReview(
         productId: Long,
         createReviewRequest: CreateReviewRequest,
     ): ReviewResponse {
-        // 삭제되지 않은 상품을 조회하고, 조회된 상품이 없을 시 예외처리
+        validateRating(createReviewRequest.rating)
+
         val product =
             productRepository.findByIdAndDeletedAtIsNull(productId)
                 .orElseThrow { ModelNotFoundException("Product not found or deleted", productId) }
@@ -63,9 +74,7 @@ class ReviewServiceImpl(
             reviewRepository.findByIdAndDeletedAtIsNull(reviewId)
                 ?: throw ModelNotFoundException("Review", reviewId)
 
-//        if (review.deletedAt != null) {
-//            throw ReviewDeleteException(reviewId)
-//        }
+        validateRating(request.rating)
 
         request.toUpdateReview(review)
 
