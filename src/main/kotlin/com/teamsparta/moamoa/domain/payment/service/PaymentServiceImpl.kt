@@ -32,7 +32,7 @@ class PaymentServiceImpl(
     @Transactional
     override fun findRequestDto(orderUid: String): RequestPayDto {
         val order =
-            orderRepository.findOrderAndPaymentAndMember(orderUid)
+            orderRepository.findOrderAndPaymentAndUser(orderUid)
                 .orElseThrow { IllegalArgumentException("주문이 없습니다.") }
 
 //        val discountPrice = if (order.discount > 0.0) order.payment.price * (1 - order.discount / 100.0) else order.payment.price
