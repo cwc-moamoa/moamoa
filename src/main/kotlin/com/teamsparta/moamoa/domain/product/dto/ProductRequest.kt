@@ -6,7 +6,6 @@ data class ProductRequest(
     val imageUrl: String,
     val price: Double,
     val purchaseAble: Boolean,
-    val productDiscount: Double,
     val ratingAverage: Double,
     val userLimit: Int,
     val discount: Double,

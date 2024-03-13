@@ -10,6 +10,7 @@ interface OrderService {
         productId: Long,
         quantity: Int,
         address: String,
+        phoneNumber: String,
     ): ResponseOrderDto
 
     // 주문 생성

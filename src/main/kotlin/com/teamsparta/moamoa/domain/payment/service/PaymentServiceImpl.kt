@@ -32,20 +32,19 @@ class PaymentServiceImpl(
     @Transactional
     override fun findRequestDto(orderUid: String): RequestPayDto {
         val order =
-            orderRepository.findOrderAndPaymentAndUser(orderUid)
+            orderRepository.findOrderAndPaymentAndSocialUser(orderUid)
                 .orElseThrow { IllegalArgumentException("주문이 없습니다.") }
 
 //        val discountPrice = if (order.discount > 0.0) order.payment.price * (1 - order.discount / 100.0) else order.payment.price
 // 바보야 왜 2중 할인 하고 있니 오더 에서 할인 다 했자너..
 
         return RequestPayDto(
-            buyerName = order.user.nickname,
-            buyerEmail = order.user.email,
-            buyerAddress = order.user.address,
+            buyerName = order.socialUser.nickname,
+            buyerAddress = order.address,
             paymentPrice = order.payment.price,
             itemName = order.productName,
             orderUid = order.orderUid!!,
-            buyerPhone = order.user.phoneNumber,
+            buyerPhone = order.phoneNumber,
         )
     }
 
@@ -106,8 +105,8 @@ class PaymentServiceImpl(
             paymentRepository.save(paymentChange)
 
             if (order.discount > 0.0) {
-                orderService.saveToRedis(order.product.id.toString(), order.user.id.toString(), order.id.toString())
-                val discountAppliedEvent = DiscountPaymentEvent(order.id.toString(), order.user.id.toString())
+                orderService.saveToRedis(order.product.id.toString(), order.socialUser.id.toString(), order.id.toString())
+                val discountAppliedEvent = DiscountPaymentEvent(order.id.toString(), order.socialUser.id.toString())
                 applicationEventPublisher.publishEvent(discountAppliedEvent)
             }
             return iamportResponse
