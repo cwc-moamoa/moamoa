@@ -20,7 +20,7 @@ import java.time.LocalDateTime
 class ProductServiceImpl(
     private val productRepository: ProductRepository,
     private val productStockRepository: ProductStockRepository,
-    private val sellerRepository: SellerRepository
+    private val sellerRepository: SellerRepository,
 ) : ProductService {
     @Transactional
     override fun getAllProducts(): List<ProductResponse> {
@@ -52,11 +52,11 @@ class ProductServiceImpl(
                 imageUrl = request.imageUrl,
                 price = request.price,
                 purchaseAble = request.purchaseAble,
-                productDiscount = request.productDiscount,
                 ratingAverage = request.ratingAverage,
                 userLimit = request.userLimit,
                 discount = request.discount,
-                seller = seller
+                seller = seller,
+                likes = 0,
             )
 
         val productStock =

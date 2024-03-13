@@ -5,18 +5,25 @@ import com.teamsparta.moamoa.domain.review.model.Review
 import com.teamsparta.moamoa.domain.search.dto.ProductSearchResponse
 import com.teamsparta.moamoa.domain.search.dto.ReviewSearchResponse
 import com.teamsparta.moamoa.domain.search.model.SearchHistory
-import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 
- interface SearchService {
-
+interface SearchService {
     fun searchProductsByLikes(pageable: Pageable): List<ProductSearchResponse>
+
     fun searchReviewsByLikes(pageable: Pageable): List<ReviewSearchResponse>
 
-     fun searchProducts(keyword: String, pageable: Pageable): Page<Product>
-     fun searchReviews(keyword: String, pageable: Pageable): Page<Review>
+    fun searchProducts(
+        keyword: String,
+        pageable: Pageable,
+    ): Page<Product>
 
-     fun saveSearchHistory(keyword: String)
+    fun searchReviews(
+        keyword: String,
+        pageable: Pageable,
+    ): Page<Review>
 
-     fun getPopularKeywords(): List<SearchHistory>
- }
+    fun saveSearchHistory(keyword: String)
+
+    fun getPopularKeywords(): List<SearchHistory>
+}

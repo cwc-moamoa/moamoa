@@ -52,12 +52,12 @@ dependencies {
     kapt("jakarta.annotation:jakarta.annotation-api")
     kapt("jakarta.persistence:jakarta.persistence-api")
 
-    //포트원
+    // 포트원
     implementation("com.github.iamport:iamport-rest-client-java:0.2.21")
 
     implementation("org.springframework.boot:spring-boot-starter-aop")
     runtimeOnly("org.postgresql:postgresql")
-   // implementation("com.h2database:h2")
+    // implementation("com.h2database:h2")
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
 
     // 테스트 코드

@@ -1,6 +1,5 @@
 package com.teamsparta.moamoa.domain.product.model
 
-import com.fasterxml.jackson.annotation.JsonManagedReference
 import com.teamsparta.moamoa.domain.seller.model.Seller
 import com.teamsparta.moamoa.infra.BaseTimeEntity
 import jakarta.persistence.*
@@ -27,7 +26,7 @@ data class Product(
     @Column(name = "imageUrl", nullable = true)
     var imageUrl: String,
     @Column(name = "likes", nullable = true)
-    val likes: Int,
+    var likes: Int,
     @Column(name = "userLimit")
     val userLimit: Int,
     @Column(name = "discount")

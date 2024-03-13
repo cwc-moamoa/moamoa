@@ -14,5 +14,4 @@ interface ProductRepository : JpaRepository<Product, Long>, CustomProductReposit
     fun findAllByDeletedAtIsNull(pageable: Pageable): Page<ProductResponse>
 
     fun findBySellerId(seller: Seller): List<Product>
-
 }

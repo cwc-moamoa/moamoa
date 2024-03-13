@@ -36,7 +36,7 @@ class GroupPurchaseService(
                     productId,
                     findProduct.userLimit,
                     1,
-                    findProduct.timeLimit,
+                    timeLimit = LocalDateTime.now().plusHours(24),
                     mutableListOf(),
                 )
 
