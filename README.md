@@ -65,12 +65,12 @@
 
 
 ## Built With
-김선병 - 팀장, 공동구매, 결제
+[김선병](https://github.com/Karox1234) - 팀장, 공동구매, 결제
 
-김보성 - 부팀장, 일반구매, 배포, 프론트
+[김보성](https://github.com/96KimBoseong)  - 부팀장, 일반구매, 배포, 프론트
 
-강민지 - 팀원, 리뷰, 멀티미디어 업로드
+[강민지](https://github.com/mingdorri) - 팀원, 리뷰, 멀티미디어 업로드
 
-이 율 - 팀원, 회원가입, 소셜로그인, Readme작성
+[이 율](https://github.com/dyorcat) - 팀원, 회원가입, 소셜로그인, Readme작성
 
-홍성욱 - 팀원, 상품, 좋아요, 검색
+[홍성욱](https://github.com/suh75321) - 팀원, 상품, 좋아요, 검색
