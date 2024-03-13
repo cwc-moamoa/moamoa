@@ -19,4 +19,5 @@ data class CreateReviewRequest(
             likes = 0,
         )
     }
+
 }

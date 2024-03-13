@@ -27,11 +27,11 @@ import org.springframework.web.multipart.MultipartFile
 class ReviewController(
     private val reviewService: ReviewService
 ) {
-    @PostMapping(consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
+    @PostMapping //(consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     fun createReview(
         @PathVariable productId: Long,
         @RequestBody createReviewRequest: CreateReviewRequest,
-        @RequestPart("image") multipartFile: MultipartFile
+//        @RequestPart("image") multipartFile: MultipartFile
     ): ResponseEntity<ReviewResponse> {
         val result = reviewService.createReview(productId, createReviewRequest)
         return ResponseEntity
