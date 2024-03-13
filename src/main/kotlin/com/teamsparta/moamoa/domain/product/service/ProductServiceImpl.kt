@@ -20,7 +20,7 @@ import java.time.LocalDateTime
 class ProductServiceImpl(
     private val productRepository: ProductRepository,
     private val productStockRepository: ProductStockRepository,
-    private val sellerRepository: SellerRepository
+    private val sellerRepository: SellerRepository,
 ) : ProductService {
     @Transactional
     override fun getAllProducts(): List<ProductResponse> {
@@ -38,8 +38,9 @@ class ProductServiceImpl(
 
     @Transactional
     override fun createProduct(request: ProductRequest): Product {
-        val seller = sellerRepository.findByIdOrNull(request.sellerId)
-            ?: throw ModelNotFoundException("seller", request.sellerId)
+        val seller =
+            sellerRepository.findByIdOrNull(request.sellerId)
+                ?: throw ModelNotFoundException("seller", request.sellerId)
 
         val product =
             Product(
@@ -50,11 +51,11 @@ class ProductServiceImpl(
                 purchaseAble = request.purchaseAble,
 //                likesCount  = request.likes,
                 likes = request.likes,
-                productDiscount = request.productDiscount,
                 ratingAverage = request.ratingAverage,
                 userLimit = request.userLimit,
                 discount = request.discount,
-                seller = seller
+                seller = seller,
+                timeLimit = LocalDateTime.now().plusHours(24),
             )
 
         val productStock =
@@ -64,9 +65,10 @@ class ProductServiceImpl(
                 productName = request.title,
             )
 
-        product.productStock = productStock
+//        product.productStock = productStock
 
         productRepository.save(product)
+        productStockRepository.save(productStock)
 
         return product
     }
@@ -112,8 +114,8 @@ class ProductServiceImpl(
                 .orElseThrow { ModelNotFoundException("Product", productId) }
 
         val productStock =
-            product.productStock
-                ?: throw RuntimeException("ProductStock not found")
+            productStockRepository.findById(productId)
+                .orElseThrow { ModelNotFoundException("Product", productId) }
 
         if (productStock.stock < quantity) {
             throw OutOfStockException("Not enough stock")
