@@ -62,11 +62,4 @@ class SearchController(
         return ResponseEntity.status(HttpStatus.OK).body(popularKeywords)
     }
 
-//    @GetMapping("/popular")
-//    fun getPopularKeywords(
-//        @RequestParam(defaultValue = "10") top: Int
-//    ): ResponseEntity<List<SearchHistory>> {
-//        val popularKeywords = searchService.getPopularKeywords(top)
-//        return ResponseEntity.status(HttpStatus.OK).body(popularKeywords)
-//    }
 }

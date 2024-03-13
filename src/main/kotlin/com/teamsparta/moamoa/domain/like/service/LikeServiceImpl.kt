@@ -4,7 +4,7 @@ import com.teamsparta.moamoa.domain.like.model.Like
 import com.teamsparta.moamoa.domain.like.repository.LikeRepository
 import com.teamsparta.moamoa.domain.product.repository.ProductRepository
 import com.teamsparta.moamoa.domain.review.repository.ReviewRepository
-import com.teamsparta.moamoa.domain.user.repository.UserRepository
+import com.teamsparta.moamoa.domain.socialUser.repository.SocialUserRepository
 import com.teamsparta.moamoa.exception.ModelNotFoundException
 import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
@@ -14,12 +14,12 @@ class LikeServiceImpl(
     private val productRepository: ProductRepository,
     private val likeRepository: LikeRepository,
     private val reviewRepository: ReviewRepository,
-    private val userRepository: UserRepository,
+    private val socialUserRepository: SocialUserRepository,
 ) : LikeService {
     @Transactional
     override fun addLikeToProduct(
         productId: Long,
-        userId: Long,
+        socialUserId: Long,
     ) {
         val product =
             productRepository.findById(productId)
@@ -30,11 +30,11 @@ class LikeServiceImpl(
         }
 
         val user =
-            userRepository.findById(userId)
-                .orElseThrow { throw ModelNotFoundException("User", userId) }
+            socialUserRepository.findById(socialUserId)
+                .orElseThrow { throw ModelNotFoundException("User", socialUserId) }
 
-        if (likeRepository.findByProductAndUser(product, user) == null) { // 여기가 해당 상품에 유저가 널이여야, 좋아요를 안해야한다는거
-            likeRepository.save(Like(product = product, user = user, status = true))
+        if (likeRepository.findByProductAndSocialUser(product, user) == null) { // 여기가 해당 상품에 유저가 널이여야, 좋아요를 안해야한다는거
+            likeRepository.save(Like(product = product, socialUser = user, status = true))
 
             product.likes++
             productRepository.save(product)
@@ -44,16 +44,16 @@ class LikeServiceImpl(
     @Transactional
     override fun removeLikeFromProduct(
         productId: Long,
-        userId: Long,
+        socialUserId: Long,
     ) {
         val product =
             productRepository.findById(productId)
                 .orElseThrow { throw ModelNotFoundException("Product", productId) }
         val user =
-            userRepository.findById(userId)
-                .orElseThrow { throw ModelNotFoundException("User", userId) }
+            socialUserRepository.findById(socialUserId)
+                .orElseThrow { throw ModelNotFoundException("User", socialUserId) }
 
-        likeRepository.findByProductAndUser(product, user)?.let {
+        likeRepository.findByProductAndSocialUser(product, user)?.let {
             likeRepository.delete(it) // findByProductAndUser로 Like가 null이 아니라면 해당 "좋아요" 기록을 삭제
 
             if (product.likes > 0) {
@@ -66,7 +66,7 @@ class LikeServiceImpl(
     @Transactional
     override fun addLikeToReview(
         reviewId: Long,
-        userId: Long,
+        socialUserId: Long,
     ) {
         val review =
             reviewRepository.findById(reviewId)
@@ -77,11 +77,11 @@ class LikeServiceImpl(
         }
 
         val user =
-            userRepository.findById(userId)
-                .orElseThrow { throw ModelNotFoundException("User", userId) }
+            socialUserRepository.findById(socialUserId)
+                .orElseThrow { throw ModelNotFoundException("User", socialUserId) }
 
-        if (likeRepository.findByReviewAndUser(review, user) == null) {
-            likeRepository.save(Like(review = review, user = user, status = true))
+        if (likeRepository.findByReviewAndSocialUser(review, user) == null) {
+            likeRepository.save(Like(review = review, socialUser = user, status = true))
             review.likes++
             reviewRepository.save(review)
         }
@@ -90,16 +90,16 @@ class LikeServiceImpl(
     @Transactional
     override fun removeLikeFromReview(
         reviewId: Long,
-        userId: Long,
+        socialUserId: Long,
     ) {
         val review =
             reviewRepository.findById(reviewId)
                 .orElseThrow { throw ModelNotFoundException("Review", reviewId) }
         val user =
-            userRepository.findById(userId)
-                .orElseThrow { throw ModelNotFoundException("User", userId) }
+            socialUserRepository.findById(socialUserId)
+                .orElseThrow { throw ModelNotFoundException("User", socialUserId) }
 
-        likeRepository.findByReviewAndUser(review, user)?.let {
+        likeRepository.findByReviewAndSocialUser(review, user)?.let {
             likeRepository.delete(it)
 
             if (review.likes > 0) {

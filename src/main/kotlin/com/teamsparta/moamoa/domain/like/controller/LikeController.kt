@@ -8,37 +8,37 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/likes")
 class LikeController(private val likeService: LikeService) {
-    @PostMapping("/product/{productId}/user/{userId}")
+    @PostMapping("/product/{productId}/socialUser/{socialUserId}")
     fun addLikeToProduct(
         @PathVariable productId: Long,
-        @PathVariable userId: Long,
+        @PathVariable socialUserId: Long,
     ) {
-        likeService.addLikeToProduct(productId, userId)
+        likeService.addLikeToProduct(productId, socialUserId)
     }
 
-    @DeleteMapping("/product/{productId}/user/{userId}")
+    @DeleteMapping("/product/{productId}/socialUser/{socialUserId}")
     fun removeLikeFromProduct(
         @PathVariable productId: Long,
-        @PathVariable userId: Long,
+        @PathVariable socialUserId: Long,
     ): ResponseEntity<String> {
-        likeService.removeLikeFromProduct(productId, userId)
+        likeService.removeLikeFromProduct(productId, socialUserId)
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
     }
 
-    @PostMapping("/review/{reviewId}/user/{userId}")
+    @PostMapping("/review/{reviewId}/socialUser/{socialUserId}")
     fun addLikeToReview(
         @PathVariable reviewId: Long,
-        @PathVariable userId: Long,
+        @PathVariable socialUserId: Long,
     ) {
-        likeService.addLikeToReview(reviewId, userId)
+        likeService.addLikeToReview(reviewId, socialUserId)
     }
 
-    @DeleteMapping("/review/{reviewId}/user/{userId}")
+    @DeleteMapping("/review/{reviewId}/socialUser/{socialUserId}")
     fun removeLikeFromReview(
         @PathVariable reviewId: Long,
-        @PathVariable userId: Long,
+        @PathVariable socialUserId: Long,
     ): ResponseEntity<String> {
-        likeService.removeLikeFromReview(reviewId, userId)
+        likeService.removeLikeFromReview(reviewId, socialUserId)
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
     }
 }
