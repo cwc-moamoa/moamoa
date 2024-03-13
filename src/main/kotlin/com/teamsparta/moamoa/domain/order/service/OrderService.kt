@@ -5,10 +5,11 @@ import com.teamsparta.moamoa.domain.order.model.OrdersStatus
 import org.springframework.data.domain.Page
 
 interface OrderService {
-    fun creatOrder(
+    fun createOrder(
         userId: Long,
         productId: Long,
-        createOrderDto: CreateOrderDto,
+        quantity: Int,
+        address: String,
     ): ResponseOrderDto
 
     // 주문 생성
