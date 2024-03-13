@@ -15,6 +15,7 @@ class CustomSearchRepositoryImpl : CustomSearchRepository, QueryDslSupport() {
 
     private val product = QProduct.product
     private val review = QReview.review
+//    private val searchHistory = QSearchHistory.searchHistory
 
     override fun searchProductsByLikes(pageable: Pageable): Page<ProductSearchResponse> {
         val totalCount = queryFactory.select(product.count())
@@ -71,4 +72,18 @@ class CustomSearchRepositoryImpl : CustomSearchRepository, QueryDslSupport() {
 
         return PageImpl(contents, pageable, totalCount)
     }
+
+//    override fun findTopSearchHistories(pageable: Pageable): Page<SearchHistory> {
+//        val totalCount = queryFactory.select(searchHistory.count())
+//            .from(searchHistory)
+//            .fetchOne() ?: 0L
+//
+//        val histories = queryFactory.selectFrom(searchHistory)
+//            .orderBy(searchHistory.count.desc())
+//            .offset(pageable.offset)
+//            .limit(pageable.pageSize.toLong())
+//            .fetch()
+//
+//        return PageImpl(histories, pageable, totalCount)
+//    }
 }

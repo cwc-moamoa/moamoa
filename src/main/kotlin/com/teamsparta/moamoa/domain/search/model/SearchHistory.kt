@@ -1,7 +1,12 @@
 package com.teamsparta.moamoa.domain.search.model
 
+import jakarta.persistence.*
+
+@Entity
+@Table(name = "searchHistory")
 data class SearchHistory(
-    val id: Int,
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    val id: Int?,
     val keyword: String,
-    val count: Int,
+    var count: Int,
 )
