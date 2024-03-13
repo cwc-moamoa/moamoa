@@ -2,6 +2,7 @@ package com.teamsparta.moamoa.domain.order.controller
 import com.teamsparta.moamoa.domain.order.dto.*
 import com.teamsparta.moamoa.domain.order.model.OrdersStatus
 import com.teamsparta.moamoa.domain.order.service.OrderService
+import jakarta.servlet.http.HttpServletRequest
 import org.springframework.data.domain.Page
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -21,16 +22,27 @@ import org.springframework.web.bind.annotation.RestController
 class OrderController(
     private val orderService: OrderService,
 ) {
-    @PostMapping("/{userId}/{productId}")
-    fun createOrder(
-        @PathVariable userId: Long,
-        @PathVariable productId: Long,
-        // @RequestParam으로 받으려 했으나 url에 명시 해주는거에 차이가 있다고 했다 userId는 jwt토큰 적용되면 아마도 해결될듯?
-        @RequestBody createOrderDto: CreateOrderDto,
+    @PostMapping("/create")
+    fun createOrder(request: HttpServletRequest): ResponseEntity<ResponseOrderDto> {
+        val userId = request.getParameter("userId").toLong()
+        val productId = request.getParameter("productId").toLong()
+        val quantity = request.getParameter("quantity").toInt()
+        val address = request.getParameter("address")
+        val responseOrderDto = orderService.createOrder(userId, productId, quantity, address)
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseOrderDto)
+    }
+
+    @PostMapping("/create/swagger")
+    fun createOrderAtSwagger(
+        @RequestParam userId: Long,
+        @RequestParam productId: Long,
+        @RequestParam quantity: Int,
+        @RequestParam address: String,
     ): ResponseEntity<ResponseOrderDto> {
+        val responseOrderDto = orderService.createOrder(userId, productId, quantity, address)
         return ResponseEntity
             .status(HttpStatus.CREATED)
-            .body(orderService.creatOrder(userId, productId, createOrderDto))
+            .body(responseOrderDto)
     }
 
     @PutMapping("/{orderId}/{userId}")
