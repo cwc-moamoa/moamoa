@@ -5,8 +5,8 @@ import org.springframework.web.bind.annotation.GetMapping
 
 @Controller
 class HomeController {
-    @GetMapping("/")
+    @GetMapping("/start8080")
     fun home(): String {
-        return "home"
+        return "index"
     }
 }
