@@ -10,6 +10,7 @@ import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.*
 
 @Controller
+@CrossOrigin( origins = ["*"], allowedHeaders = ["*"])
 class PaymentController(private val paymentService: PaymentService) {
     @GetMapping("/payment/{orderUid}")
     fun paymentPage(
