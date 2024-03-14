@@ -40,7 +40,10 @@ class SecurityConfig(
                     "/oauth2/callback/**",
                     "/h2-console/**",
                     "/api/orders/**",
-                    "/api"
+                    "/api",
+                    "/api/orders/create",
+                    "/payment",
+                    "/payment/"
                 ).permitAll()
                     .anyRequest().authenticated()
             }
