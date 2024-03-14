@@ -5,6 +5,7 @@ import com.teamsparta.moamoa.domain.review.dto.CreateReviewRequest
 import com.teamsparta.moamoa.domain.review.dto.ReviewResponse
 import com.teamsparta.moamoa.domain.review.dto.UpdateReviewRequest
 import com.teamsparta.moamoa.domain.review.repository.ReviewRepository
+import com.teamsparta.moamoa.domain.socialUser.repository.SocialUserRepository
 import com.teamsparta.moamoa.exception.ModelNotFoundException
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -17,17 +18,30 @@ import java.time.LocalDateTime
 class ReviewServiceImpl(
     private val reviewRepository: ReviewRepository,
     private val productRepository: ProductRepository,
+    private val socialUserRepository: SocialUserRepository,
 ) : ReviewService {
+    private fun validateRating(rating: Int) {
+        if (rating < 1 || rating > 5) {
+            throw IllegalArgumentException("Rating must be between 1 and 5.")
+        }
+    }
+
     @Transactional
     override fun createReview(
         productId: Long,
         createReviewRequest: CreateReviewRequest,
     ): ReviewResponse {
-        val product =
-            productRepository.findByIdOrNull(productId)
-                ?: throw ModelNotFoundException("Product", productId)
+        validateRating(createReviewRequest.rating)
 
-        val review = createReviewRequest.toReview(product)
+        val socialUser =
+            socialUserRepository.findByIdOrNull(createReviewRequest.socialUserId)
+                ?: throw ModelNotFoundException("SocialUser not found", createReviewRequest.socialUserId)
+
+        val product =
+            productRepository.findByIdAndDeletedAtIsNull(productId)
+                .orElseThrow { ModelNotFoundException("Product not found or deleted", productId) }
+
+        val review = createReviewRequest.toReview(product, socialUser)
 
         val savedReview = reviewRepository.save(review)
         return ReviewResponse.toReviewResponse(savedReview)
@@ -36,16 +50,19 @@ class ReviewServiceImpl(
     @Transactional
     override fun getReviewById(reviewId: Long): ReviewResponse {
         val review =
-            reviewRepository.findByIdOrNull(reviewId)
+            reviewRepository.findByIdAndDeletedAtIsNull(reviewId)
                 ?: throw ModelNotFoundException("Review", reviewId)
 
         return ReviewResponse.toReviewResponse(review)
     }
 
-    @Transactional(readOnly = true)
-    override fun getPaginatedReviewList(pageable: Pageable): Page<ReviewResponse> {
-        val reviews = reviewRepository.findAll(pageable) // 조건 없이 모든 리뷰 조회
-        return reviews.map { review -> ReviewResponse.toReviewResponse(review) }
+    @Transactional
+    override fun getPaginatedReviewList(
+        productId: Long,
+        pageable: Pageable,
+    ): Page<ReviewResponse> {
+        val reviewPage = reviewRepository.findAllByProductIdAndDeletedAtIsNull(productId, pageable)
+        return reviewPage.map { review -> ReviewResponse.toReviewResponse(review) }
     }
 
     @Transactional
@@ -53,13 +70,19 @@ class ReviewServiceImpl(
         reviewId: Long,
         request: UpdateReviewRequest,
     ): ReviewResponse {
+        val socialUser =
+            socialUserRepository.findByIdOrNull(request.socialUserId)
+                ?: throw ModelNotFoundException("SocialUser not found", request.socialUserId)
+
         val review =
             reviewRepository.findByIdAndDeletedAtIsNull(reviewId)
                 ?: throw ModelNotFoundException("Review", reviewId)
 
-//        if (review.deletedAt != null) {
-//            throw ReviewDeleteException(reviewId)
-//        }
+        if (review.socialUser.id != socialUser.id) {
+            throw IllegalAccessException("권한이 없습니다.")
+        }
+
+        validateRating(request.rating)
 
         request.toUpdateReview(review)
 
