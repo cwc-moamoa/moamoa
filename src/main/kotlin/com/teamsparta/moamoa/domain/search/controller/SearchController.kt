@@ -32,6 +32,7 @@ class SearchController(
         val products = searchService.searchProductsByLikes(pageable)
         return ResponseEntity.status(HttpStatus.OK).body(products)
     }
+
     @Operation(summary = "좋아요 순 리뷰 검색", description = "좋아요가 많은 순서대로 리뷰를 검색합니다.")
     @GetMapping("/reviews/likes")
     fun searchReviewsByLikes(
@@ -40,6 +41,7 @@ class SearchController(
         val reviews = searchService.searchReviewsByLikes(pageable)
         return ResponseEntity.status(HttpStatus.OK).body(reviews)
     }
+
     @Operation(summary = "상품 검색", description = "주어진 키워드로 상품을 검색합니다.")
     @GetMapping("/products")
     fun searchProducts(
@@ -49,6 +51,7 @@ class SearchController(
         val products = searchService.searchProducts(keyword, pageable)
         return ResponseEntity.status(HttpStatus.OK).body(products)
     }
+
     @Operation(summary = "리뷰 검색", description = "주어진 키워드로 리뷰를 검색합니다.")
     @GetMapping("/reviews")
     fun searchReviews(
@@ -58,11 +61,11 @@ class SearchController(
         val reviews = searchService.searchReviews(keyword, pageable)
         return ResponseEntity.status(HttpStatus.OK).body(reviews)
     }
+
     @Operation(summary = "인기 검색어 조회", description = "가장 인기 있는 검색어 목록을 조회합니다.")
     @GetMapping("/popular")
     fun getPopularKeywords(): ResponseEntity<List<SearchHistory>> {
         val popularKeywords = searchService.getPopularKeywords()
         return ResponseEntity.status(HttpStatus.OK).body(popularKeywords)
     }
-
 }

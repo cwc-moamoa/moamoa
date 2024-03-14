@@ -18,6 +18,7 @@ class LikeController(private val likeService: LikeService) {
     ) {
         likeService.addLikeToProduct(productId, socialUserId)
     }
+
     @Operation(summary = "상품에서 '좋아요' 제거", description = "특정 상품에 대한 사용자의 '좋아요'를 제거합니다.")
     @DeleteMapping("/product/{productId}/socialUser/{socialUserId}")
     fun removeLikeFromProduct(
@@ -27,6 +28,7 @@ class LikeController(private val likeService: LikeService) {
         likeService.removeLikeFromProduct(productId, socialUserId)
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
     }
+
     @Operation(summary = "리뷰에 '좋아요' 추가", description = "특정 리뷰에 대한 사용자의 '좋아요'를 추가합니다.")
     @PostMapping("/review/{reviewId}/socialUser/{socialUserId}")
     fun addLikeToReview(
@@ -35,6 +37,7 @@ class LikeController(private val likeService: LikeService) {
     ) {
         likeService.addLikeToReview(reviewId, socialUserId)
     }
+
     @Operation(summary = "리뷰에서 '좋아요' 제거", description = "특정 리뷰에 대한 사용자의 '좋아요'를 제거합니다.")
     @DeleteMapping("/review/{reviewId}/socialUser/{socialUserId}")
     fun removeLikeFromReview(
