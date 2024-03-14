@@ -10,7 +10,6 @@ data class CreateReviewRequest(
     val name: String,
     val imageUrl: String?,
     val rating: Int,
-    val socialUserId: Long,
 ) {
     fun toReview(
         product: Product,
