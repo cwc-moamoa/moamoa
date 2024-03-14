@@ -24,11 +24,10 @@ import org.springframework.web.bind.annotation.RestController
 class ReviewController(
     private val reviewService: ReviewService,
 ) {
-    @PostMapping // (consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
+    @PostMapping
     fun createReview(
         @PathVariable productId: Long,
         @RequestBody createReviewRequest: CreateReviewRequest,
-//        @RequestPart("image") multipartFile: MultipartFile
     ): ResponseEntity<ReviewResponse> {
         val result = reviewService.createReview(productId, createReviewRequest)
         return ResponseEntity
