@@ -3,7 +3,7 @@ package com.teamsparta.moamoa.domain.order.model
 import com.teamsparta.moamoa.domain.order.dto.ResponseOrderDto
 import com.teamsparta.moamoa.domain.payment.model.PaymentEntity
 import com.teamsparta.moamoa.domain.product.model.Product
-import com.teamsparta.moamoa.domain.user.model.User
+import com.teamsparta.moamoa.domain.socialUser.model.SocialUser
 import com.teamsparta.moamoa.infra.BaseTimeEntity
 import jakarta.persistence.*
 
@@ -25,11 +25,13 @@ class OrdersEntity(
     var product: Product,
     @ManyToOne
     @JoinColumn(name = "user_id")
-    var user: User,
+    var socialUser: SocialUser,
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "payment_id")
     var payment: PaymentEntity,
     var orderUid: String?,
+    @Column
+    val phoneNumber: String,
 ) : BaseTimeEntity() {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
