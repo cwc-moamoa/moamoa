@@ -1,21 +1,21 @@
 package com.teamsparta.moamoa.domain.like.service
 
-//import com.teamsparta.moamoa.domain.like.model.Like
-//import com.teamsparta.moamoa.domain.like.repository.LikeRepository
-//import com.teamsparta.moamoa.domain.product.repository.ProductRepository
-//import com.teamsparta.moamoa.domain.review.repository.ReviewRepository
-//import com.teamsparta.moamoa.domain.user.repository.UserRepository
-//import com.teamsparta.moamoa.exception.ModelNotFoundException
-//import jakarta.transaction.Transactional
-//import org.springframework.stereotype.Service
+// import com.teamsparta.moamoa.domain.like.model.Like
+// import com.teamsparta.moamoa.domain.like.repository.LikeRepository
+// import com.teamsparta.moamoa.domain.product.repository.ProductRepository
+// import com.teamsparta.moamoa.domain.review.repository.ReviewRepository
+// import com.teamsparta.moamoa.domain.user.repository.UserRepository
+// import com.teamsparta.moamoa.exception.ModelNotFoundException
+// import jakarta.transaction.Transactional
+// import org.springframework.stereotype.Service
 //
-//@Service
-//class LikeServiceImpl(
+// @Service
+// class LikeServiceImpl(
 //    private val productRepository: ProductRepository,
 //    private val likeRepository: LikeRepository,
 //    private val reviewRepository: ReviewRepository,
 //    private val userRepository: UserRepository,
-//) : LikeService {
+// ) : LikeService {
 //    @Transactional
 //    override fun addLikeToProduct(
 //        productId: Long,
@@ -108,4 +108,4 @@ package com.teamsparta.moamoa.domain.like.service
 //            }
 //        }
 //    }
-//}
+// }

@@ -19,7 +19,10 @@ interface ReviewService {
 
     fun getReviewById(reviewId: Long): ReviewResponse
 
-    fun getPaginatedReviewList(pageable: Pageable): Page<ReviewResponse>
+    fun getPaginatedReviewList(
+        productId: Long,
+        pageable: Pageable,
+    ): Page<ReviewResponse>
 
     fun deleteReview(reviewId: Long)
 }
