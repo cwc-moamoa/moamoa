@@ -32,7 +32,7 @@ class OrderServiceImpl(
     private val redisTemplate: RedisTemplate<String, Any>,
     private val paymentRepository: PaymentRepository,
     private val groupPurchaseRepository: GroupPurchaseRepository,
-    private val socialUserRepository: SocialUserRepository
+    private val socialUserRepository: SocialUserRepository,
 ) : OrderService {
 //    @Transactional
 //    override fun createOrder(
@@ -101,7 +101,7 @@ class OrderServiceImpl(
                             socialUser = findUser,
                             orderUid = UUID.randomUUID().toString(),
                             payment = discountedPayment,
-                            phoneNumber = phoneNumber
+                            phoneNumber = phoneNumber,
                         ),
                     )
                 paymentRepository.save(discountedPayment)
@@ -128,7 +128,7 @@ class OrderServiceImpl(
                         socialUser = findUser,
                         orderUid = UUID.randomUUID().toString(),
                         payment = payment,
-                        phoneNumber = phoneNumber
+                        phoneNumber = phoneNumber,
                     ),
                 )
             paymentRepository.save(payment)

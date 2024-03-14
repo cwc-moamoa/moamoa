@@ -1,6 +1,6 @@
-//package com.teamsparta.moamoa.domain.like.service
+// package com.teamsparta.moamoa.domain.like.service
 //
-//interface LikeService {
+// interface LikeService {
 //    fun addLikeToProduct(
 //        userId: Long,
 //        productId: Long,
@@ -20,4 +20,4 @@
 //        userId: Long,
 //        reviewId: Long,
 //    )
-//}
+// }

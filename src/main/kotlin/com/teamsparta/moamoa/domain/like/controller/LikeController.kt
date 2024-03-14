@@ -1,13 +1,13 @@
 package com.teamsparta.moamoa.domain.like.controller
 //
-//import com.teamsparta.moamoa.domain.like.service.LikeService
-//import org.springframework.http.HttpStatus
-//import org.springframework.http.ResponseEntity
-//import org.springframework.web.bind.annotation.*
+// import com.teamsparta.moamoa.domain.like.service.LikeService
+// import org.springframework.http.HttpStatus
+// import org.springframework.http.ResponseEntity
+// import org.springframework.web.bind.annotation.*
 //
-//@RestController
-//@RequestMapping("/likes")
-//class LikeController(private val likeService: LikeService) {
+// @RestController
+// @RequestMapping("/likes")
+// class LikeController(private val likeService: LikeService) {
 //    @PostMapping("/product/{productId}/user/{userId}")
 //    fun addLikeToProduct(
 //        @PathVariable productId: Long,
@@ -41,4 +41,4 @@ package com.teamsparta.moamoa.domain.like.controller
 //        likeService.removeLikeFromReview(reviewId, userId)
 //        return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
 //    }
-//}
+// }
