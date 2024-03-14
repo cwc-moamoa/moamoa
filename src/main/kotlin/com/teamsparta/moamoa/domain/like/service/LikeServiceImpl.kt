@@ -53,13 +53,19 @@ class LikeServiceImpl(
             socialUserRepository.findById(socialUserId)
                 .orElseThrow { throw ModelNotFoundException("User", socialUserId) }
 
-        likeRepository.findByProductAndSocialUser(product, user)?.let {
-            likeRepository.delete(it) // findByProductAndUser로 Like가 null이 아니라면 해당 "좋아요" 기록을 삭제
+        val like = likeRepository.findByProductAndSocialUser(product, user)
+        if (like != null) {
+            if (like.socialUser.id != socialUserId) {
+                throw IllegalArgumentException("권한이 없습니다")
+            }
+            likeRepository.delete(like)
 
             if (product.likes > 0) {
                 product.likes--
                 productRepository.save(product)
             }
+        } else {
+            throw IllegalArgumentException("할 수 없습니다")
         }
     }
 
@@ -99,13 +105,19 @@ class LikeServiceImpl(
             socialUserRepository.findById(socialUserId)
                 .orElseThrow { throw ModelNotFoundException("User", socialUserId) }
 
-        likeRepository.findByReviewAndSocialUser(review, user)?.let {
-            likeRepository.delete(it)
+        val like = likeRepository.findByReviewAndSocialUser(review, user)
+        if (like != null) {
+            if (like.socialUser.id != socialUserId) {
+                throw IllegalArgumentException("권한이 없습니다")
+            }
+            likeRepository.delete(like)
 
             if (review.likes > 0) {
                 review.likes--
                 reviewRepository.save(review)
             }
+        } else {
+            throw IllegalArgumentException("할 수 없습니다")
         }
     }
 }

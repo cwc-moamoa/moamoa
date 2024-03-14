@@ -112,6 +112,14 @@ class ProductServiceImpl(
             productRepository.findByIdAndDeletedAtIsNull(productId)
                 .orElseThrow { ModelNotFoundException("Product", productId) }
 
+        val seller =
+            sellerRepository.findByIdOrNull(sellerId)
+                ?: throw ModelNotFoundException("seller", sellerId)
+
+        if (seller != product.seller) {
+            throw IllegalArgumentException("권한이 없습니다")
+        }
+
         product.deletedAt = LocalDateTime.now()
 
         return productRepository.save(product)
@@ -147,4 +155,4 @@ class ProductServiceImpl(
     override fun getPaginatedProductList(pageable: Pageable): Page<ProductResponse> {
         return productRepository.findAllByDeletedAtIsNull(pageable)
     }
-} // 되나?
+}
