@@ -9,13 +9,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice
 
 @RestControllerAdvice
 class GlobalExceptionHandler {
-    @ExceptionHandler(ModelNotFoundException::class)
-    fun handleModelNotFoundException(e: ModelNotFoundException): ResponseEntity<ErrorResponseDto> {
-        return ResponseEntity
-            .status(HttpStatus.NOT_FOUND)
-            .body(ErrorResponseDto(e.message))
-    }
-
     @ExceptionHandler(IllegalStateException::class)
     fun handlerIllegalStateException(e: IllegalStateException): ResponseEntity<ErrorResponseDto> {
         return ResponseEntity
@@ -23,16 +16,32 @@ class GlobalExceptionHandler {
             .body(ErrorResponseDto(e.message))
     }
 
-    @ExceptionHandler(IllegalArgumentException::class)
-    fun handlerIllegalArgumentException(e: IllegalArgumentException): ResponseEntity<ErrorResponseDto> {
-        return ResponseEntity
-            .status(HttpStatus.BAD_REQUEST)
-            .body(ErrorResponseDto(e.message))
-    }
-
     @ExceptionHandler(OutOfStockException::class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    fun handleOutOfStockException(e: OutOfStockException): ErrorResponse {
-        return ErrorResponse("OutOfStock", e.message ?: "Out of stock")
+    fun handleOutOfStockException(e: OutOfStockException): ErrorResponseDto {
+        return ErrorResponseDto("OutOfStock")
+    }
+
+    @ExceptionHandler(ModelNotFoundException::class)
+    fun handleModeNotFoundException(e: ModelNotFoundException): ResponseEntity<ErrorResponseDto> {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ErrorResponseDto(e.message))
+    }
+
+    @ExceptionHandler(IllegalArgumentException::class)
+    fun handleIllegalArgumentException(e: IllegalArgumentException): ResponseEntity<ErrorResponseDto> {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+            ErrorResponseDto(
+                e.message,
+            ),
+        )
+    }
+
+    @ExceptionHandler(InvalidCredentialException::class)
+    fun handleInvalidCredentialException(e: InvalidCredentialException): ResponseEntity<ErrorResponseDto> {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
+            ErrorResponseDto(
+                e.message,
+            ),
+        )
     }
 }

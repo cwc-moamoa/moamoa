@@ -1,6 +1,5 @@
 package com.teamsparta.moamoa.domain.product.model
 
-import com.fasterxml.jackson.annotation.JsonBackReference
 import com.teamsparta.moamoa.infra.BaseTimeEntity
 import jakarta.persistence.*
 
@@ -10,10 +9,10 @@ data class ProductStock(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
+    //    @JsonBackReference
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
-    @JsonBackReference
-    val product: Product,
+    var product: Product,
     @Column(name = "stock")
     var stock: Int,
     @Column(name = "product_name")

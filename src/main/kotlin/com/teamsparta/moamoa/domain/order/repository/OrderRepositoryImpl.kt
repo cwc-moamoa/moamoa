@@ -3,15 +3,15 @@ package com.teamsparta.moamoa.domain.order.repository
 import com.teamsparta.moamoa.domain.order.model.OrdersEntity
 import com.teamsparta.moamoa.domain.order.model.QOrdersEntity
 import com.teamsparta.moamoa.domain.product.model.QProduct
-import com.teamsparta.moamoa.domain.seller.model.QSellerEntity
+import com.teamsparta.moamoa.domain.seller.model.QSeller
 import com.teamsparta.moamoa.infra.QueryDslSupport
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 
 class OrderRepositoryImpl : CustomOrderRepository, QueryDslSupport() {
     private val orders = QOrdersEntity.ordersEntity
-    private val seller = QSellerEntity.sellerEntity
     private val product = QProduct.product
+    private val seller = QSeller.seller
 
     override fun getOrderPage(
         userId: Long,
@@ -20,10 +20,10 @@ class OrderRepositoryImpl : CustomOrderRepository, QueryDslSupport() {
     ): Page<OrdersEntity> {
         val result =
             queryFactory.selectFrom(orders)
-                .where(orders.user.id.eq(userId))
+                .where(orders.socialUser.id.eq(userId))
                 .offset((page - 1).toLong())
                 .limit(size.toLong())
-                .orderBy(orders.user.id.asc())
+                .orderBy(orders.socialUser.id.asc())
                 .fetch()
         return PageImpl(result)
     }

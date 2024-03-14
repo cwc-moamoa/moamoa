@@ -52,12 +52,11 @@ class ProductServiceImpl(
                 imageUrl = request.imageUrl,
                 price = request.price,
                 purchaseAble = request.purchaseAble,
-                likes = request.likes,
-                productDiscount = request.productDiscount,
                 ratingAverage = request.ratingAverage,
                 userLimit = request.userLimit,
                 discount = request.discount,
                 seller = seller,
+                likes = 0,
             )
 
         val productStock =
@@ -67,9 +66,10 @@ class ProductServiceImpl(
                 productName = request.title,
             )
 
-        product.productStock = productStock
+//        product.productStock = productStock
 
         productRepository.save(product)
+        productStockRepository.save(productStock)
 
         return product
     }
@@ -89,7 +89,7 @@ class ProductServiceImpl(
                 ?: throw ModelNotFoundException("seller", sellerId)
 
         if (seller != product.seller) {
-            throw IllegalArgumentException("The seller does not have permission to update this product")
+            throw IllegalArgumentException("권한이 없습니다")
         }
 
         product.apply {
@@ -105,8 +105,8 @@ class ProductServiceImpl(
 
     @Transactional
     override fun deleteProduct(
-        sellerId: Long,
         productId: Long,
+        sellerId: Long,
     ): Product {
         val product =
             productRepository.findByIdAndDeletedAtIsNull(productId)
@@ -127,8 +127,8 @@ class ProductServiceImpl(
                 .orElseThrow { ModelNotFoundException("Product", productId) }
 
         val productStock =
-            product.productStock
-                ?: throw RuntimeException("ProductStock not found")
+            productStockRepository.findById(productId)
+                .orElseThrow { ModelNotFoundException("Product", productId) }
 
         if (productStock.stock < quantity) {
             throw OutOfStockException("Not enough stock")

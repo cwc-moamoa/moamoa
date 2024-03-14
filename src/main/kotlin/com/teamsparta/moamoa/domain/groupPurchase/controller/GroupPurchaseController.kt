@@ -12,9 +12,9 @@ class GroupPurchaseController(private val groupPurchaseService: GroupPurchaseSer
 //    fun createAndJoinOrJoin(
 //        @RequestBody request: CreateGroupPurchaseRequest,
 //        @RequestParam userId: Long,
-// //        @RequestParam orderId: Long,
+//         @RequestParam orderId: Long,
 //    ): ResponseEntity<String> {
-//        groupPurchaseService.createAndJoinOrJoinGroupPurchase(request, userId)
+//        groupPurchaseService.createAndJoinOrJoinGroupPurchase(request, userId , orderId)
 //        return ResponseEntity.status(HttpStatus.OK).body("공동구매 매칭 성공")
 //    }
 

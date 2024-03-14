@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>주문 생성 폼</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+<h1>주문 생성</h1>
+<form id="orderForm" method="post">
+    <label for="userId">사용자 ID:</label>
+    <input type="text" id="userId" name="userId"><br><br>
+
+    <label for="productId">상품 ID:</label>
+    <input type="text" id="productId" name="productId"><br><br>
+
+    <label for="quantity">수량:</label>
+    <input type="text" id="quantity" name="quantity"><br><br>
+
+    <label for="address">주소:</label>
+    <input type="text" id="address" name="address"><br><br>
+
+    <label for="phoneNumber">폰번호:</label>
+    <input type="text" id="phoneNumber" name="phoneNumber"><br><br>
+
+    <input type="submit" value="주문 생성">
+</form>
+
+<script>
+    $(document).ready(function() {
+        $('#orderForm').submit(function(event) {
+            event.preventDefault(); // 폼 기본 동작 방지
+
+            // 폼 데이터를 객체로 구성
+            var formData = {
+                userId: $('#userId').val(),
+                productId: $('#productId').val(),
+                quantity: $('#quantity').val(),
+                address: $('#address').val(),
+                phoneNumber: $('#phoneNumber').val()
+            };
+
+            // 서버로 POST 요청 보내기
+            $.ajax({
+                type: 'POST',
+                url: '/api/orders/create',
+                data: formData, // 객체 형태로 전송
+                success: function(response) {
+                    alert('주문이 성공적으로 생성되었습니다!');
+                    // 주문 생성 성공 시 결제 페이지로 이동
+                    var orderUid = response.orderUid;
+                    window.location.href = "/payment/" + orderUid;
+
+                },
+                error: function(xhr, status, error) {
+                    alert('주문 생성에 실패하였습니다.');
+                    // 주문 생성 실패 시 처리할 로직 추가 가능
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>
