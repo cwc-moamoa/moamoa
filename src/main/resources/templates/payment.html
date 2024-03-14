@@ -19,7 +19,6 @@
             var itemName = "[[${requestDto.itemName}]]";
             var paymentPrice = "[[${requestDto.paymentPrice}]]";
             var buyerName = "[[${requestDto.buyerName}]]";
-            var buyerEmail = "[[${requestDto.buyerEmail}]]";
             var buyerAddress = "[[${requestDto.buyerAddress}]]";
             var buyerPhone = "[[${requestDto.buyerPhone}]]";
 
@@ -29,7 +28,6 @@
                     merchant_uid: orderUid, // 주문 번호
                     name : itemName, // 상품 이름
                     amount : paymentPrice, // 상품 가격
-                    buyer_email : buyerEmail, // 구매자 이메일
                     buyer_name : buyerName, // 구매자 이름
                     buyer_tel : buyerPhone, // 전화번호
                     buyer_addr : buyerAddress, // 구매자 주소

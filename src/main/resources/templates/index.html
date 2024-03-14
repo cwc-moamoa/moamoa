@@ -20,6 +20,9 @@
     <label for="address">주소:</label>
     <input type="text" id="address" name="address"><br><br>
 
+    <label for="phoneNumber">폰번호:</label>
+    <input type="text" id="phoneNumber" name="phoneNumber"><br><br>
+
     <input type="submit" value="주문 생성">
 </form>
 
@@ -33,7 +36,8 @@
                 userId: $('#userId').val(),
                 productId: $('#productId').val(),
                 quantity: $('#quantity').val(),
-                address: $('#address').val()
+                address: $('#address').val(),
+                phoneNumber: $('#phoneNumber').val()
             };
 
             // 서버로 POST 요청 보내기

@@ -39,6 +39,9 @@ class SecurityConfig(
                     "/oauth2/login",
                     "/oauth2/callback/**",
                     "/h2-console/**",
+                    "/api/orders/**",
+                    "/api",
+                    "/start8080",
                 ).permitAll()
                     .anyRequest().authenticated()
             }

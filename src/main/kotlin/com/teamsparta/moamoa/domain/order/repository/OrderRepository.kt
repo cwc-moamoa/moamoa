@@ -11,10 +11,10 @@ interface OrderRepository : JpaRepository<OrdersEntity, Long>, CustomOrderReposi
     @Query(
         "select o from OrdersEntity o" +
             " left join fetch o.payment p" +
-            " left join fetch o.user m" +
+            " left join fetch o.socialUser m" +
             " where o.orderUid = :orderUid",
     )
-    fun findOrderAndPaymentAndUser(orderUid: String): Optional<OrdersEntity>
+    fun findOrderAndPaymentAndSocialUser(orderUid: String): Optional<OrdersEntity>
 
     @Query(
         "select o from OrdersEntity o" +

@@ -5,7 +5,6 @@ data class RequestPayDto(
     val itemName: String,
     val buyerName: String,
     val paymentPrice: Double,
-    val buyerEmail: String,
     val buyerAddress: String,
     val buyerPhone: String,
 )

@@ -1,6 +1,5 @@
 package com.teamsparta.moamoa.domain.order.service
 
-import com.teamsparta.moamoa.domain.groupPurchase.repository.GroupPurchaseJoinUserRepository
 import com.teamsparta.moamoa.domain.groupPurchase.repository.GroupPurchaseRepository
 import com.teamsparta.moamoa.domain.order.dto.*
 import com.teamsparta.moamoa.domain.order.model.OrdersEntity
@@ -14,7 +13,7 @@ import com.teamsparta.moamoa.domain.product.model.ProductStock.Companion.discoun
 import com.teamsparta.moamoa.domain.product.repository.ProductRepository
 import com.teamsparta.moamoa.domain.product.repository.ProductStockRepository
 import com.teamsparta.moamoa.domain.seller.repository.SellerRepository
-import com.teamsparta.moamoa.domain.user.repository.UserRepository
+import com.teamsparta.moamoa.domain.socialUser.repository.SocialUserRepository
 import com.teamsparta.moamoa.exception.ModelNotFoundException
 import org.springframework.data.domain.Page
 import org.springframework.data.redis.core.RedisTemplate
@@ -29,12 +28,11 @@ class OrderServiceImpl(
     private val orderRepository: OrderRepository,
     private val productRepository: ProductRepository,
     private val productStockRepository: ProductStockRepository,
-    private val userRepository: UserRepository,
     private val sellerRepository: SellerRepository,
     private val redisTemplate: RedisTemplate<String, Any>,
     private val paymentRepository: PaymentRepository,
-    private val groupPurchaseJoinUserRepository: GroupPurchaseJoinUserRepository,
     private val groupPurchaseRepository: GroupPurchaseRepository,
+    private val socialUserRepository: SocialUserRepository
 ) : OrderService {
 //    @Transactional
 //    override fun createOrder(
@@ -75,8 +73,9 @@ class OrderServiceImpl(
         productId: Long,
         quantity: Int,
         address: String,
+        phoneNumber: String,
     ): ResponseOrderDto {
-        val findUser = userRepository.findByIdOrNull(userId) ?: throw Exception("존재하지 않는 유저입니다")
+        val findUser = socialUserRepository.findByIdOrNull(userId) ?: throw Exception("존재하지 않는 유저입니다")
         val findProduct =
             productRepository.findByIdOrNull(productId) ?: throw Exception("존재하지 않는 상풉입니다")
         val stockCheck = productStockRepository.findByProduct(findProduct)
@@ -99,9 +98,10 @@ class OrderServiceImpl(
                             discount = findProduct.discount,
                             product = findProduct,
                             quantity = quantity,
-                            user = findUser,
+                            socialUser = findUser,
                             orderUid = UUID.randomUUID().toString(),
                             payment = discountedPayment,
+                            phoneNumber = phoneNumber
                         ),
                     )
                 paymentRepository.save(discountedPayment)
@@ -125,9 +125,10 @@ class OrderServiceImpl(
                         discount = 0.0,
                         product = findProduct,
                         quantity = quantity,
-                        user = findUser,
+                        socialUser = findUser,
                         orderUid = UUID.randomUUID().toString(),
                         payment = payment,
+                        phoneNumber = phoneNumber
                     ),
                 )
             paymentRepository.save(payment)
@@ -154,9 +155,9 @@ class OrderServiceImpl(
         orderId: Long,
         updateOrderDto: UpdateOrderDto,
     ): ResponseOrderDto {
-        val findUser = userRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("user", userId)
+        val findUser = socialUserRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("user", userId)
         val findOrders = orderRepository.findByIdOrNull(orderId) ?: throw ModelNotFoundException("orders", orderId)
-        if (findOrders.user == findUser) {
+        if (findOrders.socialUser == findUser) {
             findOrders.address = updateOrderDto.address
             return orderRepository.save(findOrders).toResponse()
         } else {
@@ -169,10 +170,10 @@ class OrderServiceImpl(
         userId: Long,
         orderId: Long,
     ): CancelResponseDto {
-        val findUser = userRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("user", userId)
+        val findUser = socialUserRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("user", userId)
         val findOrder = orderRepository.findByIdOrNull(orderId) ?: throw ModelNotFoundException("orders", orderId)
 
-        if (findUser.id != findOrder.user.id) {
+        if (findUser.id != findOrder.socialUser.id) {
             throw Exception("주문정보가 일치하지 않습니다")
         }
 
@@ -193,10 +194,10 @@ class OrderServiceImpl(
         userId: Long,
         orderId: Long,
     ): ResponseOrderDto {
-        val findUser = userRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("user", userId)
+        val findUser = socialUserRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("user", userId)
         val findOrder = orderRepository.findByIdOrNull(orderId) ?: throw ModelNotFoundException("orders", orderId)
 
-        return if (findOrder.user.id == findUser.id) {
+        return if (findOrder.socialUser.id == findUser.id) {
             findOrder.toResponse()
         } else {
             throw Exception("유저와 주문정보가 일치하지 않습니다")

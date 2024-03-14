@@ -28,7 +28,8 @@ class OrderController(
         val productId = request.getParameter("productId").toLong()
         val quantity = request.getParameter("quantity").toInt()
         val address = request.getParameter("address")
-        val responseOrderDto = orderService.createOrder(userId, productId, quantity, address)
+        val phoneNumber = request.getParameter("phoneNumber")
+        val responseOrderDto = orderService.createOrder(userId, productId, quantity, address, phoneNumber)
         return ResponseEntity.status(HttpStatus.CREATED).body(responseOrderDto)
     }
 
@@ -38,8 +39,9 @@ class OrderController(
         @RequestParam productId: Long,
         @RequestParam quantity: Int,
         @RequestParam address: String,
+        @RequestParam phoneNumber: String,
     ): ResponseEntity<ResponseOrderDto> {
-        val responseOrderDto = orderService.createOrder(userId, productId, quantity, address)
+        val responseOrderDto = orderService.createOrder(userId, productId, quantity, address, phoneNumber)
         return ResponseEntity
             .status(HttpStatus.CREATED)
             .body(responseOrderDto)
