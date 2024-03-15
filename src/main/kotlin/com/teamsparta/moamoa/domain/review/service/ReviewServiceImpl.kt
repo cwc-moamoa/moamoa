@@ -7,6 +7,7 @@ import com.teamsparta.moamoa.domain.review.dto.UpdateReviewRequest
 import com.teamsparta.moamoa.domain.review.repository.ReviewRepository
 import com.teamsparta.moamoa.domain.socialUser.repository.SocialUserRepository
 import com.teamsparta.moamoa.exception.ModelNotFoundException
+import com.teamsparta.moamoa.infra.security.UserPrincipal
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
@@ -29,19 +30,19 @@ class ReviewServiceImpl(
     @Transactional
     override fun createReview(
         productId: Long,
+        socialUser: UserPrincipal,
         createReviewRequest: CreateReviewRequest,
     ): ReviewResponse {
         validateRating(createReviewRequest.rating)
 
-        val socialUser =
-            socialUserRepository.findByIdOrNull(createReviewRequest.socialUserId)
-                ?: throw ModelNotFoundException("SocialUser not found", createReviewRequest.socialUserId)
+        val user =
+            socialUserRepository.findByEmail(socialUser.email)
 
         val product =
             productRepository.findByIdAndDeletedAtIsNull(productId)
                 .orElseThrow { ModelNotFoundException("Product not found or deleted", productId) }
 
-        val review = createReviewRequest.toReview(product, socialUser)
+        val review = createReviewRequest.toReview(product, user)
 
         val savedReview = reviewRepository.save(review)
         return ReviewResponse.toReviewResponse(savedReview)
@@ -68,17 +69,14 @@ class ReviewServiceImpl(
     @Transactional
     override fun updateReview(
         reviewId: Long,
+        socialUser: UserPrincipal,
         request: UpdateReviewRequest,
     ): ReviewResponse {
-        val socialUser =
-            socialUserRepository.findByIdOrNull(request.socialUserId)
-                ?: throw ModelNotFoundException("SocialUser not found", request.socialUserId)
-
         val review =
             reviewRepository.findByIdAndDeletedAtIsNull(reviewId)
                 ?: throw ModelNotFoundException("Review", reviewId)
 
-        if (review.socialUser.id != socialUser.id) {
+        if (review.socialUser.email != socialUser.email) {
             throw IllegalAccessException("권한이 없습니다.")
         }
 
@@ -92,10 +90,23 @@ class ReviewServiceImpl(
     }
 
     @Transactional
-    override fun deleteReview(reviewId: Long) {
+    override fun deleteReview(
+        reviewId: Long,
+        socialUser: UserPrincipal,
+    ) {
         val review =
             reviewRepository.findByIdOrNull(reviewId)
                 ?: throw ModelNotFoundException("Review", reviewId)
+
+        if (review.socialUser.email != socialUser.email)
+            {
+                throw IllegalAccessException("권한이 없습니다.")
+            }
+
+        if (review.deletedAt != null)
+            {
+                throw Exception("이미 삭제된 리뷰입니다.")
+            }
 
         review.deletedAt = LocalDateTime.now()
         reviewRepository.save(review)

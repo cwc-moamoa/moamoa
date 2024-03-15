@@ -8,7 +8,6 @@ class UpdateReviewRequest(
     val name: String,
     val imageUrl: String?,
     val rating: Int,
-    val socialUserId: Long,
 ) {
     fun toUpdateReview(review: Review) {
         review.title = this.title

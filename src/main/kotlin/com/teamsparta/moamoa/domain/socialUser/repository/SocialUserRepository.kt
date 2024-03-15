@@ -14,4 +14,6 @@ interface SocialUserRepository : CrudRepository<SocialUser, Long> {
         provider: OAuth2Provider,
         id: String,
     ): SocialUser
+
+    fun findByEmail(email: String): SocialUser
 }

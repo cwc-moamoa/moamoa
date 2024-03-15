@@ -43,7 +43,8 @@ class SecurityConfig(
                     "/api",
                     "/api/orders/create",
                     "/payment",
-                    "/payment/"
+                    "/payment/**",
+                    "/"
                 ).permitAll()
                     .anyRequest().authenticated()
             }
