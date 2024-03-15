@@ -1,11 +1,11 @@
 package com.teamsparta.moamoa.domain.user.model
 
-//import com.teamsparta.moamoa.infra.BaseTimeEntity
-//import jakarta.persistence.*
+// import com.teamsparta.moamoa.infra.BaseTimeEntity
+// import jakarta.persistence.*
 //
-//@Table(name = "app_user")
-//@Entity
-//class User(
+// @Table(name = "app_user")
+// @Entity
+// class User(
 //    @Column(name = "email")
 //    var email: String,
 //    @Column(name = "password")
@@ -16,8 +16,8 @@ package com.teamsparta.moamoa.domain.user.model
 //    var address: String,
 //    @Column(name = "phone_number")
 //    var phoneNumber: String,
-//) : BaseTimeEntity() {
+// ) : BaseTimeEntity() {
 //    @Id
 //    @GeneratedValue(strategy = GenerationType.IDENTITY)
 //    val id: Long? = null
-//}
+// }

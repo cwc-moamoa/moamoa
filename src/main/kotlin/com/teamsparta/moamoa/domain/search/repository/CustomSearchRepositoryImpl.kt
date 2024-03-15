@@ -77,18 +77,4 @@ class CustomSearchRepositoryImpl : CustomSearchRepository, QueryDslSupport() {
 
         return PageImpl(contents, pageable, totalCount)
     }
-
-//    override fun findTopSearchHistories(pageable: Pageable): Page<SearchHistory> {
-//        val totalCount = queryFactory.select(searchHistory.count())
-//            .from(searchHistory)
-//            .fetchOne() ?: 0L
-//
-//        val histories = queryFactory.selectFrom(searchHistory)
-//            .orderBy(searchHistory.count.desc())
-//            .offset(pageable.offset)
-//            .limit(pageable.pageSize.toLong())
-//            .fetch()
-//
-//        return PageImpl(histories, pageable, totalCount)
-//    }
 }
