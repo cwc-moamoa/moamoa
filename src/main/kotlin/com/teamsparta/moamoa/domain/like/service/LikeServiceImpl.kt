@@ -4,11 +4,9 @@ import com.teamsparta.moamoa.domain.like.model.Like
 import com.teamsparta.moamoa.domain.like.repository.LikeRepository
 import com.teamsparta.moamoa.domain.product.repository.ProductRepository
 import com.teamsparta.moamoa.domain.review.repository.ReviewRepository
-import com.teamsparta.moamoa.domain.seller.repository.SellerRepository
 import com.teamsparta.moamoa.domain.socialUser.repository.SocialUserRepository
 import com.teamsparta.moamoa.exception.ModelNotFoundException
 import jakarta.transaction.Transactional
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 
 @Service
@@ -17,18 +15,12 @@ class LikeServiceImpl(
     private val likeRepository: LikeRepository,
     private val reviewRepository: ReviewRepository,
     private val socialUserRepository: SocialUserRepository,
-    private val sellerRepository: SellerRepository,
 ) : LikeService {
     @Transactional
     override fun addLikeToProduct(
         productId: Long,
         socialUserId: Long,
     ) {
-        val seller = sellerRepository.findByIdOrNull(socialUserId)
-        if (seller != null) {
-            throw ModelNotFoundException("SocialUser", socialUserId)
-        }
-
         val product =
             productRepository.findById(productId)
                 .orElseThrow { throw ModelNotFoundException("Product", productId) }
@@ -84,10 +76,6 @@ class LikeServiceImpl(
         reviewId: Long,
         socialUserId: Long,
     ) {
-        val seller = sellerRepository.findByIdOrNull(socialUserId)
-        if (seller != null) {
-            throw ModelNotFoundException("SocialUser", socialUserId)
-        }
 
         val review =
             reviewRepository.findById(reviewId)

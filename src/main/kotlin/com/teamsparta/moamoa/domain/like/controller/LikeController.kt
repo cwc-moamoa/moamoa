@@ -50,3 +50,4 @@ class LikeController(private val likeService: LikeService) {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
     }
 }
+
