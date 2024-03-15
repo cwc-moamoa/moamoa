@@ -41,7 +41,9 @@ class SecurityConfig(
                     "/h2-console/**",
                     "/api/orders/**",
                     "/api",
-                    "/start8080",
+                    "/api/orders/create",
+                    "/payment",
+                    "/payment/"
                 ).permitAll()
                     .anyRequest().authenticated()
             }

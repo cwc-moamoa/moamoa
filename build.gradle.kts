@@ -56,6 +56,9 @@ dependencies {
     implementation("com.github.iamport:iamport-rest-client-java:0.2.21")
 
     implementation("org.springframework.boot:spring-boot-starter-aop")
+    // S3 의존성 추가
+    implementation("org.springframework.cloud:spring-cloud-starter-aws:2.0.1.RELEASE")
+
     runtimeOnly("org.postgresql:postgresql")
     // implementation("com.h2database:h2")
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
