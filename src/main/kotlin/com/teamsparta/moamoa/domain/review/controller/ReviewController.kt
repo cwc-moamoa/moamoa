@@ -4,12 +4,14 @@ import com.teamsparta.moamoa.domain.review.dto.CreateReviewRequest
 import com.teamsparta.moamoa.domain.review.dto.ReviewResponse
 import com.teamsparta.moamoa.domain.review.dto.UpdateReviewRequest
 import com.teamsparta.moamoa.domain.review.service.ReviewService
+import com.teamsparta.moamoa.infra.security.UserPrincipal
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.data.web.PageableDefault
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -27,9 +29,10 @@ class ReviewController(
     @PostMapping
     fun createReview(
         @PathVariable productId: Long,
+        @AuthenticationPrincipal socialUser: UserPrincipal,
         @RequestBody createReviewRequest: CreateReviewRequest,
     ): ResponseEntity<ReviewResponse> {
-        val result = reviewService.createReview(productId, createReviewRequest)
+        val result = reviewService.createReview(productId, socialUser, createReviewRequest)
         return ResponseEntity
             .status(HttpStatus.CREATED)
             .body(result)
@@ -55,11 +58,12 @@ class ReviewController(
     @PutMapping("/{reviewId}")
     fun updateReview(
         @PathVariable reviewId: Long,
+        @AuthenticationPrincipal socialUser: UserPrincipal,
         @RequestBody updateReviewRequest: UpdateReviewRequest,
     ): ResponseEntity<ReviewResponse> {
         return ResponseEntity
             .status(HttpStatus.OK)
-            .body(reviewService.updateReview(reviewId, updateReviewRequest))
+            .body(reviewService.updateReview(reviewId, socialUser, updateReviewRequest))
     }
 
     @DeleteMapping("/{reviewId}")
