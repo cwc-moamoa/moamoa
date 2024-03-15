@@ -69,8 +69,9 @@ class ReviewController(
     @DeleteMapping("/{reviewId}")
     fun deleteReview(
         @PathVariable reviewId: Long,
+        @AuthenticationPrincipal socialUser: UserPrincipal,
     ): ResponseEntity<String> {
-        reviewService.deleteReview(reviewId)
+        reviewService.deleteReview(reviewId, socialUser)
         val deleteReviewSuccessMessage = "댓글이 성공적으로 삭제되었습니다!"
         return ResponseEntity
             .status(HttpStatus.OK)
