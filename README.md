@@ -1,4 +1,4 @@
-﻿## MoaMoa
+## MoaMoa
 ![](https://velog.velcdn.com/images/2yore/post/424295c5-8a60-466b-9e5b-ce612f5873c6/image.png)
 
 ---
