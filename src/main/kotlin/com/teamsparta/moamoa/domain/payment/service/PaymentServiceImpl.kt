@@ -95,14 +95,14 @@ class PaymentServiceImpl(
 //                println("결제 금액 위변조 의심")
             }
 
-//            order.payment.changePaymentBySuccess(PaymentStatus.OK, iamportResponse.response.impUid)
-            val paymentChange =
-                PaymentEntity(
-                    paymentUid = iamportResponse.response.impUid,
-                    status = PaymentStatus.OK,
-                    price = price,
-                )
-            paymentRepository.save(paymentChange)
+            order.payment.changePaymentBySuccess(PaymentStatus.OK, iamportResponse.response.impUid)
+//            val paymentChange =
+//                PaymentEntity(
+//                    paymentUid = iamportResponse.response.impUid,
+//                    status = PaymentStatus.OK,
+//                    price = price,
+//                )
+//            paymentRepository.save(paymentChange)
 
             if (order.discount > 0.0) {
                 orderService.saveToRedis(order.product.id.toString(), order.socialUser.id.toString(), order.id.toString())
