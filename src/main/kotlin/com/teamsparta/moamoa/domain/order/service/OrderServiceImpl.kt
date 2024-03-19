@@ -84,7 +84,7 @@ class OrderServiceImpl(
 
         // 어떻게 막을지 생각하기....
         if (findProduct.discount > 0) {
-            val groupPurchaseCheck = groupPurchaseRepository.findByIdOrNull(findProduct.id)
+            val groupPurchaseCheck = groupPurchaseRepository.findByProductIdAndDeletedAtIsNull(productId)
             val groupPurchaseUserCheck = groupPurchaseCheck?.groupPurchaseUsers?.find { it.userId == findUser.id }
             if (groupPurchaseUserCheck == null) {
                 val discountedPrice = findProduct.price * quantity * (1 - findProduct.discount / 100.0)
