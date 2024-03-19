@@ -19,6 +19,8 @@ import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 import java.io.IOException
 import java.math.BigDecimal
+import java.time.LocalDateTime
+
 
 @Service
 class PaymentServiceImpl(
@@ -34,9 +36,6 @@ class PaymentServiceImpl(
         val order =
             orderRepository.findOrderAndPaymentAndSocialUser(orderUid)
                 .orElseThrow { IllegalArgumentException("주문이 없습니다.") }
-
-//        val discountPrice = if (order.discount > 0.0) order.payment.price * (1 - order.discount / 100.0) else order.payment.price
-// 바보야 왜 2중 할인 하고 있니 오더 에서 할인 다 했자너..
 
         return RequestPayDto(
             buyerName = order.socialUser.nickname,
@@ -62,14 +61,16 @@ class PaymentServiceImpl(
                     .orElseThrow { IllegalArgumentException("재고를 찾을 수 없습니다.") }
 
             if (iamportResponse.response.status != "paid") {
-                orderRepository.delete(order)
-                paymentRepository.delete(order.payment)
+                order.deletedAt = LocalDateTime.now()
+                orderRepository.save(order)
+
+                order.payment.deletedAt = LocalDateTime.now()
+                paymentRepository.save(order.payment)
+
                 stockFindAndPlus.stock += order.quantity
                 productStockRepository.save(stockFindAndPlus)
 
-//                return IamportResponse()
                 throw RuntimeException("결제 미완료")
-//                println("결제 미완료")
             }
 
             val price = order.payment.price
@@ -77,8 +78,12 @@ class PaymentServiceImpl(
             val iamportPrice = iamportResponse.response.amount.toDouble()
 
             if (iamportPrice != price) {
-                orderRepository.delete(order)
-                paymentRepository.delete(order.payment)
+                order.deletedAt = LocalDateTime.now()
+                orderRepository.save(order)
+
+                order.payment.deletedAt = LocalDateTime.now()
+                paymentRepository.save(order.payment)
+
                 stockFindAndPlus.stock += order.quantity
                 productStockRepository.save(stockFindAndPlus)
 
@@ -92,20 +97,17 @@ class PaymentServiceImpl(
                 )
 
                 throw RuntimeException("결제금액 위변조 의심")
-//                println("결제 금액 위변조 의심")
             }
 
-//            order.payment.changePaymentBySuccess(PaymentStatus.OK, iamportResponse.response.impUid)
-            val paymentChange =
-                PaymentEntity(
-                    paymentUid = iamportResponse.response.impUid,
-                    status = PaymentStatus.OK,
-                    price = price,
-                )
+            val paymentChange = order.payment.changePaymentBySuccess(PaymentStatus.OK, iamportResponse.response.impUid)
             paymentRepository.save(paymentChange)
 
             if (order.discount > 0.0) {
-                orderService.saveToRedis(order.product.id.toString(), order.socialUser.id.toString(), order.id.toString())
+                orderService.saveToRedis(
+                    order.product.id.toString(),
+                    order.socialUser.id.toString(),
+                    order.id.toString()
+                )
                 val discountAppliedEvent = DiscountPaymentEvent(order.id.toString(), order.socialUser.id.toString())
                 applicationEventPublisher.publishEvent(discountAppliedEvent)
             }

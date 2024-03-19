@@ -55,10 +55,11 @@
                         }).done(function(response) {
                             console.log(response.data);
                             alert("주문에 성공했습니다.")
-                            // window.location.href =
+                            window.location.href = "/success-payment"
                         }).fail(function(xhr, status, error) {
                             console.error(xhr.response);
                             alert("주문에 실패하셨습니다.")
+                            window.location.href = "/fail-payment"
                         });
                     }
                 });

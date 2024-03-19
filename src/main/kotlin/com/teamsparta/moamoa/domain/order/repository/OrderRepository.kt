@@ -22,4 +22,6 @@ interface OrderRepository : JpaRepository<OrdersEntity, Long>, CustomOrderReposi
             " where o.orderUid = :orderUid",
     )
     fun findOrderAndPayment(orderUid: String): Optional<OrdersEntity>
+
+    fun findByIdAndDeletedAtIsNull(orderId: Long) : Optional<OrdersEntity>
 }
