@@ -33,12 +33,14 @@ class LikeServiceImpl(
             socialUserRepository.findById(socialUserId)
                 .orElseThrow { throw ModelNotFoundException("User", socialUserId) }
 
-        if (likeRepository.findByProductAndSocialUser(product, user) == null) { // 여기가 해당 상품에 유저가 널이여야, 좋아요를 안해야한다는거
-            likeRepository.save(Like(product = product, socialUser = user, status = true))
-
-            product.likes++
-            productRepository.save(product)
+        val existingLike = likeRepository.findByProductAndSocialUser(product, user)
+        if (existingLike != null) {
+            throw IllegalArgumentException("이미 좋아요를 누른 상품입니다")
         }
+
+        likeRepository.save(Like(product = product, socialUser = user, status = true))
+        product.likes++
+        productRepository.save(product)
     }
 
     @Transactional
@@ -74,6 +76,7 @@ class LikeServiceImpl(
         reviewId: Long,
         socialUserId: Long,
     ) {
+
         val review =
             reviewRepository.findById(reviewId)
                 .orElseThrow { throw ModelNotFoundException("Review", reviewId) }
@@ -86,11 +89,14 @@ class LikeServiceImpl(
             socialUserRepository.findById(socialUserId)
                 .orElseThrow { throw ModelNotFoundException("User", socialUserId) }
 
-        if (likeRepository.findByReviewAndSocialUser(review, user) == null) {
-            likeRepository.save(Like(review = review, socialUser = user, status = true))
-            review.likes++
-            reviewRepository.save(review)
+        val existingLike = likeRepository.findByReviewAndSocialUser(review, user)
+        if (existingLike != null) {
+            throw IllegalArgumentException("이미 좋아요를 누른 리뷰입니다")
         }
+
+        likeRepository.save(Like(review = review, socialUser = user, status = true))
+        review.likes++
+        reviewRepository.save(review)
     }
 
     @Transactional

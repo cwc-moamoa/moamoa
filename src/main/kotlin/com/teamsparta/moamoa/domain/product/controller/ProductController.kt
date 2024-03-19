@@ -37,11 +37,9 @@ class ProductController(
     @PostMapping("/products")
     fun createProduct(
         @AuthenticationPrincipal user: UserPrincipal,
-//        @PathVariable sellerId: Long,
         @RequestBody request: ProductRequest,
     ): ResponseEntity<ProductResponse> {
         val product = productService.createProduct(user.id, request)
-//        val product = productService.createProduct(sellerId, request)
         val response = ProductResponse(product)
         return ResponseEntity.ok(response)
     }
@@ -51,11 +49,9 @@ class ProductController(
     fun updateProduct(
         @AuthenticationPrincipal user: UserPrincipal,
         @Parameter(description = "상품 ID") @PathVariable productId: Long,
-//        @PathVariable sellerId: Long,
         @RequestBody productRequest: ProductRequest,
     ): ResponseEntity<ProductResponse> {
         val updatedProduct = productService.updateProduct(productId, user.id, productRequest)
-        // val updatedProduct = productService.updateProduct(productId, sellerId, productRequest)
         return ResponseEntity.ok(ProductResponse(updatedProduct))
     }
 
@@ -64,10 +60,8 @@ class ProductController(
     fun deleteProduct(
         @AuthenticationPrincipal user: UserPrincipal,
         @Parameter(description = "상품 ID") @PathVariable productId: Long,
-//        @PathVariable sellerId: Long,
     ): ResponseEntity<ProductResponse> {
         val product = productService.deleteProduct(productId, user.id)
-        // val product = productService.deleteProduct(productId, sellerId)
         return ResponseEntity.ok(ProductResponse(product))
     }
 
