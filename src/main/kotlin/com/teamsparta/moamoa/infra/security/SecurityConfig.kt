@@ -44,7 +44,9 @@ class SecurityConfig(
                     "/api/orders/create",
                     "/payment",
                     "/payment/**",
-                    "/"
+                    "/",
+                    "/success-payment",
+                    "/fail-payment"
                 ).permitAll()
                     .anyRequest().authenticated()
             }
