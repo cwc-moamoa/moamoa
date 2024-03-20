@@ -1,5 +1,6 @@
 package com.teamsparta.moamoa.domain.order.service
 
+import com.teamsparta.moamoa.domain.groupPurchase.repository.GroupPurchaseJoinUserRepository
 import com.teamsparta.moamoa.domain.groupPurchase.repository.GroupPurchaseRepository
 import com.teamsparta.moamoa.domain.order.dto.*
 import com.teamsparta.moamoa.domain.order.model.OrdersEntity
@@ -33,6 +34,7 @@ class OrderServiceImpl(
     private val paymentRepository: PaymentRepository,
     private val groupPurchaseRepository: GroupPurchaseRepository,
     private val socialUserRepository: SocialUserRepository,
+    private val groupPurchaseJoinUserRepository: GroupPurchaseJoinUserRepository,
 ) : OrderService {
 
     //유저는 추후 providerId 가져오는 문제 및 논리삭제 적용되면 논리삭제된것 안찾기 적용예정
@@ -132,28 +134,93 @@ class OrderServiceImpl(
         }
     }
 
-    @Transactional
+    @Transactional //리브의 트랜잭션을 띠고 가져와서써라
     override fun cancelOrder(
         userId: Long,
         orderId: Long,
     ): CancelResponseDto {
         val findUser = socialUserRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("user", userId)
         val findOrder = orderRepository.findByIdAndDeletedAtIsNull(orderId).orElseThrow { Exception("존재하지 않는 주문입니다") }
+        val stock = productStockRepository.findByProduct(findOrder.product)
+
+        //요서 부터는 공구친구들을 위한
+        val findGroupJoinUser = groupPurchaseJoinUserRepository.findByOrderId(orderId) ?: throw ModelNotFoundException("groupJoinUser",orderId)
+        val group = findGroupJoinUser.groupPurchase //방
+        val groupLimit = group.userLimit// 그룹방 유저 리밋
+        val groupUserCount = group.userCount // 그룹방 유저카운트
+        val payInfo = findOrder.payment // 결제정보
+
+
         // 이미 취소된 주문을 또 찾으면 안되기 때문에 논리삭제가 된 것은 찾지 않도록 함
         if (findUser.id != findOrder.socialUser.id) {
             throw Exception("주문정보가 일치하지 않습니다")
         }
 
-        return if (findOrder.status != OrdersStatus.CANCELLED) {
+        if(findOrder.status == OrdersStatus.CANCELLED){
+            throw Exception("이미 취소된 주문입니다.")
+        }
+            //공구 인지 아닌지
+        if (findOrder.discount > 0.0){
+            if(groupLimit == groupUserCount){
+
+                   throw Exception ("매칭이 완료되었기 때문에 취소가 불가합니다.")
+                    // 더 좋은 문장이 안떠오름
+            }else if(
+                groupUserCount == 1 // 그룹에 한명만 있을때
+            ){
+                findOrder.deletedAt = LocalDateTime.now()
+                findOrder.status = OrdersStatus.CANCELLED
+                //주문 상태변경
+                stock!!.stock += findOrder.quantity
+                //재고 롤백
+                findGroupJoinUser.deletedAt = LocalDateTime.now()
+                group.deletedAt = LocalDateTime.now()
+                group.userCount -= 1
+                //그룹과 그룹참여인원 논리삭제 + 인원 까주기
+                payInfo.deletedAt = LocalDateTime.now()
+                //결제 정보 논리삭제
+
+                productStockRepository.save(stock!!)
+                orderRepository.save(findOrder)
+                groupPurchaseRepository.save(group)
+                groupPurchaseJoinUserRepository.save(findGroupJoinUser)
+                paymentRepository.save(payInfo)
+
+
+            }else if(
+                groupLimit > groupUserCount // 그룹이 완성되지 않았지만 여러명일때
+            ){
+                findOrder.deletedAt = LocalDateTime.now()
+                findOrder.status = OrdersStatus.CANCELLED
+                stock!!.stock += findOrder.quantity
+                findGroupJoinUser.deletedAt = LocalDateTime.now()
+                payInfo.deletedAt = LocalDateTime.now()
+                group.userCount -= 1
+                //매칭방 빼고 논리삭제 + 참여인원 까주기
+                productStockRepository.save(stock!!)
+                orderRepository.save(findOrder)
+                groupPurchaseRepository.save(group)
+                groupPurchaseJoinUserRepository.save(findGroupJoinUser)
+                paymentRepository.save(payInfo)
+
+            }
+
+
+        }else{
             findOrder.deletedAt = LocalDateTime.now()
             findOrder.status = OrdersStatus.CANCELLED
+            stock!!.stock += findOrder.quantity// ?.을 써서 어떤식으로 넘길지 모르겠음 세이프콜을 쓰면 오히려 재고가 안맞을수도있을거같음
+            productStockRepository.save(stock!!)
             orderRepository.save(findOrder)
-            CancelResponseDto(
-                message = "주문이 취소 되었습니다",
-            )
-        } else {
-            throw Exception("이미 취소된 주문입니다")
+            //일반 주문일때 재고원래대로 돌려놓고 주문 논리삭제
         }
+
+        return CancelResponseDto(
+            message = "주문이 취소 되었습니다"
+        )
+
+        //////////////////////////////////////
+
     }
 
     override fun getOrder(
