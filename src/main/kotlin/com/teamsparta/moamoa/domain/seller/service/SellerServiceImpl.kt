@@ -1,6 +1,11 @@
 package com.teamsparta.moamoa.domain.seller.service
 
+import com.teamsparta.moamoa.domain.order.dto.ResponseOrderDto
+import com.teamsparta.moamoa.domain.order.model.OrdersStatus
+import com.teamsparta.moamoa.domain.order.model.toResponse
+import com.teamsparta.moamoa.domain.order.repository.CustomOrderRepository
 import com.teamsparta.moamoa.domain.order.repository.OrderRepository
+import com.teamsparta.moamoa.domain.product.repository.ProductRepository
 import com.teamsparta.moamoa.domain.seller.dto.*
 import com.teamsparta.moamoa.domain.seller.repository.SellerRepository
 import com.teamsparta.moamoa.exception.InvalidCredentialException
@@ -17,7 +22,8 @@ class SellerServiceImpl(
     private val sellerRepository: SellerRepository,
     private val passwordEncoder: PasswordEncoder,
     private val jwtPlugin: JwtPlugin,
-    private val orderRepository: OrderRepository
+    private val orderRepository: OrderRepository,
+    private val productRepository: ProductRepository
 ) : SellerService {
     @Transactional
     override fun signUpSeller(sellerSignUpRequest: SellerSignUpRequest): SellerResponse {
@@ -45,10 +51,14 @@ class SellerServiceImpl(
 
     override fun deleteSeller(sellerId: Long): SellerResponse {
         val seller = sellerRepository.findByIdAndDeletedAtIsNull(sellerId).orElseThrow { ModelNotFoundException("Seller", sellerId) }
-
         if (sellerId != seller.id) {
             throw InvalidCredentialException()
         }
+        val orders = orderRepository.findAll()
+        val foundOrders = orders.filter {it.product.seller.id == sellerId}
+            if (foundOrders.any {it.status != OrdersStatus.CANCELLED && it.status != OrdersStatus.DELIVERED}) {
+                throw Exception("완료되지 않은 주문이 존재합니다. ")
+            }
 
         seller.deletedAt = LocalDateTime.now()
         sellerRepository.save(seller)
