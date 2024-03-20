@@ -1,5 +1,7 @@
 package com.teamsparta.moamoa.domain.order.service
 
+import com.teamsparta.moamoa.domain.groupPurchase.model.GroupPurchaseEntity
+import com.teamsparta.moamoa.domain.groupPurchase.model.GroupPurchaseJoinUserEntity
 import com.teamsparta.moamoa.domain.groupPurchase.repository.GroupPurchaseJoinUserRepository
 import com.teamsparta.moamoa.domain.groupPurchase.repository.GroupPurchaseRepository
 import com.teamsparta.moamoa.domain.order.dto.*
@@ -10,6 +12,7 @@ import com.teamsparta.moamoa.domain.order.repository.OrderRepository
 import com.teamsparta.moamoa.domain.payment.model.PaymentEntity
 import com.teamsparta.moamoa.domain.payment.model.PaymentStatus
 import com.teamsparta.moamoa.domain.payment.repository.PaymentRepository
+import com.teamsparta.moamoa.domain.product.model.ProductStock
 import com.teamsparta.moamoa.domain.product.model.ProductStock.Companion.discount
 import com.teamsparta.moamoa.domain.product.repository.ProductRepository
 import com.teamsparta.moamoa.domain.product.repository.ProductStockRepository
@@ -162,66 +165,43 @@ class OrderServiceImpl(
             //공구 인지 아닌지
         if (findOrder.discount > 0.0){
             if(groupLimit == groupUserCount){
-
                    throw Exception ("매칭이 완료되었기 때문에 취소가 불가합니다.")
                     // 더 좋은 문장이 안떠오름
             }else if(
                 groupUserCount == 1 // 그룹에 한명만 있을때
             ){
-                findOrder.deletedAt = LocalDateTime.now()
-                findOrder.status = OrdersStatus.CANCELLED
-                //주문 상태변경
-                stock!!.stock += findOrder.quantity
-                //재고 롤백
-                findGroupJoinUser.deletedAt = LocalDateTime.now()
-                group.deletedAt = LocalDateTime.now()
-                group.userCount -= 1
-                //그룹과 그룹참여인원 논리삭제 + 인원 까주기
-                payInfo.deletedAt = LocalDateTime.now()
-                //결제 정보 논리삭제
-
-                productStockRepository.save(stock!!)
-                orderRepository.save(findOrder)
-                groupPurchaseRepository.save(group)
-                groupPurchaseJoinUserRepository.save(findGroupJoinUser)
-                paymentRepository.save(payInfo)
-
-
+                cancelEtc(findOrder,stock!!,findGroupJoinUser,payInfo,group)
+                group.deletedAt= LocalDateTime.now()
+                group.groupPurchaseUsers.remove(findGroupJoinUser)
             }else if(
                 groupLimit > groupUserCount // 그룹이 완성되지 않았지만 여러명일때
             ){
-                findOrder.deletedAt = LocalDateTime.now()
-                findOrder.status = OrdersStatus.CANCELLED
-                stock!!.stock += findOrder.quantity
-                findGroupJoinUser.deletedAt = LocalDateTime.now()
-                payInfo.deletedAt = LocalDateTime.now()
-                group.userCount -= 1
-                //매칭방 빼고 논리삭제 + 참여인원 까주기
-                productStockRepository.save(stock!!)
-                orderRepository.save(findOrder)
-                groupPurchaseRepository.save(group)
-                groupPurchaseJoinUserRepository.save(findGroupJoinUser)
-                paymentRepository.save(payInfo)
-
+                cancelEtc(findOrder,stock!!,findGroupJoinUser,payInfo,group)
             }
-
-
         }else{
             findOrder.deletedAt = LocalDateTime.now()
             findOrder.status = OrdersStatus.CANCELLED
             stock!!.stock += findOrder.quantity// ?.을 써서 어떤식으로 넘길지 모르겠음 세이프콜을 쓰면 오히려 재고가 안맞을수도있을거같음
-            productStockRepository.save(stock!!)
-            orderRepository.save(findOrder)
             //일반 주문일때 재고원래대로 돌려놓고 주문 논리삭제
         }
-
         return CancelResponseDto(
             message = "주문이 취소 되었습니다"
         )
-
-        //////////////////////////////////////
-
     }
+    private fun cancelEtc(
+        findOrder:OrdersEntity,
+        stock:ProductStock,
+        findGroupJoinUser:GroupPurchaseJoinUserEntity,
+        payInfo:PaymentEntity,
+        group:GroupPurchaseEntity
+    ){
+        findOrder.deletedAt = LocalDateTime.now()
+        findOrder.status = OrdersStatus.CANCELLED
+        stock.stock += findOrder.quantity
+        findGroupJoinUser.deletedAt = LocalDateTime.now()
+        payInfo.deletedAt = LocalDateTime.now()
+        group.userCount -= 1
+    }// 중복이 넘 많아서 함수로 묶고 다른부분만 정의해줌
 
     override fun getOrder(
         userId: Long,
@@ -254,19 +234,21 @@ class OrderServiceImpl(
         val findSeller =
             sellerRepository.findByIdAndDeletedAtIsNull(sellerId).orElseThrow { Exception("존재하지 않는 판매자 입니다") }
         val findProductList = productRepository.findBySellerId(findSeller)
+
         if (findProductList.isEmpty()) {
             throw ModelNotFoundException("product", sellerId)
         }
         val findOrder = orderRepository.findByIdAndDeletedAtIsNull(orderId).orElseThrow { Exception("존재하지 않는 주문입니다") }
         //이건 상태를 변경하는거고, 취소된 주문은 이미 상태가 cancelled 이기 때문에, 상태변경을 지원하지 않음.
-        val findResult = findProductList.find { it.id == findOrder.product.id }
-
-        return if (findResult != null) {
-            findOrder.status = status
-            orderRepository.save(findOrder).toResponse()
-        } else {
-            throw Exception("변경 권한이 없습니다")
-        }
+        val findResult = findProductList.find { it.id == findOrder.product.id } ?: throw Exception("판매자가 파는 상품의 주문이 아닙니다")
+        val stock = productStockRepository.findByProduct(findResult)
+            if (status == OrdersStatus.CANCELLED){
+                findOrder.status = status
+                stock!!.stock += findOrder.quantity
+            }else{
+                findOrder.status = status
+            }
+        return orderRepository.save(findOrder).toResponse()
     }
 
     override fun getOrderBySellerId(
