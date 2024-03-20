@@ -1,5 +1,6 @@
 package com.teamsparta.moamoa.domain.seller.service
 
+import com.teamsparta.moamoa.domain.order.repository.OrderRepository
 import com.teamsparta.moamoa.domain.seller.dto.*
 import com.teamsparta.moamoa.domain.seller.repository.SellerRepository
 import com.teamsparta.moamoa.exception.InvalidCredentialException
@@ -16,6 +17,7 @@ class SellerServiceImpl(
     private val sellerRepository: SellerRepository,
     private val passwordEncoder: PasswordEncoder,
     private val jwtPlugin: JwtPlugin,
+    private val orderRepository: OrderRepository
 ) : SellerService {
     @Transactional
     override fun signUpSeller(sellerSignUpRequest: SellerSignUpRequest): SellerResponse {
@@ -42,11 +44,12 @@ class SellerServiceImpl(
     }
 
     override fun deleteSeller(sellerId: Long): SellerResponse {
-        val seller = sellerRepository.findByIdOrNull(sellerId) ?: throw ModelNotFoundException("Seller", sellerId)
+        val seller = sellerRepository.findByIdAndDeletedAtIsNull(sellerId).orElseThrow { ModelNotFoundException("Seller", sellerId) }
 
         if (sellerId != seller.id) {
             throw InvalidCredentialException()
         }
+
         seller.deletedAt = LocalDateTime.now()
         sellerRepository.save(seller)
 
