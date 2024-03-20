@@ -2,63 +2,104 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>주문 생성 폼</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <title>상품 정보</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        #productInfo {
+            margin-bottom: 20px;
+        }
+
+        #productInfo p {
+            font-size: 16px;
+            margin: 0;
+            padding: 5px 0;
+        }
+
+        #orderButton {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 18px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        #orderButton:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
-<h1>주문 생성</h1>
-<form id="orderForm" method="post">
-    <label for="userId">사용자 ID:</label>
-    <input type="text" id="userId" name="userId"><br><br>
+<div class="container">
+    <h1>상품 정보</h1>
+    <div id="productInfo">
+        <!-- 여기에 상품 정보가 표시됩니다 -->
+    </div>
+    <button id="orderButton">주문하기</button>
+</div>
 
-    <label for="productId">상품 ID:</label>
-    <input type="text" id="productId" name="productId"><br><br>
-
-    <label for="quantity">수량:</label>
-    <input type="text" id="quantity" name="quantity"><br><br>
-
-    <label for="address">주소:</label>
-    <input type="text" id="address" name="address"><br><br>
-
-    <label for="phoneNumber">폰번호:</label>
-    <input type="text" id="phoneNumber" name="phoneNumber"><br><br>
-
-    <input type="submit" value="주문 생성">
-</form>
-
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function() {
-        $('#orderForm').submit(function(event) {
-            event.preventDefault(); // 폼 기본 동작 방지
-
-            // 폼 데이터를 객체로 구성
-            var formData = {
-                userId: $('#userId').val(),
-                productId: $('#productId').val(),
-                quantity: $('#quantity').val(),
-                address: $('#address').val(),
-                phoneNumber: $('#phoneNumber').val()
-            };
-
-            // 서버로 POST 요청 보내기
+        // 상품 정보 가져오는 함수
+        function getProductInfo(productId) {
             $.ajax({
-                type: 'POST',
-                url: '/api/orders/create',
-                data: formData, // 객체 형태로 전송
+                type: 'GET',
+                url: '/products/' + productId,
                 success: function(response) {
-                    alert('주문이 성공적으로 생성되었습니다!');
-                    // 주문 생성 성공 시 결제 페이지로 이동
-                    var orderUid = response.orderUid;
-                    window.location.href = "/payment/" + orderUid;
-
+                    // 상품 정보를 표시하는 부분 업데이트
+                    $('#productInfo').html('<p>상품명: ' + response.title + '</p>' +
+                        '<p>가격: ' + response.price + '</p>');
                 },
                 error: function(xhr, status, error) {
-                    alert('주문 생성에 실패하였습니다.');
-                    // 주문 생성 실패 시 처리할 로직 추가 가능
+                    if (xhr.status == 404) {
+                        alert('상품을 찾을 수 없습니다.');
+                    } else {
+                        alert('상품 정보를 불러오는 데 실패했습니다.');
+                    }
                 }
             });
-        });
+        }
+
+        // 페이지 로드시 URL에서 상품 ID 가져오기
+        var productId = 1
+        if (productId) {
+            // URL에 상품 ID가 있을 경우 해당 상품 정보를 가져옴
+            getProductInfo(productId);
+
+            // 주문하기 버튼 클릭 시 주문 페이지로 이동
+            $('#orderButton').click(function() {
+                window.location.href = "/order?productId=" + productId;
+            });
+        } else {
+            // URL에 상품 ID가 없을 경우 경고 메시지 표시
+            alert('상품 정보가 없습니다.');
+        }
     });
 </script>
+
 </body>
 </html>
