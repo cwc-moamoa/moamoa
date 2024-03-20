@@ -245,6 +245,7 @@ class OrderServiceImpl(
             if (status == OrdersStatus.CANCELLED){
                 findOrder.status = status
                 stock!!.stock += findOrder.quantity
+                productStockRepository.save(stock!!)
             }else{
                 findOrder.status = status
             }
