@@ -179,6 +179,7 @@ class OrderServiceImpl(
                 groupLimit > groupUserCount // 그룹이 완성되지 않았지만 여러명일때
             ){
                 cancelEtc(findOrder,stock!!,findGroupJoinUser,payInfo,group)
+                group.groupPurchaseUsers.remove(findGroupJoinUser)
             }
         }else{
             findOrder.deletedAt = LocalDateTime.now()
@@ -235,7 +236,7 @@ class OrderServiceImpl(
     ): ResponseOrderDto {
         val findSeller =
             sellerRepository.findByIdAndDeletedAtIsNull(sellerId).orElseThrow { Exception("존재하지 않는 판매자 입니다") }
-        val findProductList = productRepository.findBySellerId(findSeller)
+        val findProductList = productRepository.findBySellerId(findSeller.id!!)//이거 잘 몰겠음
 
         if (findProductList.isEmpty()) {
             throw ModelNotFoundException("product", sellerId)
@@ -251,7 +252,6 @@ class OrderServiceImpl(
             }else{
                 findOrder.status = status
             }
-        //일단 에러처리 다해놨는데 어디서 뭔가 터질거같음 뭔가 심상치않은 일이 생긴거야 어둠속에 숨어있는 적의 무리 ~
         return orderRepository.save(findOrder).toResponse()
     }
 
