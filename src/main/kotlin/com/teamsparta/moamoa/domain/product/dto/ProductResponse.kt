@@ -12,7 +12,7 @@ data class ProductResponse(
     val price: Double,
     val discount: Double,
     val purchaseAble: Boolean,
-    val ratingAverage: Double,
+    var ratingAverage: Double,
     val likes: Int,
     var deletedAt: LocalDateTime?,
 ) {
