@@ -1,7 +1,9 @@
 package com.teamsparta.moamoa.domain.search.service
 
 import com.teamsparta.moamoa.domain.product.model.Product
+import com.teamsparta.moamoa.domain.product.repository.ProductRepository
 import com.teamsparta.moamoa.domain.review.model.Review
+import com.teamsparta.moamoa.domain.review.repository.ReviewRepository
 import com.teamsparta.moamoa.domain.search.dto.ProductSearchResponse
 import com.teamsparta.moamoa.domain.search.dto.ReviewSearchResponse
 import com.teamsparta.moamoa.domain.search.model.SearchHistory
@@ -19,6 +21,8 @@ class SearchServiceImpl(
     private val searchProductRepository: SearchProductRepository,
     private val searchReviewRepository: SearchReviewRepository,
     private val searchHistoryRepository: SearchHistoryRepository,
+    private val productRepository: ProductRepository,
+    private val reviewRepository: ReviewRepository,
 ) : SearchService {
     @Transactional
     override fun searchProductsByLikes(pageable: Pageable): List<ProductSearchResponse> {
@@ -86,5 +90,29 @@ class SearchServiceImpl(
     @Transactional
     override fun getPopularKeywords(): List<SearchHistory> {
         return searchHistoryRepository.findAll(Sort.by(Sort.Direction.DESC, "count"))
+    }
+    @Transactional
+    override fun searchProductsByRating(pageable: Pageable): List<ProductSearchResponse> {
+
+        val products = searchProductRepository.findAllByDeletedAtIsNullOrderByRatingAverageDesc(pageable)
+
+        products.forEach { product ->
+            val reviews = reviewRepository.findAllByProductIdAndDeletedAtIsNull(product.id!!, Pageable.unpaged()).content
+            val averageRating = reviews.map { it.rating }.average()
+            product.ratingAverage = if (reviews.isNotEmpty()) averageRating else 0.0 // 평가가 없는 경우 평균 별점을 0으로 설정. 이거 없으면 nan이라고 나오고 맨 위에 나와서 방해함
+            productRepository.save(product)
+        }
+
+        return products.map { product ->
+            ProductSearchResponse(
+                productId = product.id!!,
+                title = product.title,
+                content = product.content,
+                imageUrl = product.imageUrl,
+                price = product.price,
+                ratingAverage = product.ratingAverage,
+                likes = product.likes,
+            )
+        }
     }
 }

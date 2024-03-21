@@ -6,9 +6,9 @@ import com.teamsparta.moamoa.domain.product.model.Product
 import com.teamsparta.moamoa.domain.product.model.ProductStock
 import com.teamsparta.moamoa.domain.product.repository.ProductRepository
 import com.teamsparta.moamoa.domain.product.repository.ProductStockRepository
+import com.teamsparta.moamoa.domain.review.repository.ReviewRepository
 import com.teamsparta.moamoa.domain.seller.repository.SellerRepository
 import com.teamsparta.moamoa.exception.ModelNotFoundException
-import com.teamsparta.moamoa.exception.OutOfStockException
 import jakarta.transaction.Transactional
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -21,11 +21,21 @@ class ProductServiceImpl(
     private val productRepository: ProductRepository,
     private val productStockRepository: ProductStockRepository,
     private val sellerRepository: SellerRepository,
+    private val reviewRepository: ReviewRepository,
 ) : ProductService {
     @Transactional
     override fun getAllProducts(): List<ProductResponse> {
         val products = productRepository.findAll().filter { it.deletedAt == null }
-        return products.map { ProductResponse(it) }
+        return products.map { product ->
+
+            val reviews = reviewRepository.findAllByProductIdAndDeletedAtIsNull(product.id!!, Pageable.unpaged()).content
+            val averageRating = if (reviews.isNotEmpty()) reviews.map { it.rating }.average() else 0.0
+
+            product.ratingAverage = averageRating
+            productRepository.save(product)
+
+            ProductResponse(product)
+        }
     }
 
     @Transactional
@@ -33,8 +43,21 @@ class ProductServiceImpl(
         val product =
             productRepository.findByIdAndDeletedAtIsNull(productId)
                 .orElseThrow { ModelNotFoundException("Product", productId) }
+
+        val reviews = reviewRepository.findAllByProductIdAndDeletedAtIsNull(productId, Pageable.unpaged()).content
+        val averageRating = if (reviews.isNotEmpty()) reviews.map { it.rating }.average() else 0.0
+
+        product.ratingAverage = averageRating
+        productRepository.save(product)
+
         return ProductResponse(product)
     }
+
+    @Transactional
+    override fun getPaginatedProductList(pageable: Pageable): Page<ProductResponse> {
+        return productRepository.findAllByDeletedAtIsNull(pageable)
+    }
+
 
     @Transactional
     override fun createProduct(
@@ -52,7 +75,6 @@ class ProductServiceImpl(
                 imageUrl = request.imageUrl,
                 price = request.price,
                 purchaseAble = request.purchaseAble,
-                ratingAverage = request.ratingAverage,
                 userLimit = request.userLimit,
                 discount = request.discount,
                 seller = seller,
@@ -66,7 +88,7 @@ class ProductServiceImpl(
                 productName = request.title,
             )
 
-//        product.productStock = productStock
+        // product.productStock = productStock
 
         productRepository.save(product)
         productStockRepository.save(productStock)
@@ -139,7 +161,7 @@ class ProductServiceImpl(
                 .orElseThrow { ModelNotFoundException("Product", productId) }
 
         if (productStock.stock < quantity) {
-            throw OutOfStockException("Not enough stock")
+            throw IllegalStateException("Not enough stock")
         }
 
         productStock.stock -= quantity
@@ -151,8 +173,5 @@ class ProductServiceImpl(
         }
     }
 
-    @Transactional
-    override fun getPaginatedProductList(pageable: Pageable): Page<ProductResponse> {
-        return productRepository.findAllByDeletedAtIsNull(pageable)
-    }
+
 }

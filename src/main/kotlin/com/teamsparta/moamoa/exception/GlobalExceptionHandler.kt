@@ -4,7 +4,6 @@ import com.teamsparta.moamoa.exception.dto.ErrorResponseDto
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ExceptionHandler
-import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestControllerAdvice
 
 @RestControllerAdvice
@@ -16,11 +15,6 @@ class GlobalExceptionHandler {
             .body(ErrorResponseDto(e.message))
     }
 
-    @ExceptionHandler(OutOfStockException::class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    fun handleOutOfStockException(e: OutOfStockException): ErrorResponseDto {
-        return ErrorResponseDto("OutOfStock")
-    }
 
     @ExceptionHandler(ModelNotFoundException::class)
     fun handleModeNotFoundException(e: ModelNotFoundException): ResponseEntity<ErrorResponseDto> {

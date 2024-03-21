@@ -22,7 +22,7 @@ data class Product(
     @Column(name = "purchaseAble", nullable = false)
     var purchaseAble: Boolean,
     @Column(name = "ratingAverage", nullable = true)
-    val ratingAverage: Double,
+    var ratingAverage: Double? = null,
     @Column(name = "imageUrl", nullable = true)
     var imageUrl: String,
     @Column(name = "likes", nullable = true)
