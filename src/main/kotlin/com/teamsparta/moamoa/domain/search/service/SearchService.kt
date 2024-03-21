@@ -26,4 +26,6 @@ interface SearchService {
     fun saveSearchHistory(keyword: String)
 
     fun getPopularKeywords(): List<SearchHistory>
+
+    fun searchProductsByRating(pageable: Pageable): List<ProductSearchResponse> // 별점 평균이 높은 순으로 검색을 위해 추가함
 }
