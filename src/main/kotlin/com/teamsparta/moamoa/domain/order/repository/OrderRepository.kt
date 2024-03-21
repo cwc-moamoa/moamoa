@@ -27,6 +27,8 @@ interface OrderRepository : JpaRepository<OrdersEntity, Long>, CustomOrderReposi
 
     fun findByIdAndDeletedAtIsNull(orderId: Long) : Optional<OrdersEntity>
 
+    fun findBySellerIdAndDeletedAtIsNull(sellerId: Long): List<OrdersEntity>
+
 
 
 
