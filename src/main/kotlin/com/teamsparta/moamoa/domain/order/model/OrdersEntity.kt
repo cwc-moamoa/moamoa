@@ -32,8 +32,10 @@ class OrdersEntity(
     var orderUid: String?,
     @Column
     val phoneNumber: String,
+    @Column
+    val sellerId: Long?,
 
-) : BaseTimeEntity() {
+    ) : BaseTimeEntity() {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null
