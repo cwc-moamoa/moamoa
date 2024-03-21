@@ -2,6 +2,7 @@ package com.teamsparta.moamoa.domain.review.controller
 
 import com.teamsparta.moamoa.domain.review.dto.CreateReviewRequest
 import com.teamsparta.moamoa.domain.review.dto.ReviewResponse
+import com.teamsparta.moamoa.domain.review.dto.ReviewResponseByList
 import com.teamsparta.moamoa.domain.review.dto.UpdateReviewRequest
 import com.teamsparta.moamoa.domain.review.service.ReviewService
 import com.teamsparta.moamoa.infra.security.UserPrincipal
@@ -22,11 +23,10 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/products/{productId}/reviews")
 class ReviewController(
     private val reviewService: ReviewService,
 ) {
-    @PostMapping
+    @PostMapping("/{productId}")
     fun createReview(
         @PathVariable productId: Long,
         @AuthenticationPrincipal socialUser: UserPrincipal,
@@ -46,7 +46,7 @@ class ReviewController(
         return ResponseEntity.ok(review)
     }
 
-    @GetMapping
+    @GetMapping("/{productId}")
     fun getPaginatedReviewList(
         @PathVariable productId: Long,
         @PageableDefault(size = 15, sort = ["id"], direction = Sort.Direction.ASC) pageable: Pageable,
@@ -77,4 +77,12 @@ class ReviewController(
             .status(HttpStatus.OK)
             .body(deleteReviewSuccessMessage)
     }
+
+    // 프론트 연결용 컨트롤러
+    @GetMapping("/products/{productId}/reviews")
+    fun getProductReviews(@PathVariable productId: Long): ResponseEntity<List<ReviewResponseByList>> {
+        val reviews = reviewService.getReviewsByProductId(productId)
+        return ResponseEntity.ok(reviews)
+    }
+
 }
