@@ -1,6 +1,7 @@
 package com.teamsparta.moamoa.domain.order.repository
 
 import com.teamsparta.moamoa.domain.order.model.OrdersEntity
+import com.teamsparta.moamoa.domain.product.model.Product
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Repository
@@ -24,4 +25,6 @@ interface OrderRepository : JpaRepository<OrdersEntity, Long>, CustomOrderReposi
     fun findOrderAndPayment(orderUid: String): Optional<OrdersEntity>
 
     fun findByIdAndDeletedAtIsNull(orderId: Long) : Optional<OrdersEntity>
+
+
 }
