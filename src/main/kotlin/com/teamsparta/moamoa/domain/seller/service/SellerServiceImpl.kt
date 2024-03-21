@@ -1,9 +1,6 @@
 package com.teamsparta.moamoa.domain.seller.service
 
-import com.teamsparta.moamoa.domain.order.dto.ResponseOrderDto
 import com.teamsparta.moamoa.domain.order.model.OrdersStatus
-import com.teamsparta.moamoa.domain.order.model.toResponse
-import com.teamsparta.moamoa.domain.order.repository.CustomOrderRepository
 import com.teamsparta.moamoa.domain.order.repository.OrderRepository
 import com.teamsparta.moamoa.domain.product.repository.ProductRepository
 import com.teamsparta.moamoa.domain.seller.dto.*
@@ -11,7 +8,6 @@ import com.teamsparta.moamoa.domain.seller.repository.SellerRepository
 import com.teamsparta.moamoa.exception.InvalidCredentialException
 import com.teamsparta.moamoa.exception.ModelNotFoundException
 import com.teamsparta.moamoa.infra.security.jwt.JwtPlugin
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -48,18 +44,16 @@ class SellerServiceImpl(
                 ),
         )
     }
-
+    @Transactional
     override fun deleteSeller(sellerId: Long): SellerResponse {
         val seller = sellerRepository.findByIdAndDeletedAtIsNull(sellerId).orElseThrow { ModelNotFoundException("Seller", sellerId) }
         if (sellerId != seller.id) {
             throw InvalidCredentialException()
         }
-        val orders = orderRepository.findAll()
-        val foundOrders = orders.filter {it.product.seller.id == sellerId}
-            if (foundOrders.any {it.status != OrdersStatus.CANCELLED && it.status != OrdersStatus.DELIVERED}) {
-                throw Exception("완료되지 않은 주문이 존재합니다. ")
-            }
-
+        val foundOrders = orderRepository.findBySellerIdAndDeletedAtIsNull(sellerId)
+        if (foundOrders.any {it.status != OrdersStatus.DELIVERED && it.status != OrdersStatus.CANCELLED}) {
+            throw Exception("처리되지 않은 주문이 존재합니다. ")
+        }
         seller.deletedAt = LocalDateTime.now()
         sellerRepository.save(seller)
 
