@@ -1,5 +1,6 @@
 package com.teamsparta.moamoa.domain.seller.model
 
+import com.teamsparta.moamoa.domain.product.model.Product
 import com.teamsparta.moamoa.infra.BaseTimeEntity
 import jakarta.persistence.*
 
