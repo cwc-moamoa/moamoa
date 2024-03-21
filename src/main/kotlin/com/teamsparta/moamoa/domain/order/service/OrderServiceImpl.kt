@@ -201,7 +201,7 @@ class OrderServiceImpl(
         findGroupJoinUser.deletedAt = LocalDateTime.now()
         payInfo.deletedAt = LocalDateTime.now()
         group.userCount -= 1
-    }// 중복이 넘 많아서 함수로 묶고 다른부분만 정의해줌
+    }// 중복이 넘 많아서 함수로 묶고 다른부분만 따로 정리해줌
 
     override fun getOrder(
         userId: Long,
@@ -249,6 +249,7 @@ class OrderServiceImpl(
             }else{
                 findOrder.status = status
             }
+        //일단 에러처리 다해놨는데 어디서 뭔가 터질거같음 뭔가 심상치않은 일이 생긴거야 어둠속에 숨어있는 적의 무리 ~
         return orderRepository.save(findOrder).toResponse()
     }
 
