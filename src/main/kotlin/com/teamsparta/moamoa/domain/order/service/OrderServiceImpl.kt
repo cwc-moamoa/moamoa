@@ -75,6 +75,7 @@ class OrderServiceImpl(
                         orderUid = UUID.randomUUID().toString(),
                         payment = discountedPayment,
                         phoneNumber = phoneNumber,
+                        sellerId = findProduct.seller.id
                     ),
                 )
                 paymentRepository.save(discountedPayment)
@@ -100,6 +101,7 @@ class OrderServiceImpl(
                     orderUid = UUID.randomUUID().toString(),
                     payment = payment,
                     phoneNumber = phoneNumber,
+                    sellerId = findProduct.seller.id
                 ),
             )
             paymentRepository.save(payment)
