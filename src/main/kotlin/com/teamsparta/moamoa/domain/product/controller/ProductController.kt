@@ -6,6 +6,7 @@ import com.teamsparta.moamoa.domain.product.service.ProductService
 import com.teamsparta.moamoa.infra.security.UserPrincipal
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
+import jakarta.validation.Valid
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
@@ -37,7 +38,7 @@ class ProductController(
     @PostMapping("/products")
     fun createProduct(
         @AuthenticationPrincipal user: UserPrincipal,
-        @RequestBody request: ProductRequest,
+        @RequestBody @Valid request: ProductRequest,
     ): ResponseEntity<ProductResponse> {
         val product = productService.createProduct(user.id, request)
         val response = ProductResponse(product)
@@ -49,7 +50,7 @@ class ProductController(
     fun updateProduct(
         @AuthenticationPrincipal user: UserPrincipal,
         @Parameter(description = "상품 ID") @PathVariable productId: Long,
-        @RequestBody productRequest: ProductRequest,
+        @RequestBody @Valid productRequest: ProductRequest,
     ): ResponseEntity<ProductResponse> {
         val updatedProduct = productService.updateProduct(productId, user.id, productRequest)
         return ResponseEntity.ok(ProductResponse(updatedProduct))

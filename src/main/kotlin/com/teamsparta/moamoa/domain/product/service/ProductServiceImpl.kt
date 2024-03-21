@@ -59,7 +59,7 @@ class ProductServiceImpl(
     }
 
 
-        @Transactional
+    @Transactional
     override fun createProduct(
         sellerId: Long,
         request: ProductRequest,
@@ -75,7 +75,6 @@ class ProductServiceImpl(
                 imageUrl = request.imageUrl,
                 price = request.price,
                 purchaseAble = request.purchaseAble,
-                ratingAverage = request.ratingAverage,
                 userLimit = request.userLimit,
                 discount = request.discount,
                 seller = seller,
@@ -89,7 +88,7 @@ class ProductServiceImpl(
                 productName = request.title,
             )
 
-//        product.productStock = productStock
+        // product.productStock = productStock
 
         productRepository.save(product)
         productStockRepository.save(productStock)

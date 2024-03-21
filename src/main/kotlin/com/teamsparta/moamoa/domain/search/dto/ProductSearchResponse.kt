@@ -8,6 +8,6 @@ data class ProductSearchResponse(
     val content: String,
     val imageUrl: String?,
     val price: Double,
-    val ratingAverage: Double,
+    val ratingAverage: Double?,
     val likes: Int,
 ) : BaseTimeEntity()
