@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>상품 정보</title>
+    <title>상품 목록</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -26,41 +26,125 @@
             color: #333;
         }
 
-        #productInfo {
+        .product {
+            display: inline-block;
+            width: calc(33.33% - 20px);
+            vertical-align: top;
+            margin-right: 20px;
             margin-bottom: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
-        #productInfo p {
+        .product:last-child {
+            margin-right: 0;
+        }
+
+        .product-info {
+            padding: 20px;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .product-info p {
             font-size: 16px;
             margin: 0;
             padding: 5px 0;
+            /* 긴 텍스트가 있을 경우 줄 바꿈 */
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            text-align: right;
         }
 
-        #orderButton {
+        .login-form {
+            padding: 10px;
+            background-color: #eee;
+            border-radius: 4px;
+            margin-top: 10px;
+            width: 200px;
+            display: inline-block;
+        }
+
+        .login-form input[type="text"],
+        .login-form input[type="password"],
+        .login-form input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+
+        .login-form input[type="submit"] {
             background-color: #007bff;
             color: #fff;
             border: none;
-            padding: 10px 20px;
-            font-size: 18px;
-            border-radius: 4px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
         }
 
-        #orderButton:hover {
+        .login-form input[type="submit"]:hover {
             background-color: #0056b3;
+        }
+
+        .product-image {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .product-image img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
-<div class="container">
-    <h1>상품 정보</h1>
-    <div id="productInfo">
-        <!-- 여기에 상품 정보가 표시됩니다 -->
+<header>
+    <div class="login-form">
+        <form id="loginForm" method="post">
+            <input type="text" id="username" name="username" placeholder="사용자 이름"><br>
+            <input type="password" id="password" name="password" placeholder="비밀번호"><br>
+            <input type="submit" value="로그인">
+        </form>
     </div>
-    <button id="orderButton">주문하기</button>
+</header>
+<div class="container">
+    <h1>상품 목록</h1>
+    <div class="product" id="product1">
+        <div class="product-image" id="productImage_1">
+            <!-- 여기에 상품 1 이미지가 표시됩니다 -->
+            <a href="product-detail?productId=1"><img src="https://via.placeholder.com/150" alt="Product 1 Image"></a>
+        </div>
+        <div class="product-info" id="productInfo_1">
+            <!-- 여기에 상품 1 정보가 표시됩니다 -->
+        </div>
+    </div>
+    <div class="product" id="product2">
+        <div class="product-image" id="productImage_2">
+            <!-- 여기에 상품 2 이미지가 표시됩니다 -->
+            <a href="product-detail?productId=2"><img src="https://via.placeholder.com/150" alt="Product 2 Image"></a>
+        </div>
+        <div class="product-info" id="productInfo_2">
+            <!-- 여기에 상품 2 정보가 표시됩니다 -->
+        </div>
+    </div>
+    <div class="product" id="product3">
+        <div class="product-image" id="productImage_3">
+            <!-- 여기에 상품 3 이미지가 표시됩니다 -->
+            <a href="product-detail?productId=3"><img src="https://via.placeholder.com/150" alt="Product 3 Image"></a>
+        </div>
+        <div class="product-info" id="productInfo_3">
+            <!-- 여기에 상품 3 정보가 표시됩니다 -->
+        </div>
+    </div>
 </div>
-
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function() {
@@ -71,7 +155,7 @@
                 url: '/products/' + productId,
                 success: function(response) {
                     // 상품 정보를 표시하는 부분 업데이트
-                    $('#productInfo').html('<p>상품명: ' + response.title + '</p>' +
+                    $('#productInfo_' + productId).html('<p>상품명: ' + response.title + '</p>' +
                         '<p>가격: ' + response.price + '</p>');
                 },
                 error: function(xhr, status, error) {
@@ -84,22 +168,12 @@
             });
         }
 
-        // 페이지 로드시 URL에서 상품 ID 가져오기
-        var productId = 1
-        if (productId) {
-            // URL에 상품 ID가 있을 경우 해당 상품 정보를 가져옴
+        // 페이지 로드시 각 상품의 정보 가져오기
+        $('.product').each(function() {
+            var productId = $(this).attr('id').replace('product', '');
             getProductInfo(productId);
-
-            // 주문하기 버튼 클릭 시 주문 페이지로 이동
-            $('#orderButton').click(function() {
-                window.location.href = "/order?productId=" + productId;
-            });
-        } else {
-            // URL에 상품 ID가 없을 경우 경고 메시지 표시
-            alert('상품 정보가 없습니다.');
-        }
+        });
     });
 </script>
-
 </body>
 </html>
