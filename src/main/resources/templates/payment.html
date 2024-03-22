@@ -9,7 +9,7 @@
 <body>
 <script>
     var IMP = window.IMP;
-    IMP.init("imp08838662");
+    IMP.init("imp80172878");//요거랑
 
         // 결제 요청 함수
         function requestPay() {
@@ -23,7 +23,7 @@
             var buyerPhone = "[[${requestDto.buyerPhone}]]";
 
             IMP.request_pay({
-                    pg : "nice_v2.iamport00m",
+                    pg : "nice_v2.iamport00m",//요고
                     pay_method : "card",
                     merchant_uid: orderUid, // 주문 번호
                     name : itemName, // 상품 이름
