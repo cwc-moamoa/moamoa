@@ -25,5 +25,5 @@ data class ProductRequest(
 
     @Schema(description = "재고는 0보다 커야 합니다", example = "10")
     @field:Positive(message = "재고는 0보다 커야 합니다.")
-    val stock: Int, // 재고?
+    val stock: Int,
 )
