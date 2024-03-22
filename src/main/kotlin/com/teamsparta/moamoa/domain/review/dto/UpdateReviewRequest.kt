@@ -11,7 +11,8 @@ class UpdateReviewRequest(
     @field:Size(min = 10, max = 300, message = "내용은 10자 이상 300자 이하 작성해주세요.")
     val content: String,
     val imageUrl: String?,
-    @field:[Min(value = 1, message = "1부터 5사이의 별점을 입력해주세요.") Max(value = 5, message = "1부터 5사이의 별점을 입력해주세요.")] val rating: Int,
+    @field:[Min(value = 1, message = "1부터 5사이의 별점을 입력해주세요.") Max(value = 5, message = "1부터 5사이의 별점을 입력해주세요.")]
+    val rating: Int,
 ) {
     fun toUpdateReview(review: Review) {
         review.title = this.title
