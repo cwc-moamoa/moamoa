@@ -9,5 +9,5 @@ interface SellerRepository : JpaRepository<Seller, Long> {
 
     fun findByEmail(email: String): Seller?
 
-    fun findByIdAndDeletedAtIsNull(sellerId: Long) : Optional<Seller>
+    fun findByIdAndDeletedAtIsNull(sellerId: Long): Optional<Seller>
 }

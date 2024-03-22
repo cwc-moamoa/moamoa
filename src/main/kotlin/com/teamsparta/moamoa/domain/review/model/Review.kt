@@ -19,8 +19,6 @@ class Review(
     var title: String,
     @Column(name = "content")
     var content: String,
-    @Column(name = "name")
-    var name: String,
     @Column(name = "image_url")
     var imageUrl: String? = null,
     @Column(name = "likes")
