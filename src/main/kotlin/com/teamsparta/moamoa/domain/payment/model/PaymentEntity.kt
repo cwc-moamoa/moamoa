@@ -22,4 +22,10 @@ class PaymentEntity(
         this.paymentUid = paymentUid
         return this
     }
+
+    fun changePaymentByCancel(
+        status: PaymentStatus,
+    ) {
+        this.status = status
+    }
 }

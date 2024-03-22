@@ -3,6 +3,7 @@ package com.teamsparta.moamoa.domain.payment.controller
 import com.siot.IamportRestClient.response.IamportResponse
 import com.siot.IamportRestClient.response.Payment
 import com.teamsparta.moamoa.domain.payment.dto.PaymentCallbackRequest
+import com.teamsparta.moamoa.domain.payment.dto.RefundCallbackRequest
 import com.teamsparta.moamoa.domain.payment.service.PaymentService
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
@@ -41,4 +42,12 @@ class PaymentController(private val paymentService: PaymentService) {
     fun failPaymentPage(): String {
         return "fail-payment"
     }
+
+//    @ResponseBody
+//    @PostMapping("/cancel")
+//    fun refund(@RequestBody request: RefundCallbackRequest): ResponseEntity<IamportResponse<Payment>> {
+//        val iamportResponse = paymentService.cancelReservation(request)
+//
+//        return ResponseEntity.ok(iamportResponse)
+//    }
 }

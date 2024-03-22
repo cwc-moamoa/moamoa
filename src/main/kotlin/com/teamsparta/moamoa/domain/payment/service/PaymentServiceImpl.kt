@@ -8,6 +8,7 @@ import com.siot.IamportRestClient.response.Payment
 import com.teamsparta.moamoa.domain.order.repository.OrderRepository
 import com.teamsparta.moamoa.domain.order.service.OrderService
 import com.teamsparta.moamoa.domain.payment.dto.PaymentCallbackRequest
+import com.teamsparta.moamoa.domain.payment.dto.RefundCallbackRequest
 import com.teamsparta.moamoa.domain.payment.dto.RequestPayDto
 import com.teamsparta.moamoa.domain.payment.model.PaymentStatus
 import com.teamsparta.moamoa.domain.payment.repository.PaymentRepository
@@ -116,4 +117,38 @@ class PaymentServiceImpl(
             throw RuntimeException(e)
         }
     }
+//    @Transactional
+//    override fun cancelReservation(request: RefundCallbackRequest) : IamportResponse<Payment> {
+//        val iamportResponse: IamportResponse<Payment> = iamportClient.paymentByImpUid(request.paymentUid)
+//        val order =
+//            orderRepository.findOrderAndPayment(request.orderUid)
+//                .orElseThrow { IllegalArgumentException("주문 내역이 없습니다.") }
+//        val cancelData = createCancelData(iamportResponse, request.refundAmount)
+//
+//        val price = order.payment.price
+//        val iamportPrice = iamportResponse.response.amount.toDouble()
+//
+//        if(iamportPrice == price) {
+//            order.deletedAt = LocalDateTime.now()
+//            orderRepository.save(order)
+//
+//            order.payment.deletedAt = LocalDateTime.now()
+//            paymentRepository.save(order.payment)
+//
+//            iamportClient.cancelPaymentByImpUid(cancelData)
+//            order.payment.changePaymentByCancel(PaymentStatus.CANCEL)
+//        } else {
+//            throw RuntimeException("환불금액이 안맞아요")
+//        }
+//
+//        return iamportResponse
+//    }
+//
+//    private fun createCancelData(response: IamportResponse<Payment>, refundAmount: Double): CancelData {
+//        return if (refundAmount == 0.0) {
+//            CancelData(response.response.impUid, true)
+//        } else {
+//            CancelData(response.response.impUid, true, BigDecimal(refundAmount))
+//        }
+//    }
 }
