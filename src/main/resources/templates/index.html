@@ -2,61 +2,179 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>주문 생성 폼</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <title>상품 목록</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .product {
+            display: inline-block;
+            width: calc(33.33% - 20px);
+            vertical-align: top;
+            margin-right: 20px;
+            margin-bottom: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .product:last-child {
+            margin-right: 0;
+        }
+
+        .product-info {
+            padding: 20px;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .product-info p {
+            font-size: 16px;
+            margin: 0;
+            padding: 5px 0;
+            /* 긴 텍스트가 있을 경우 줄 바꿈 */
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            text-align: right;
+        }
+
+        .login-form {
+            padding: 10px;
+            background-color: #eee;
+            border-radius: 4px;
+            margin-top: 10px;
+            width: 200px;
+            display: inline-block;
+        }
+
+        .login-form input[type="text"],
+        .login-form input[type="password"],
+        .login-form input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+
+        .login-form input[type="submit"] {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        .login-form input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        .product-image {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .product-image img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
-<h1>주문 생성</h1>
-<form id="orderForm" method="post">
-    <label for="userId">사용자 ID:</label>
-    <input type="text" id="userId" name="userId"><br><br>
-
-    <label for="productId">상품 ID:</label>
-    <input type="text" id="productId" name="productId"><br><br>
-
-    <label for="quantity">수량:</label>
-    <input type="text" id="quantity" name="quantity"><br><br>
-
-    <label for="address">주소:</label>
-    <input type="text" id="address" name="address"><br><br>
-
-    <label for="phoneNumber">폰번호:</label>
-    <input type="text" id="phoneNumber" name="phoneNumber"><br><br>
-
-    <input type="submit" value="주문 생성">
-</form>
-
+<header>
+    <div class="login-form">
+        <form id="loginForm" method="post">
+            <input type="text" id="username" name="username" placeholder="사용자 이름"><br>
+            <input type="password" id="password" name="password" placeholder="비밀번호"><br>
+            <input type="submit" value="로그인">
+        </form>
+    </div>
+</header>
+<div class="container">
+    <h1>상품 목록</h1>
+    <div class="product" id="product1">
+        <div class="product-image" id="productImage_1">
+            <!-- 여기에 상품 1 이미지가 표시됩니다 -->
+            <a href="product-detail?productId=1"><img src="https://via.placeholder.com/150" alt="Product 1 Image"></a>
+        </div>
+        <div class="product-info" id="productInfo_1">
+            <!-- 여기에 상품 1 정보가 표시됩니다 -->
+        </div>
+    </div>
+    <div class="product" id="product2">
+        <div class="product-image" id="productImage_2">
+            <!-- 여기에 상품 2 이미지가 표시됩니다 -->
+            <a href="product-detail?productId=2"><img src="https://via.placeholder.com/150" alt="Product 2 Image"></a>
+        </div>
+        <div class="product-info" id="productInfo_2">
+            <!-- 여기에 상품 2 정보가 표시됩니다 -->
+        </div>
+    </div>
+    <div class="product" id="product3">
+        <div class="product-image" id="productImage_3">
+            <!-- 여기에 상품 3 이미지가 표시됩니다 -->
+            <a href="product-detail?productId=3"><img src="https://via.placeholder.com/150" alt="Product 3 Image"></a>
+        </div>
+        <div class="product-info" id="productInfo_3">
+            <!-- 여기에 상품 3 정보가 표시됩니다 -->
+        </div>
+    </div>
+    <div>
+        <a href="http://localhost:8080/oauth2/login/kakao">dd</a>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function() {
-        $('#orderForm').submit(function(event) {
-            event.preventDefault(); // 폼 기본 동작 방지
-
-            // 폼 데이터를 객체로 구성
-            var formData = {
-                userId: $('#userId').val(),
-                productId: $('#productId').val(),
-                quantity: $('#quantity').val(),
-                address: $('#address').val(),
-                phoneNumber: $('#phoneNumber').val()
-            };
-
-            // 서버로 POST 요청 보내기
+        // 상품 정보 가져오는 함수
+        function getProductInfo(productId) {
             $.ajax({
-                type: 'POST',
-                url: '/api/orders/create',
-                data: formData, // 객체 형태로 전송
+                type: 'GET',
+                url: '/products/' + productId,
                 success: function(response) {
-                    alert('주문이 성공적으로 생성되었습니다!');
-                    // 주문 생성 성공 시 결제 페이지로 이동
-                    var orderUid = response.orderUid;
-                    window.location.href = "/payment/" + orderUid;
-
+                    // 상품 정보를 표시하는 부분 업데이트
+                    $('#productInfo_' + productId).html('<p>상품명: ' + response.title + '</p>' +
+                        '<p>가격: ' + response.price + '</p>');
                 },
                 error: function(xhr, status, error) {
-                    alert('주문 생성에 실패하였습니다.');
-                    // 주문 생성 실패 시 처리할 로직 추가 가능
+                    if (xhr.status == 404) {
+                        alert('상품을 찾을 수 없습니다.');
+                    } else {
+                        alert('상품 정보를 불러오는 데 실패했습니다.');
+                    }
                 }
             });
+        }
+
+        // 페이지 로드시 각 상품의 정보 가져오기
+        $('.product').each(function() {
+            var productId = $(this).attr('id').replace('product', '');
+            getProductInfo(productId);
         });
     });
 </script>
