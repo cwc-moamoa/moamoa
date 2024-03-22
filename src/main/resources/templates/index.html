@@ -3,110 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <title>상품 목록</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
-
-        .container {
-            max-width: 800px;
-            margin: 20px auto;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        h1 {
-            font-size: 24px;
-            margin-bottom: 20px;
-            color: #333;
-        }
-
-        .product {
-            display: inline-block;
-            width: calc(33.33% - 20px);
-            vertical-align: top;
-            margin-right: 20px;
-            margin-bottom: 20px;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .product:last-child {
-            margin-right: 0;
-        }
-
-        .product-info {
-            padding: 20px;
-            border-bottom: 1px solid #ccc;
-        }
-
-        .product-info p {
-            font-size: 16px;
-            margin: 0;
-            padding: 5px 0;
-            /* 긴 텍스트가 있을 경우 줄 바꿈 */
-            word-wrap: break-word;
-            overflow-wrap: break-word;
-        }
-        header {
-            background-color: #333;
-            color: #fff;
-            padding: 10px;
-            text-align: right;
-        }
-
-        .login-form {
-            padding: 10px;
-            background-color: #eee;
-            border-radius: 4px;
-            margin-top: 10px;
-            width: 200px;
-            display: inline-block;
-        }
-
-        .login-form input[type="text"],
-        .login-form input[type="password"],
-        .login-form input[type="submit"] {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-            border-radius: 4px;
-            border: 1px solid #ccc;
-            box-sizing: border-box;
-        }
-
-        .login-form input[type="submit"] {
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            cursor: pointer;
-        }
-
-        .login-form input[type="submit"]:hover {
-            background-color: #0056b3;
-        }
-
-        .product-image {
-            text-align: center;
-            margin-bottom: 10px;
-        }
-
-        .product-image img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-    </style>
+    <link rel="stylesheet" href="./css/main.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="./js/main.js"></script>
 </head>
 <body>
 <header>
+    <div class="logo">MOAMOA</div>
     <div class="login-form">
         <form id="loginForm" method="post">
             <input type="text" id="username" name="username" placeholder="사용자 이름"><br>
@@ -144,39 +47,9 @@
             <!-- 여기에 상품 3 정보가 표시됩니다 -->
         </div>
     </div>
-    <div>
-        <a href="http://localhost:8080/oauth2/login/kakao">dd</a>
-    </div>
+<!--    <div>-->
+<!--        <a href="http://localhost:8080/oauth2/login/kakao">dd</a>-->
+<!--    </div>-->
 </div>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    $(document).ready(function() {
-        // 상품 정보 가져오는 함수
-        function getProductInfo(productId) {
-            $.ajax({
-                type: 'GET',
-                url: '/products/' + productId,
-                success: function(response) {
-                    // 상품 정보를 표시하는 부분 업데이트
-                    $('#productInfo_' + productId).html('<p>상품명: ' + response.title + '</p>' +
-                        '<p>가격: ' + response.price + '</p>');
-                },
-                error: function(xhr, status, error) {
-                    if (xhr.status == 404) {
-                        alert('상품을 찾을 수 없습니다.');
-                    } else {
-                        alert('상품 정보를 불러오는 데 실패했습니다.');
-                    }
-                }
-            });
-        }
-
-        // 페이지 로드시 각 상품의 정보 가져오기
-        $('.product').each(function() {
-            var productId = $(this).attr('id').replace('product', '');
-            getProductInfo(productId);
-        });
-    });
-</script>
 </body>
 </html>
