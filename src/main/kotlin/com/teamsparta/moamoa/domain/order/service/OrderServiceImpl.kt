@@ -34,8 +34,7 @@ class OrderServiceImpl(
     private val groupPurchaseRepository: GroupPurchaseRepository,
     private val socialUserRepository: SocialUserRepository,
 ) : OrderService {
-
-    //유저는 추후 providerId 가져오는 문제 및 논리삭제 적용되면 논리삭제된것 안찾기 적용예정
+    // 유저는 추후 providerId 가져오는 문제 및 논리삭제 적용되면 논리삭제된것 안찾기 적용예정
     @Transactional
     override fun createOrder(
         userId: Long,
@@ -58,20 +57,21 @@ class OrderServiceImpl(
             if (groupPurchaseUserCheck == null) {
                 val discountedPrice = findProduct.price * quantity * (1 - findProduct.discount / 100.0)
                 val discountedPayment = PaymentEntity(price = discountedPrice, status = PaymentStatus.READY)
-                val discountedOrder = orderRepository.save(
-                    OrdersEntity(
-                        productName = findProduct.title,
-                        totalPrice = discountedPrice,
-                        address = address,
-                        discount = findProduct.discount,
-                        product = findProduct,
-                        quantity = quantity,
-                        socialUser = findUser,
-                        orderUid = UUID.randomUUID().toString(),
-                        payment = discountedPayment,
-                        phoneNumber = phoneNumber,
-                    ),
-                )
+                val discountedOrder =
+                    orderRepository.save(
+                        OrdersEntity(
+                            productName = findProduct.title,
+                            totalPrice = discountedPrice,
+                            address = address,
+                            discount = findProduct.discount,
+                            product = findProduct,
+                            quantity = quantity,
+                            socialUser = findUser,
+                            orderUid = UUID.randomUUID().toString(),
+                            payment = discountedPayment,
+                            phoneNumber = phoneNumber,
+                        ),
+                    )
                 paymentRepository.save(discountedPayment)
                 productStockRepository.save(stockCheck.discount(quantity))
                 return discountedOrder.toResponse()
@@ -79,24 +79,26 @@ class OrderServiceImpl(
                 throw Exception("이미 공동 구매 신청중인 유저는 주문을 신청 할 수 없습니다.")
             }
         } else {
-            val payment = PaymentEntity(
-                price = findProduct.price * quantity,
-                status = PaymentStatus.READY,
-            )
-            val order = orderRepository.save(
-                OrdersEntity(
-                    productName = findProduct.title,
-                    totalPrice = findProduct.price * quantity,
-                    address = address,
-                    discount = 0.0,
-                    product = findProduct,
-                    quantity = quantity,
-                    socialUser = findUser,
-                    orderUid = UUID.randomUUID().toString(),
-                    payment = payment,
-                    phoneNumber = phoneNumber,
-                ),
-            )
+            val payment =
+                PaymentEntity(
+                    price = findProduct.price * quantity,
+                    status = PaymentStatus.READY,
+                )
+            val order =
+                orderRepository.save(
+                    OrdersEntity(
+                        productName = findProduct.title,
+                        totalPrice = findProduct.price * quantity,
+                        address = address,
+                        discount = 0.0,
+                        product = findProduct,
+                        quantity = quantity,
+                        socialUser = findUser,
+                        orderUid = UUID.randomUUID().toString(),
+                        payment = payment,
+                        phoneNumber = phoneNumber,
+                    ),
+                )
             paymentRepository.save(payment)
             productStockRepository.save(stockCheck.discount(quantity))
             return order.toResponse()
@@ -123,7 +125,7 @@ class OrderServiceImpl(
     ): ResponseOrderDto {
         val findUser = socialUserRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("user", userId)
         val findOrders = orderRepository.findByIdAndDeletedAtIsNull(orderId).orElseThrow { Exception("존재하지 않는 주문입니다") }
-        //논리삭제가 된 주문은 업데이트 할 필요가 없기 때문에 찾지 않도록 함
+        // 논리삭제가 된 주문은 업데이트 할 필요가 없기 때문에 찾지 않도록 함
         if (findOrders.socialUser == findUser) {
             findOrders.address = updateOrderDto.address
             return orderRepository.save(findOrders).toResponse()
@@ -162,7 +164,7 @@ class OrderServiceImpl(
     ): ResponseOrderDto {
         val findUser = socialUserRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("user", userId)
         val findOrder = orderRepository.findByIdOrNull(orderId) ?: throw Exception("존재하지 않는 주문 입니다")
-        //취소된 주문도 조회는 가능해야 한다 생각해서, 논리삭제된것도 찾을수 있게 함
+        // 취소된 주문도 조회는 가능해야 한다 생각해서, 논리삭제된것도 찾을수 있게 함
         return if (findOrder.socialUser.id == findUser.id) {
             findOrder.toResponse()
         } else {
@@ -191,7 +193,7 @@ class OrderServiceImpl(
             throw ModelNotFoundException("product", sellerId)
         }
         val findOrder = orderRepository.findByIdAndDeletedAtIsNull(orderId).orElseThrow { Exception("존재하지 않는 주문입니다") }
-        //이건 상태를 변경하는거고, 취소된 주문은 이미 상태가 cancelled 이기 때문에, 상태변경을 지원하지 않음.
+        // 이건 상태를 변경하는거고, 취소된 주문은 이미 상태가 cancelled 이기 때문에, 상태변경을 지원하지 않음.
         val findResult = findProductList.find { it.id == findOrder.product.id }
 
         return if (findResult != null) {

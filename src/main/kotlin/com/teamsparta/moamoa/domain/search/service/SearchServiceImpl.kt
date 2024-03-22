@@ -46,7 +46,7 @@ class SearchServiceImpl(
                 title = review.title,
                 content = review.content,
                 imageUrl = review.imageUrl,
-                name = review.name,
+                name = review.socialUser.nickname,
                 likes = review.likes,
             )
         }

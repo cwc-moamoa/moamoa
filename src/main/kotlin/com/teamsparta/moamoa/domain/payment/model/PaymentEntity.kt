@@ -13,11 +13,11 @@ class PaymentEntity(
     @Enumerated(EnumType.STRING)
     var status: PaymentStatus? = null,
     var paymentUid: String? = null, // 결제 고유 번호
-):BaseTimeEntity() {
+) : BaseTimeEntity() {
     fun changePaymentBySuccess(
         status: PaymentStatus,
         paymentUid: String,
-    ):PaymentEntity {
+    ): PaymentEntity {
         this.status = status
         this.paymentUid = paymentUid
         return this

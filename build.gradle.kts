@@ -60,8 +60,12 @@ dependencies {
     implementation("org.springframework.cloud:spring-cloud-starter-aws:2.0.1.RELEASE")
 
     runtimeOnly("org.postgresql:postgresql")
+
     // implementation("com.h2database:h2")
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
+
+    // validation 추가
+    implementation("org.springframework.boot:spring-boot-starter-validation")
 
     // 테스트 코드
     testImplementation("com.h2database:h2")
