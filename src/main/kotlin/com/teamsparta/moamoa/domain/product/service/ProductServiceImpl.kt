@@ -42,7 +42,7 @@ class ProductServiceImpl(
     override fun getProductById(productId: Long): ProductResponse {
         val product =
             productRepository.findByIdAndDeletedAtIsNull(productId)
-                .orElseThrow { ModelNotFoundException("Product", productId) }
+                ?: throw ModelNotFoundException("Product not found or deleted", productId)
 
         val reviews = reviewRepository.findAllByProductIdAndDeletedAtIsNull(productId, Pageable.unpaged()).content
         val averageRating = if (reviews.isNotEmpty()) reviews.map { it.rating }.average() else 0.0
@@ -57,7 +57,6 @@ class ProductServiceImpl(
     override fun getPaginatedProductList(pageable: Pageable): Page<ProductResponse> {
         return productRepository.findAllByDeletedAtIsNull(pageable)
     }
-
 
     @Transactional
     override fun createProduct(
@@ -104,7 +103,7 @@ class ProductServiceImpl(
     ): Product {
         val product =
             productRepository.findByIdAndDeletedAtIsNull(productId)
-                .orElseThrow { ModelNotFoundException("Product", productId) }
+                ?: throw ModelNotFoundException("Product not found or deleted", productId)
 
         val seller =
             sellerRepository.findByIdOrNull(sellerId)
@@ -132,7 +131,7 @@ class ProductServiceImpl(
     ): Product {
         val product =
             productRepository.findByIdAndDeletedAtIsNull(productId)
-                .orElseThrow { ModelNotFoundException("Product", productId) }
+                ?: throw ModelNotFoundException("Product not found or deleted", productId)
 
         val seller =
             sellerRepository.findByIdOrNull(sellerId)
@@ -172,6 +171,4 @@ class ProductServiceImpl(
             productRepository.save(product)
         }
     }
-
-
 }

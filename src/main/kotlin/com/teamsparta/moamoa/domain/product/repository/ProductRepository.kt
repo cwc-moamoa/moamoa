@@ -6,10 +6,9 @@ import com.teamsparta.moamoa.domain.seller.model.Seller
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
-import java.util.*
 
 interface ProductRepository : JpaRepository<Product, Long>, CustomProductRepository {
-    fun findByIdAndDeletedAtIsNull(productId: Long): Optional<Product>
+    fun findByIdAndDeletedAtIsNull(productId: Long): Product?
 
     fun findAllByDeletedAtIsNull(pageable: Pageable): Page<ProductResponse>
 

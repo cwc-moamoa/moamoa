@@ -72,7 +72,7 @@ class SearchController(
     @GetMapping("/products/rating")
     fun searchProductsByRating(
         @PageableDefault(size = 15, sort = ["id"], direction = Sort.Direction.DESC)
-        pageable: Pageable
+        pageable: Pageable,
     ): ResponseEntity<List<ProductSearchResponse>> {
         val products = searchService.searchProductsByRating(pageable)
         return ResponseEntity.ok(products)

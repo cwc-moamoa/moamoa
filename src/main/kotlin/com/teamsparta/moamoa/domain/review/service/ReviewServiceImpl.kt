@@ -39,8 +39,8 @@ class ReviewServiceImpl(
             socialUserRepository.findByEmail(socialUser.email)
 
         val product =
-            productRepository.findByIdAndDeletedAtIsNull(productId)
-                .orElseThrow { ModelNotFoundException("Product not found or deleted", productId) }
+            productRepository.findByIdOrNull(productId)//findByIdAndDeletedAtIsNull를 findByIdOrNull로 하니 된다?
+                ?: throw ModelNotFoundException("Product not found or deleted", productId)
 
         val review = createReviewRequest.toReview(product, user)
 
