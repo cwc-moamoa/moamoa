@@ -4,9 +4,289 @@
 <head>
     <meta charset="UTF-8">
     <title>상품 목록</title>
-    <link rel="stylesheet" href="./css/main.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="./js/main.js"></script>
+<!--    <link rel="stylesheet" href="./css/main.css">-->
+<!--    <script src="./js/main.js" defer></script>-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script >
+        $(document).ready(function() {
+            // 상품 정보 가져오는 함수
+            console.log(this.url)
+            function getProductInfo(productId) {
+                $.ajax({
+                    type: 'GET',
+                    url: '/products/' + productId,
+                    success: function(response) {
+                        // 상품 정보를 표시하는 부분 업데이트
+                        $('#productInfo_' + productId).html('<p>상품명: ' + response.title + '</p>' +
+                            '<p>가격: ' + response.price + '</p>');
+
+
+                    },
+                    error: function(xhr, status, error) {
+                        if (xhr.status == 404) {
+                            // alert('상품을 찾을 수 없습니다.');
+                        } else {
+                            alert('상품 정보를 불러오는 데 실패했습니다.');
+                        }
+                    }
+                });
+            }
+
+            // 페이지 로드시 각 상품의 정보 가져오기
+            $('.product').each(function() {
+                var productId = $(this).attr('id').replace('product', '');
+                getProductInfo(productId);
+            });
+        });
+
+
+        // // 백엔드로부터 받은 토큰 값
+        // const receivedToken = "YOUR_RECEIVED_TOKEN_VALUE";
+        //
+        // // 토큰 값을 로컬 스토리지에 저장
+        // localStorage.setItem("token", receivedToken);
+        //
+        // // 토큰이 유효한지 검사하는 함수
+        // function isTokenValid(token) {
+        //     // 토큰 유효성을 확인하는 로직 작성
+        //     // 예를 들어, 토큰이 만료되지 않았는지 등을 확인할 수 있음
+        //     // 이 예시에서는 간단히 토큰이 비어있지 않으면 유효하다고 가정
+        //     return token !== "";
+        // }
+        //
+        // // 토큰이 유효하면 메인 화면으로 이동하는 함수
+        // function redirectToMainPage() {
+        //     window.location.href = "main.html"; // 메인 화면으로 이동
+        // }
+        //
+        // // 토큰 값이 로컬 스토리지에 저장되어 있는지 확인
+        // const storedToken = localStorage.getItem("token");
+        //
+        // if (storedToken && isTokenValid(storedToken)) {
+        //     // 저장된 토큰이 있고, 유효하면 메인 화면으로 이동
+        //     redirectToMainPage();
+        // } else {
+        //     // 토큰이 유효하지 않은 경우 등 다른 처리를 수행할 수 있음
+        //     console.log("토큰이 유효하지 않습니다.");
+        // }
+    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            height: 100%;
+        }
+
+        body {
+            min-height: 100%;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        li {
+            list-style: none;
+        }
+
+        a {
+            display: block;
+            text-decoration: none;
+            color: #000;
+        }
+
+        img {
+            display: block;
+            width: 100%;
+            object-fit: cover;
+        }
+        .header_outer{
+            width: 100%;
+            background-color: #333;
+        }
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            text-align: right;
+            position: relative;
+            height: 100px;
+            box-sizing: border-box;
+            margin: 0 auto;
+            width: 70%;
+        }
+
+        header .logo {
+            /* background-color: #fff; */
+            position: absolute;
+            left: 60px;
+            top: 22%;
+            color: #fff;
+            padding: 11px;
+            font-size: 35px;
+        }
+
+        header .login_btn {
+            position: absolute;
+            right: 25px;
+            top: 36%;
+            width: 270px;
+            height: 30px;
+            border-radius: 4px;
+            cursor: pointer;
+            overflow: hidden;
+        }
+        header .login_btn img{
+            width: 100%;
+        }
+
+        .search_box{
+            width: 50%;
+            margin: 0 auto;
+            overflow: hidden;
+            padding-left: 25%;
+            padding-top: 30px;
+        }
+        .search_box input{
+            display: block;
+            float: left;
+            width: 50%;
+            border-radius: 4px;
+            margin-right: 10px;
+            padding: 5px;
+            border: none;
+        }
+        .search_box input:focus{
+            outline: none;
+        }
+        .search_box .search_btn{
+            display: block;
+            float: left;
+            background-color: #eee;
+            color: #000;
+            padding: 2px 10px;
+            /* margin-top: 2spx; */
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .search_box .search_btn:hover{
+            font-weight: bold;
+            color: #eee;
+            background-color: darkgray;
+        }
+        .login-form {
+            padding: 10px;
+            background-color: #eee;
+            border-radius: 4px;
+            margin-top: 10px;
+            width: 200px;
+            display: inline-block;
+        }
+
+        .login-form input[type="text"],
+        .login-form input[type="password"],
+        .login-form input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+
+        .login-form input[type="submit"] {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        .login-form input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        .container {
+            max-width: 800px;
+            height: 1300px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .float_box {
+            overflow: hidden;
+            height: 100%;
+            width: 100%;
+        }
+
+        .product {
+            /* display: inline-block; */
+            float: left;
+            width: calc(25% - 20px);
+            vertical-align: top;
+            margin-right: 20px;
+            margin-bottom: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            box-sizing: border-box;
+            height: 300px;
+
+        }
+
+        .product:last-child {
+            margin-right: 0;
+        }
+
+        .product-info {
+            padding: 20px;
+            border-bottom: 1px solid #ccc;
+            border-radius: 4px;
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+
+        .product-info p:first-child{
+            font-size: 13px;
+        }
+
+        .product-info p {
+            font-size: 11px;
+            margin: 0;
+            padding: 5px 0;
+            /* 긴 텍스트가 있을 경우 줄 바꿈 */
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            white-space:nowrap;
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+
+
+        .product-image {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .product-image img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+    </style>
+
 </head>
 
 <body>
@@ -19,20 +299,12 @@
             </div>
             <div class="login_btn">
                 <a href="http://localhost:8080/oauth2/login/kakao">
-                <img src="./img/btn_login_kakao.jpg" alt="kakao_btn">
+                <img src="https://www.epost.go.kr/images/btn_login_kakao.jpg" alt="kakao_btn">
 
                 </a>
             </div>
-            <!-- <div class="login-form">
-            <form id="loginForm" method="post">
-                <input type="text" id="username" name="username" placeholder="사용자 이름"><br>
-                <input type="password" id="password" name="password" placeholder="비밀번호"><br>
-                <input type="submit" value="로그인">
-            </form>
-        </div> -->
         </header>
     </div>
-    
     <div class="container">
         <h1>상품 목록</h1>
         <div class="float_box">
