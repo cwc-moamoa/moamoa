@@ -97,8 +97,35 @@ class OrderServiceImpl(
                         orderUid = UUID.randomUUID().toString(),
                         payment = payment,
                         phoneNumber = phoneNumber,
+                        sellerId = findProduct.seller.id
                     ),
                 )
+                paymentRepository.save(discountedPayment)
+                productStockRepository.save(stockCheck.discount(quantity))
+                return discountedOrder.toResponse()
+            } else {
+                throw Exception("이미 공동 구매 신청중인 유저는 주문을 신청 할 수 없습니다.")
+            }
+        } else {
+            val payment = PaymentEntity(
+                price = findProduct.price * quantity,
+                status = PaymentStatus.READY,
+            )
+            val order = orderRepository.save(
+                OrdersEntity(
+                    productName = findProduct.title,
+                    totalPrice = findProduct.price * quantity,
+                    address = address,
+                    discount = 0.0,
+                    product = findProduct,
+                    quantity = quantity,
+                    socialUser = findUser,
+                    orderUid = UUID.randomUUID().toString(),
+                    payment = payment,
+                    phoneNumber = phoneNumber,
+                    sellerId = findProduct.seller.id
+                ),
+            )
             paymentRepository.save(payment)
             productStockRepository.save(stockCheck.discount(quantity))
             return order.toResponse()

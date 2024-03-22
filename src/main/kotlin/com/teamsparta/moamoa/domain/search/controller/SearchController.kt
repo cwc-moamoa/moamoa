@@ -68,4 +68,13 @@ class SearchController(
         val popularKeywords = searchService.getPopularKeywords()
         return ResponseEntity.status(HttpStatus.OK).body(popularKeywords)
     }
+
+    @GetMapping("/products/rating")
+    fun searchProductsByRating(
+        @PageableDefault(size = 15, sort = ["id"], direction = Sort.Direction.DESC)
+        pageable: Pageable
+    ): ResponseEntity<List<ProductSearchResponse>> {
+        val products = searchService.searchProductsByRating(pageable)
+        return ResponseEntity.ok(products)
+    }
 }
