@@ -4,6 +4,7 @@ import com.teamsparta.moamoa.domain.order.repository.OrderRepository
 import com.teamsparta.moamoa.domain.product.repository.ProductRepository
 import com.teamsparta.moamoa.domain.review.dto.CreateReviewRequest
 import com.teamsparta.moamoa.domain.review.dto.ReviewResponse
+import com.teamsparta.moamoa.domain.review.dto.ReviewResponseByList
 import com.teamsparta.moamoa.domain.review.dto.UpdateReviewRequest
 import com.teamsparta.moamoa.domain.review.repository.ReviewRepository
 import com.teamsparta.moamoa.domain.socialUser.repository.SocialUserRepository
@@ -60,6 +61,12 @@ class ReviewServiceImpl(
                 ?: throw ModelNotFoundException("Review", reviewId)
 
         return ReviewResponse.toReviewResponse(review)
+    }
+
+
+    override fun getReviewsByProductId(productId: Long): List<ReviewResponseByList> {
+        val reviews = reviewRepository.findByProductIdAndDeletedAtIsNull(productId)
+        return ReviewResponseByList.toReviewResponseByList(reviews)
     }
 
     @Transactional

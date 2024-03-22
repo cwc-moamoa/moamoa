@@ -2,6 +2,7 @@ package com.teamsparta.moamoa.domain.review.service
 
 import com.teamsparta.moamoa.domain.review.dto.CreateReviewRequest
 import com.teamsparta.moamoa.domain.review.dto.ReviewResponse
+import com.teamsparta.moamoa.domain.review.dto.ReviewResponseByList
 import com.teamsparta.moamoa.domain.review.dto.UpdateReviewRequest
 import com.teamsparta.moamoa.infra.security.UserPrincipal
 import org.springframework.data.domain.Page
@@ -31,4 +32,8 @@ interface ReviewService {
         reviewId: Long,
         socialUser: UserPrincipal,
     )
+
+    fun getReviewsByProductId(
+        productId: Long
+    ): List<ReviewResponseByList>
 }
