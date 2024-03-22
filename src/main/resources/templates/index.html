@@ -10,7 +10,6 @@
     <script >
         $(document).ready(function() {
             // 상품 정보 가져오는 함수
-            console.log(this.url)
             function getProductInfo(productId) {
                 $.ajax({
                     type: 'GET',
@@ -38,7 +37,18 @@
                 getProductInfo(productId);
             });
         });
+        const tokenString = `{
+            "access_token": "your_access_token",
+            "token_type": "Bearer",
+            "expires_in": 3600,
+            "refresh_token": "your_refresh_token",
+            "refresh_token_expires_in": 7200
+           }`;
 
+        const tokenObject = JSON.parse(tokenString);
+
+        console.log(tokenObject.access_token); // your_access_token
+        console.log(tokenObject.expires_in); // 3600
 
         // // 백엔드로부터 받은 토큰 값
         // const receivedToken = "YOUR_RECEIVED_TOKEN_VALUE";
@@ -251,7 +261,7 @@
 
         .product-info {
             padding: 20px;
-            border-bottom: 1px solid #ccc;
+            /*border-bottom: 1px solid #ccc;*/
             border-radius: 4px;
             overflow: hidden;
             box-sizing: border-box;
@@ -465,47 +475,8 @@
                             alt="Product 16 Image"></a>
                 </div>
                 <div class="product-info" id="productInfo_16">
-
                 </div>
             </div>
-            <div class="product" id="product17">
-                <div class="product-image" id="productImage_17">
-                    <!-- 여기에 상품 1 이미지가 표시됩니다 -->
-                    <a href="product-detail?productId=17"><img src="https://via.placeholder.com/150"
-                            alt="Product 17 Image"></a>
-                </div>
-                <div class="product-info" id="productInfo_17">
-                    <!-- 여기에 상품 1 정보가 표시됩니다 -->
-                </div>
-            </div>
-            <div class="product" id="product18">
-                <div class="product-image" id="productImage_18">
-                    <!-- 여기에 상품 2 이미지가 표시됩니다 -->
-                    <a href="product-detail?productId=18"><img src="https://via.placeholder.com/150"
-                            alt="Product 18 Image"></a>
-                </div>
-                <div class="product-info" id="productInfo_18">
-                    <!-- 여기에 상품 2 정보가 표시됩니다 -->
-                </div>
-            </div>
-            <div class="product" id="product19">
-                <div class="product-image" id="productImage_19">
-                    <!-- 여기에 상품 3 이미지가 표시됩니다 -->
-                    <a href="product-detail?productId=19"><img src="https://via.placeholder.com/150"
-                            alt="Product 19 Image"></a>
-                </div>
-                <div class="product-info" id="productInfo_19">
-                    <!-- 여기에 상품 3 정보가 표시됩니다 -->
-                </div>
-            </div>
-            <div class="product" id="product20">
-                <div class="product-image" id="productImage_20">
-
-                    <a href="product-detail?productId=20"><img src="https://via.placeholder.com/150"
-                            alt="Product 20 Image"></a>
-                </div>
-                <div class="product-info" id="productInfo_20">
-
                 </div>
             </div>
         </div>
