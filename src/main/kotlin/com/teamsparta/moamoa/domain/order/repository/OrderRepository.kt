@@ -34,7 +34,7 @@ interface OrderRepository : JpaRepository<OrdersEntity, Long>, CustomOrderReposi
     fun findBySellerIdAndDeletedAtIsNull(sellerId: Long): List<OrdersEntity>
 
 
-
+    fun findByIdAndDeletedAtIsNull(orderId: Long) : Optional<OrdersEntity>
 
 
 }
