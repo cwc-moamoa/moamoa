@@ -70,7 +70,7 @@ class CustomSearchRepositoryImpl : CustomSearchRepository, QueryDslSupport() {
                     title = it.title,
                     content = it.content,
                     imageUrl = it.imageUrl,
-                    name = it.name,
+                    name = it.socialUser.nickname,
                     likes = it.likes,
                 )
             }
