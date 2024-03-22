@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <title>상품 목록</title>
@@ -7,49 +8,238 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="./js/main.js"></script>
 </head>
+
 <body>
-<header>
-    <div class="logo">MOAMOA</div>
-    <div class="login-form">
-        <form id="loginForm" method="post">
-            <input type="text" id="username" name="username" placeholder="사용자 이름"><br>
-            <input type="password" id="password" name="password" placeholder="비밀번호"><br>
-            <input type="submit" value="로그인">
-        </form>
+    <div class="header_outer">
+        <header>
+            <a href="#" class="logo">MOAMOA</a>
+            <div class="search_box">
+                <input type="search" name="search" id="search">
+                <div class="search_btn">검색</div>
+            </div>
+            <div class="login_btn">
+                <a href="http://localhost:8080/oauth2/login/kakao">
+                <img src="./img/btn_login_kakao.jpg" alt="kakao_btn">
+
+                </a>
+            </div>
+            <!-- <div class="login-form">
+            <form id="loginForm" method="post">
+                <input type="text" id="username" name="username" placeholder="사용자 이름"><br>
+                <input type="password" id="password" name="password" placeholder="비밀번호"><br>
+                <input type="submit" value="로그인">
+            </form>
+        </div> -->
+        </header>
     </div>
-</header>
-<div class="container">
-    <h1>상품 목록</h1>
-    <div class="product" id="product1">
-        <div class="product-image" id="productImage_1">
-            <!-- 여기에 상품 1 이미지가 표시됩니다 -->
-            <a href="product-detail?productId=1"><img src="https://via.placeholder.com/150" alt="Product 1 Image"></a>
+    
+    <div class="container">
+        <h1>상품 목록</h1>
+        <div class="float_box">
+            <div class="product" id="product1">
+                <div class="product-image" id="productImage_1">
+                    <!-- 여기에 상품 1 이미지가 표시됩니다 -->
+                    <a href="product-detail?productId=1"><img src="https://via.placeholder.com/150"
+                            alt="Product 1 Image"></a>
+                </div>
+                <div class="product-info" id="productInfo_1">
+                    <!-- 여기에 상품 1 정보가 표시됩니다 -->
+                </div>
+            </div>
+            <div class="product" id="product2">
+                <div class="product-image" id="productImage_2">
+                    <!-- 여기에 상품 2 이미지가 표시됩니다 -->
+                    <a href="product-detail?productId=2"><img src="https://via.placeholder.com/150"
+                            alt="Product 2 Image"></a>
+                </div>
+                <div class="product-info" id="productInfo_2">
+                    <!-- 여기에 상품 2 정보가 표시됩니다 -->
+                </div>
+            </div>
+            <div class="product" id="product3">
+                <div class="product-image" id="productImage_3">
+                    <!-- 여기에 상품 3 이미지가 표시됩니다 -->
+                    <a href="product-detail?productId=3"><img src="https://via.placeholder.com/150"
+                            alt="Product 3 Image"></a>
+                </div>
+                <div class="product-info" id="productInfo_3">
+                    <!-- 여기에 상품 3 정보가 표시됩니다 -->
+                </div>
+            </div>
+            <div class="product" id="product4">
+                <div class="product-image" id="productImage_4">
+
+                    <a href="product-detail?productId=4"><img src="https://via.placeholder.com/150"
+                            alt="Product 4 Image"></a>
+                </div>
+                <div class="product-info" id="productInfo_4">
+
+                </div>
+            </div>
+            <div class="product" id="product1">
+                <div class="product-image" id="productImage_1">
+                    <!-- 여기에 상품 1 이미지가 표시됩니다 -->
+                    <a href="product-detail?productId=1"><img src="https://via.placeholder.com/150"
+                            alt="Product 1 Image"></a>
+                </div>
+                <div class="product-info" id="productInfo_1">
+                    <!-- 여기에 상품 1 정보가 표시됩니다 -->
+                </div>
+            </div>
+            <div class="product" id="product2">
+                <div class="product-image" id="productImage_2">
+                    <!-- 여기에 상품 2 이미지가 표시됩니다 -->
+                    <a href="product-detail?productId=2"><img src="https://via.placeholder.com/150"
+                            alt="Product 2 Image"></a>
+                </div>
+                <div class="product-info" id="productInfo_2">
+                    <!-- 여기에 상품 2 정보가 표시됩니다 -->
+                </div>
+            </div>
+            <div class="product" id="product3">
+                <div class="product-image" id="productImage_3">
+                    <!-- 여기에 상품 3 이미지가 표시됩니다 -->
+                    <a href="product-detail?productId=3"><img src="https://via.placeholder.com/150"
+                            alt="Product 3 Image"></a>
+                </div>
+                <div class="product-info" id="productInfo_3">
+                    <!-- 여기에 상품 3 정보가 표시됩니다 -->
+                </div>
+            </div>
+            <div class="product" id="product4">
+                <div class="product-image" id="productImage_4">
+
+                    <a href="product-detail?productId=4"><img src="https://via.placeholder.com/150"
+                            alt="Product 4 Image"></a>
+                </div>
+                <div class="product-info" id="productInfo_4">
+
+                </div>
+            </div>
+            <div class="product" id="product1">
+                <div class="product-image" id="productImage_1">
+                    <!-- 여기에 상품 1 이미지가 표시됩니다 -->
+                    <a href="product-detail?productId=1"><img src="https://via.placeholder.com/150"
+                            alt="Product 1 Image"></a>
+                </div>
+                <div class="product-info" id="productInfo_1">
+                    <!-- 여기에 상품 1 정보가 표시됩니다 -->
+                </div>
+            </div>
+            <div class="product" id="product2">
+                <div class="product-image" id="productImage_2">
+                    <!-- 여기에 상품 2 이미지가 표시됩니다 -->
+                    <a href="product-detail?productId=2"><img src="https://via.placeholder.com/150"
+                            alt="Product 2 Image"></a>
+                </div>
+                <div class="product-info" id="productInfo_2">
+                    <!-- 여기에 상품 2 정보가 표시됩니다 -->
+                </div>
+            </div>
+            <div class="product" id="product3">
+                <div class="product-image" id="productImage_3">
+                    <!-- 여기에 상품 3 이미지가 표시됩니다 -->
+                    <a href="product-detail?productId=3"><img src="https://via.placeholder.com/150"
+                            alt="Product 3 Image"></a>
+                </div>
+                <div class="product-info" id="productInfo_3">
+                    <!-- 여기에 상품 3 정보가 표시됩니다 -->
+                </div>
+            </div>
+            <div class="product" id="product4">
+                <div class="product-image" id="productImage_4">
+
+                    <a href="product-detail?productId=4"><img src="https://via.placeholder.com/150"
+                            alt="Product 4 Image"></a>
+                </div>
+                <div class="product-info" id="productInfo_4">
+
+                </div>
+            </div>
+            <div class="product" id="product1">
+                <div class="product-image" id="productImage_1">
+                    <!-- 여기에 상품 1 이미지가 표시됩니다 -->
+                    <a href="product-detail?productId=1"><img src="https://via.placeholder.com/150"
+                            alt="Product 1 Image"></a>
+                </div>
+                <div class="product-info" id="productInfo_1">
+                    <!-- 여기에 상품 1 정보가 표시됩니다 -->
+                </div>
+            </div>
+            <div class="product" id="product2">
+                <div class="product-image" id="productImage_2">
+                    <!-- 여기에 상품 2 이미지가 표시됩니다 -->
+                    <a href="product-detail?productId=2"><img src="https://via.placeholder.com/150"
+                            alt="Product 2 Image"></a>
+                </div>
+                <div class="product-info" id="productInfo_2">
+                    <!-- 여기에 상품 2 정보가 표시됩니다 -->
+                </div>
+            </div>
+            <div class="product" id="product3">
+                <div class="product-image" id="productImage_3">
+                    <!-- 여기에 상품 3 이미지가 표시됩니다 -->
+                    <a href="product-detail?productId=3"><img src="https://via.placeholder.com/150"
+                            alt="Product 3 Image"></a>
+                </div>
+                <div class="product-info" id="productInfo_3">
+                    <!-- 여기에 상품 3 정보가 표시됩니다 -->
+                </div>
+            </div>
+            <div class="product" id="product4">
+                <div class="product-image" id="productImage_4">
+
+                    <a href="product-detail?productId=4"><img src="https://via.placeholder.com/150"
+                            alt="Product 4 Image"></a>
+                </div>
+                <div class="product-info" id="productInfo_4">
+
+                </div>
+            </div>
+            <div class="product" id="product1">
+                <div class="product-image" id="productImage_1">
+                    <!-- 여기에 상품 1 이미지가 표시됩니다 -->
+                    <a href="product-detail?productId=1"><img src="https://via.placeholder.com/150"
+                            alt="Product 1 Image"></a>
+                </div>
+                <div class="product-info" id="productInfo_1">
+                    <!-- 여기에 상품 1 정보가 표시됩니다 -->
+                </div>
+            </div>
+            <div class="product" id="product2">
+                <div class="product-image" id="productImage_2">
+                    <!-- 여기에 상품 2 이미지가 표시됩니다 -->
+                    <a href="product-detail?productId=2"><img src="https://via.placeholder.com/150"
+                            alt="Product 2 Image"></a>
+                </div>
+                <div class="product-info" id="productInfo_2">
+                    <!-- 여기에 상품 2 정보가 표시됩니다 -->
+                </div>
+            </div>
+            <div class="product" id="product3">
+                <div class="product-image" id="productImage_3">
+                    <!-- 여기에 상품 3 이미지가 표시됩니다 -->
+                    <a href="product-detail?productId=3"><img src="https://via.placeholder.com/150"
+                            alt="Product 3 Image"></a>
+                </div>
+                <div class="product-info" id="productInfo_3">
+                    <!-- 여기에 상품 3 정보가 표시됩니다 -->
+                </div>
+            </div>
+            <div class="product" id="product4">
+                <div class="product-image" id="productImage_4">
+
+                    <a href="product-detail?productId=4"><img src="https://via.placeholder.com/150"
+                            alt="Product 4 Image"></a>
+                </div>
+                <div class="product-info" id="productInfo_4">
+
+                </div>
+            </div>
         </div>
-        <div class="product-info" id="productInfo_1">
-            <!-- 여기에 상품 1 정보가 표시됩니다 -->
-        </div>
+
+
     </div>
-    <div class="product" id="product2">
-        <div class="product-image" id="productImage_2">
-            <!-- 여기에 상품 2 이미지가 표시됩니다 -->
-            <a href="product-detail?productId=2"><img src="https://via.placeholder.com/150" alt="Product 2 Image"></a>
-        </div>
-        <div class="product-info" id="productInfo_2">
-            <!-- 여기에 상품 2 정보가 표시됩니다 -->
-        </div>
-    </div>
-    <div class="product" id="product3">
-        <div class="product-image" id="productImage_3">
-            <!-- 여기에 상품 3 이미지가 표시됩니다 -->
-            <a href="product-detail?productId=3"><img src="https://via.placeholder.com/150" alt="Product 3 Image"></a>
-        </div>
-        <div class="product-info" id="productInfo_3">
-            <!-- 여기에 상품 3 정보가 표시됩니다 -->
-        </div>
-    </div>
-<!--    <div>-->
-<!--        <a href="http://localhost:8080/oauth2/login/kakao">dd</a>-->
-<!--    </div>-->
-</div>
 </body>
+
 </html>
