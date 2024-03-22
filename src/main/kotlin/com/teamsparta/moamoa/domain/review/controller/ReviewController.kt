@@ -2,9 +2,11 @@ package com.teamsparta.moamoa.domain.review.controller
 
 import com.teamsparta.moamoa.domain.review.dto.CreateReviewRequest
 import com.teamsparta.moamoa.domain.review.dto.ReviewResponse
+import com.teamsparta.moamoa.domain.review.dto.ReviewResponseByList
 import com.teamsparta.moamoa.domain.review.dto.UpdateReviewRequest
 import com.teamsparta.moamoa.domain.review.service.ReviewService
 import com.teamsparta.moamoa.infra.security.UserPrincipal
+import jakarta.validation.Valid
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
@@ -12,6 +14,7 @@ import org.springframework.data.web.PageableDefault
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -21,16 +24,16 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
+@Validated
 @RestController
-@RequestMapping("/products/{productId}/reviews")
 class ReviewController(
     private val reviewService: ReviewService,
 ) {
-    @PostMapping
+    @PostMapping("/{productId}")
     fun createReview(
         @PathVariable productId: Long,
         @AuthenticationPrincipal socialUser: UserPrincipal,
-        @RequestBody createReviewRequest: CreateReviewRequest,
+        @Valid @RequestBody createReviewRequest: CreateReviewRequest,
     ): ResponseEntity<ReviewResponse> {
         val result = reviewService.createReview(productId, socialUser, createReviewRequest)
         return ResponseEntity
@@ -46,7 +49,7 @@ class ReviewController(
         return ResponseEntity.ok(review)
     }
 
-    @GetMapping
+    @GetMapping("/{productId}")
     fun getPaginatedReviewList(
         @PathVariable productId: Long,
         @PageableDefault(size = 15, sort = ["id"], direction = Sort.Direction.ASC) pageable: Pageable,
@@ -59,7 +62,7 @@ class ReviewController(
     fun updateReview(
         @PathVariable reviewId: Long,
         @AuthenticationPrincipal socialUser: UserPrincipal,
-        @RequestBody updateReviewRequest: UpdateReviewRequest,
+        @Valid @RequestBody updateReviewRequest: UpdateReviewRequest,
     ): ResponseEntity<ReviewResponse> {
         return ResponseEntity
             .status(HttpStatus.OK)
@@ -77,4 +80,12 @@ class ReviewController(
             .status(HttpStatus.OK)
             .body(deleteReviewSuccessMessage)
     }
+
+    // 프론트 연결용 컨트롤러
+    @GetMapping("/products/{productId}/reviews")
+    fun getProductReviews(@PathVariable productId: Long): ResponseEntity<List<ReviewResponseByList>> {
+        val reviews = reviewService.getReviewsByProductId(productId)
+        return ResponseEntity.ok(reviews)
+    }
+
 }

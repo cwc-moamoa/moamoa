@@ -1,5 +1,4 @@
 package com.teamsparta.moamoa.domain.order.controller
-import com.sun.management.VMOption
 import com.teamsparta.moamoa.domain.order.dto.*
 import com.teamsparta.moamoa.domain.order.model.OrdersStatus
 import com.teamsparta.moamoa.domain.order.service.OrderService
@@ -17,18 +16,17 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
-import javax.lang.model.util.Elements.Origin
 
 @RequestMapping("/api/orders")
 @RestController
 @Validated
-@CrossOrigin( origins = ["*"], allowedHeaders = ["*"])
+@CrossOrigin(origins = ["*"], allowedHeaders = ["*"])
 class OrderController(
     private val orderService: OrderService,
 ) {
     @PostMapping("/create")
     fun createOrder(request: HttpServletRequest): ResponseEntity<ResponseOrderDto> {
-        val userId = request.getParameter("userId").toLong()//널포인트 익셉션뜸
+        val userId = request.getParameter("userId").toLong() // 널포인트 익셉션뜸
         val productId = request.getParameter("productId").toLong()
         val quantity = request.getParameter("quantity").toInt()
         val address = request.getParameter("address")

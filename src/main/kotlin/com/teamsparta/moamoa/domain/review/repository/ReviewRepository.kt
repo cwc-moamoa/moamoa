@@ -16,4 +16,6 @@ interface ReviewRepository : JpaRepository<Review, Long> {
         productId: Long,
         pageable: Pageable,
     ): Page<Review>
+
+    fun findByProductIdAndDeletedAtIsNull(productId: Long): List<Review>
 }
