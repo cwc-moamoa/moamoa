@@ -103,7 +103,7 @@ class GroupPurchaseService(
             groupPurchaseJoinUserRepository.findByUserIdAndGroupPurchaseId(userId, groupPurchaseId)
                 ?: throw Exception("userId or groupPurchaseId not found")
 
-        groupPurchase.groupPurchaseUsers.remove(groupPurchaseJoinUser)
+        groupPurchase.groupPurchaseUsers.remove(groupPurchaseJoinUser)//이건 나도 해야댐
         groupPurchase.userCount--
 
         if (groupPurchase.userCount == 0) {
@@ -114,6 +114,7 @@ class GroupPurchaseService(
         groupPurchaseJoinUser.deletedAt = LocalDateTime.now()
         groupPurchaseJoinUserRepository.save(groupPurchaseJoinUser)
     }
+
 
 //    fun GroupPurchaseEntity.toResponse(): GroupPurchaseResponse {
 //        return GroupPurchaseResponse(

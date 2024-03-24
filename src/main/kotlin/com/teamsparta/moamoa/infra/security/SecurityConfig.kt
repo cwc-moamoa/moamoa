@@ -46,7 +46,10 @@ class SecurityConfig(
                     "/payment/**",
                     "/",
                     "/success-payment",
-                    "/fail-payment"
+                    "/fail-payment",
+                    "/order/**",
+                    "/order",
+                    "/**"
                 ).permitAll()
                     .anyRequest().authenticated()
             }

@@ -25,10 +25,15 @@ interface OrderRepository : JpaRepository<OrdersEntity, Long>, CustomOrderReposi
     )
     fun findOrderAndPayment(orderUid: String): Optional<OrdersEntity>
 
+
+    fun findByProductIdAndSocialUserId(
+        productId: Long,
+        socialUserId: Long?,
+    ): Optional<OrdersEntity>
+
     fun findByIdAndDeletedAtIsNull(orderId: Long) : Optional<OrdersEntity>
 
     fun findBySellerIdAndDeletedAtIsNull(sellerId: Long): List<OrdersEntity>
-
 
 
 

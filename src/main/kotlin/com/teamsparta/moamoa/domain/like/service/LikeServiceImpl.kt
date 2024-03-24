@@ -76,7 +76,6 @@ class LikeServiceImpl(
         reviewId: Long,
         socialUserId: Long,
     ) {
-
         val review =
             reviewRepository.findById(reviewId)
                 .orElseThrow { throw ModelNotFoundException("Review", reviewId) }

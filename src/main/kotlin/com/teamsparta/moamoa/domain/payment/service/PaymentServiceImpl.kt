@@ -9,7 +9,6 @@ import com.teamsparta.moamoa.domain.order.repository.OrderRepository
 import com.teamsparta.moamoa.domain.order.service.OrderService
 import com.teamsparta.moamoa.domain.payment.dto.PaymentCallbackRequest
 import com.teamsparta.moamoa.domain.payment.dto.RequestPayDto
-import com.teamsparta.moamoa.domain.payment.model.PaymentEntity
 import com.teamsparta.moamoa.domain.payment.model.PaymentStatus
 import com.teamsparta.moamoa.domain.payment.repository.PaymentRepository
 import com.teamsparta.moamoa.domain.product.repository.ProductStockRepository
@@ -20,7 +19,6 @@ import org.springframework.stereotype.Service
 import java.io.IOException
 import java.math.BigDecimal
 import java.time.LocalDateTime
-
 
 @Service
 class PaymentServiceImpl(
@@ -106,7 +104,7 @@ class PaymentServiceImpl(
                 orderService.saveToRedis(
                     order.product.id.toString(),
                     order.socialUser.id.toString(),
-                    order.id.toString()
+                    order.id.toString(),
                 )
                 val discountAppliedEvent = DiscountPaymentEvent(order.id.toString(), order.socialUser.id.toString())
                 applicationEventPublisher.publishEvent(discountAppliedEvent)
