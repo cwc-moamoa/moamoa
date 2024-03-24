@@ -3,6 +3,7 @@ package com.teamsparta.moamoa.domain.socialUser.repository
 import com.teamsparta.moamoa.domain.socialUser.model.OAuth2Provider
 import com.teamsparta.moamoa.domain.socialUser.model.SocialUser
 import org.springframework.data.repository.CrudRepository
+import java.util.*
 
 interface SocialUserRepository : CrudRepository<SocialUser, Long> {
     fun existsByProviderAndProviderId(
@@ -15,5 +16,5 @@ interface SocialUserRepository : CrudRepository<SocialUser, Long> {
         id: String,
     ): SocialUser
 
-    fun findByEmail(email: String): SocialUser
+    fun findByEmail(email: String): Optional<SocialUser>
 }
