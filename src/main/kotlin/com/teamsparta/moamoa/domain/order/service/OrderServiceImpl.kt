@@ -54,7 +54,7 @@ class OrderServiceImpl(
             productRepository.findByIdAndDeletedAtIsNull(productId).orElseThrow { Exception("존재하지 않는 상품입니다") }
         val stockCheck = productStockRepository.findByProduct(findProduct)
 
-        if (stockCheck!!.stock < 0 && stockCheck.stock <= quantity) throw Exception("재고가 모자랍니다. 판매자에게 문의해주세요")
+        if (stockCheck!!.stock <= quantity) throw Exception("재고가 모자랍니다. 판매자에게 문의해주세요")
 
         // 어떻게 막을지 생각하기....
         if (findProduct.discount > 0) {
