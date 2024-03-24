@@ -16,7 +16,6 @@ class GlobalExceptionHandler {
             .body(ErrorResponseDto(e.message))
     }
 
-
     @ExceptionHandler(ModelNotFoundException::class)
     fun handleModeNotFoundException(e: ModelNotFoundException): ResponseEntity<ErrorResponseDto> {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ErrorResponseDto(e.message))
@@ -39,9 +38,10 @@ class GlobalExceptionHandler {
             ),
         )
     }
+
     @ExceptionHandler(MethodArgumentNotValidException::class)
     fun handleMethodArgumentNotValidException(e: MethodArgumentNotValidException): ResponseEntity<ErrorResponseDto> {
         val errors = e.bindingResult.fieldErrors.joinToString(separator = ", ") { "${it.field}: ${it.defaultMessage}" }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResponseDto(errors)) //(e.message)보다 이렇게 하는게 더 스웨거에서 깔끔하더라
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResponseDto(errors)) // (e.message)보다 이렇게 하는게 더 스웨거에서 깔끔하더라
     }
 }

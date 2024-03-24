@@ -91,9 +91,9 @@ class SearchServiceImpl(
     override fun getPopularKeywords(): List<SearchHistory> {
         return searchHistoryRepository.findAll(Sort.by(Sort.Direction.DESC, "count"))
     }
+
     @Transactional
     override fun searchProductsByRating(pageable: Pageable): List<ProductSearchResponse> {
-
         val products = searchProductRepository.findAllByDeletedAtIsNullOrderByRatingAverageDesc(pageable)
 
         products.forEach { product ->

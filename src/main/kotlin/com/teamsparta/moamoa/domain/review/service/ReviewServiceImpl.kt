@@ -41,8 +41,8 @@ class ReviewServiceImpl(
             .orElseThrow { ModelNotFoundException("User not found", socialUser.id) }
 
         val product =
-            productRepository.findByIdAndDeletedAtIsNull(productId)
-                .orElseThrow { ModelNotFoundException("Product not found or deleted", productId) }
+            productRepository.findByIdOrNull(productId)//findByIdAndDeletedAtIsNull를 findByIdOrNull로 하니 된다?
+                ?: throw ModelNotFoundException("Product not found or deleted", productId)
 
         orderRepository.findByProductIdAndSocialUserId(productId, user.id)
             .orElseThrow { ModelNotFoundException("주문내역을 확인할 수 없습니다", productId) }

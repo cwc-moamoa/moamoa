@@ -1,6 +1,5 @@
 package com.teamsparta.moamoa.domain.order.dto
 
-import com.teamsparta.moamoa.domain.seller.model.Seller
 import java.time.LocalDateTime
 
 data class ResponseOrderDto(
