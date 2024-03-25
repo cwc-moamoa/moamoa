@@ -19,7 +19,7 @@ class SellerServiceImpl(
     private val passwordEncoder: PasswordEncoder,
     private val jwtPlugin: JwtPlugin,
     private val orderRepository: OrderRepository,
-    private val productRepository: ProductRepository
+    private val productRepository: ProductRepository,
 ) : SellerService {
     @Transactional
     override fun signUpSeller(sellerSignUpRequest: SellerSignUpRequest): SellerResponse {
@@ -44,6 +44,7 @@ class SellerServiceImpl(
                 ),
         )
     }
+
     @Transactional
     override fun deleteSeller(sellerId: Long): SellerResponse {
         val seller = sellerRepository.findByIdAndDeletedAtIsNull(sellerId).orElseThrow { ModelNotFoundException("Seller", sellerId) }
@@ -51,13 +52,14 @@ class SellerServiceImpl(
             throw InvalidCredentialException()
         }
         val foundOrders = orderRepository.findBySellerIdAndDeletedAtIsNull(sellerId)
-        if (foundOrders.any {it.status != OrdersStatus.DELIVERED && it.status != OrdersStatus.CANCELLED}) {
+        if (foundOrders.any { it.status != OrdersStatus.DELIVERED && it.status != OrdersStatus.CANCELLED }) {
             throw Exception("처리되지 않은 주문이 존재합니다. ")
         }
 
         val foundProduct = productRepository.findBySellerIdAndDeletedAtIsNull(sellerId)
-        if (foundProduct.any {it.seller.id == sellerId} )
+        if (foundProduct.any { it.seller.id == sellerId }) {
             throw Exception("게시된 판매상품이 존재합니다. ")
+        }
         seller.deletedAt = LocalDateTime.now()
         sellerRepository.save(seller)
 

@@ -67,7 +67,7 @@ class LikeServiceImpl(
                 productRepository.save(product)
             }
         } else {
-            throw IllegalArgumentException("할 수 없습니다")
+            throw IllegalArgumentException("좋아요가 없습니다")
         }
     }
 
@@ -122,7 +122,7 @@ class LikeServiceImpl(
                 reviewRepository.save(review)
             }
         } else {
-            throw IllegalArgumentException("할 수 없습니다")
+            throw IllegalArgumentException("좋아요가 없습니다")
         }
     }
 }

@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @Validated
@@ -41,7 +40,7 @@ class ReviewController(
             .body(result)
     }
 
-    @GetMapping("/{reviewId}")
+    @GetMapping("/review/{reviewId}")
     fun getReviewById(
         @PathVariable reviewId: Long,
     ): ResponseEntity<ReviewResponse> {
@@ -49,7 +48,7 @@ class ReviewController(
         return ResponseEntity.ok(review)
     }
 
-    @GetMapping("/{productId}")
+    @GetMapping("/product/{productId}")
     fun getPaginatedReviewList(
         @PathVariable productId: Long,
         @PageableDefault(size = 15, sort = ["id"], direction = Sort.Direction.ASC) pageable: Pageable,
@@ -83,9 +82,10 @@ class ReviewController(
 
     // 프론트 연결용 컨트롤러
     @GetMapping("/products/{productId}/reviews")
-    fun getProductReviews(@PathVariable productId: Long): ResponseEntity<List<ReviewResponseByList>> {
+    fun getProductReviews(
+        @PathVariable productId: Long,
+    ): ResponseEntity<List<ReviewResponseByList>> {
         val reviews = reviewService.getReviewsByProductId(productId)
         return ResponseEntity.ok(reviews)
     }
-
 }
