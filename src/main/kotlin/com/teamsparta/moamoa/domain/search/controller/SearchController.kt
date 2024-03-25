@@ -1,7 +1,5 @@
 package com.teamsparta.moamoa.domain.search.controller
 
-import com.teamsparta.moamoa.domain.product.model.Product
-import com.teamsparta.moamoa.domain.review.model.Review
 import com.teamsparta.moamoa.domain.search.dto.ProductSearchResponse
 import com.teamsparta.moamoa.domain.search.dto.ReviewSearchResponse
 import com.teamsparta.moamoa.domain.search.model.SearchHistory
@@ -47,7 +45,7 @@ class SearchController(
     fun searchProducts(
         @Parameter(description = "검색 키워드") @RequestParam keyword: String,
         @PageableDefault(size = 15) pageable: Pageable, // sort뒤를 없애면 그부분 없어질줄 알았는대 안없어짐
-    ): ResponseEntity<Page<Product>> {
+    ): ResponseEntity<Page<ProductSearchResponse>> {
         val products = searchService.searchProducts(keyword, pageable)
         return ResponseEntity.status(HttpStatus.OK).body(products)
     }
@@ -57,7 +55,7 @@ class SearchController(
     fun searchReviews(
         @Parameter(description = "검색 키워드") @RequestParam keyword: String,
         @PageableDefault(size = 15) pageable: Pageable,
-    ): ResponseEntity<Page<Review>> {
+    ): ResponseEntity<Page<ReviewSearchResponse>> {
         val reviews = searchService.searchReviews(keyword, pageable)
         return ResponseEntity.status(HttpStatus.OK).body(reviews)
     }

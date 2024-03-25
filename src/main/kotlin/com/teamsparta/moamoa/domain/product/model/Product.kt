@@ -10,7 +10,7 @@ data class Product(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sellerId", nullable = false)
     var seller: Seller,
     @Column(name = "price", nullable = false)

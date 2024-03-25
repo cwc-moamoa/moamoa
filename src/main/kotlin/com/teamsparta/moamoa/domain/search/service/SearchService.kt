@@ -1,7 +1,5 @@
 package com.teamsparta.moamoa.domain.search.service
 
-import com.teamsparta.moamoa.domain.product.model.Product
-import com.teamsparta.moamoa.domain.review.model.Review
 import com.teamsparta.moamoa.domain.search.dto.ProductSearchResponse
 import com.teamsparta.moamoa.domain.search.dto.ReviewSearchResponse
 import com.teamsparta.moamoa.domain.search.model.SearchHistory
@@ -16,12 +14,12 @@ interface SearchService {
     fun searchProducts(
         keyword: String,
         pageable: Pageable,
-    ): Page<Product>
+    ): Page<ProductSearchResponse>
 
     fun searchReviews(
         keyword: String,
         pageable: Pageable,
-    ): Page<Review>
+    ): Page<ReviewSearchResponse>
 
     fun saveSearchHistory(keyword: String)
 
