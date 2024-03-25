@@ -37,9 +37,9 @@ class ReviewServiceImpl(
         createReviewRequest: CreateReviewRequest,
     ): ReviewResponse {
 //        validateRating(createReviewRequest.rating)
-
         val user =
             socialUserRepository.findByEmail(socialUser.email)
+                .orElseThrow { ModelNotFoundException("User not found", socialUser.id) }
 
         val product =
             productRepository.findByIdAndDeletedAtIsNull(productId)
@@ -62,7 +62,6 @@ class ReviewServiceImpl(
 
         return ReviewResponse.toReviewResponse(review)
     }
-
 
     override fun getReviewsByProductId(productId: Long): List<ReviewResponseByList> {
         val reviews = reviewRepository.findByProductIdAndDeletedAtIsNull(productId)
