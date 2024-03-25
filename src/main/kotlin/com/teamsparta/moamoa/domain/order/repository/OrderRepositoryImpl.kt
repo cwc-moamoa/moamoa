@@ -24,7 +24,7 @@ class OrderRepositoryImpl : CustomOrderRepository, QueryDslSupport() {
                 .where(orders.socialUser.id.eq(userId))
                 .offset((page - 1).toLong())
                 .limit(size.toLong())
-                .orderBy(orders.socialUser.id.asc())
+                .orderBy(orders.createdAt.desc())
                 .fetch()
         return PageImpl(result)
     }

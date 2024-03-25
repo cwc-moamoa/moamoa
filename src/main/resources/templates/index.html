@@ -1,11 +1,8 @@
 <!DOCTYPE html>
 <html lang="ko">
-
 <head>
     <meta charset="UTF-8">
     <title>상품 목록</title>
-<!--    <link rel="stylesheet" href="./css/main.css">-->
-<!--    <script src="./js/main.js" defer></script>-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script >
         $(document).ready(function() {
@@ -37,48 +34,6 @@
                 getProductInfo(productId);
             });
         });
-        const tokenString = `{
-            "access_token": "your_access_token",
-            "token_type": "Bearer",
-            "expires_in": 3600,
-            "refresh_token": "your_refresh_token",
-            "refresh_token_expires_in": 7200
-           }`;
-
-        const tokenObject = JSON.parse(tokenString);
-
-        console.log(tokenObject.access_token); // your_access_token
-        console.log(tokenObject.expires_in); // 3600
-
-        // // 백엔드로부터 받은 토큰 값
-        // const receivedToken = "YOUR_RECEIVED_TOKEN_VALUE";
-        //
-        // // 토큰 값을 로컬 스토리지에 저장
-        // localStorage.setItem("token", receivedToken);
-        //
-        // // 토큰이 유효한지 검사하는 함수
-        // function isTokenValid(token) {
-        //     // 토큰 유효성을 확인하는 로직 작성
-        //     // 예를 들어, 토큰이 만료되지 않았는지 등을 확인할 수 있음
-        //     // 이 예시에서는 간단히 토큰이 비어있지 않으면 유효하다고 가정
-        //     return token !== "";
-        // }
-        //
-        // // 토큰이 유효하면 메인 화면으로 이동하는 함수
-        // function redirectToMainPage() {
-        //     window.location.href = "main.html"; // 메인 화면으로 이동
-        // }
-        //
-        // // 토큰 값이 로컬 스토리지에 저장되어 있는지 확인
-        // const storedToken = localStorage.getItem("token");
-        //
-        // if (storedToken && isTokenValid(storedToken)) {
-        //     // 저장된 토큰이 있고, 유효하면 메인 화면으로 이동
-        //     redirectToMainPage();
-        // } else {
-        //     // 토큰이 유효하지 않은 경우 등 다른 처리를 수행할 수 있음
-        //     console.log("토큰이 유효하지 않습니다.");
-        // }
     </script>
     <style>
         * {
@@ -220,7 +175,7 @@
 
         .container {
             max-width: 800px;
-            height: 1300px;
+            /* height: 1300px; */
             margin: 20px auto;
             background-color: #fff;
             padding: 20px;
@@ -375,10 +330,38 @@
             box-sizing: border-box;
             overflow: hidden;
         }
+        .pagination{
+            width: 200px;
+            height: 20px;
+            display: flex;
+            margin: 0 auto;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        .pagination li{
+            border: 0.5px solid #000;
+            width: 40px;
+            text-align: center;
+            line-height: 30px;
+            margin-right: 5px;
+            border-radius: 4px;
+            height: 30px;
+            cursor: pointer;
+            
+        }
+        .pagination li:hover{
+            background: #000;
+            color: #fff;
+            transition-delay: 0.05s;
+            font-weight: bold;
+        }
+        .pagination li:last-child{
+            margin-right: 0;
+        }
     </style>
-
 </head>
-
 <body>
     <div class="header_outer">
         <header>
@@ -558,6 +541,13 @@
                 </div>
             </div>
                 </div>
+                <ul class="pagination">
+                    <li class="num01">1</li>
+                    <li class="num02">2</li>
+                    <li class="num03">3</li>
+                    <li class="num04">4</li>
+                    <li class="num05">5</li>
+                </ul>
             </div>
         </div>
 
@@ -616,5 +606,4 @@
     </footer>
 
 </body>
-
 </html>

@@ -40,27 +40,139 @@
                     }
                 });
             });
+               // 
+        // 
+        // 
+        // 
+        // 
+        
+        const orderBtn = document.querySelector(".order_btn")
+        console.log(orderBtn)
+        orderBtn.addEventListener("click",function(){
+            
+        })
         });
+     
+
+
+
     </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            height: 100%;
+        }
+
+        body {
+            min-height: 100%;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        li {
+            list-style: none;
+        }
+
+        a {
+            display: block;
+            text-decoration: none;
+            color: #000;
+        }
+
+        img {
+            display: block;
+            width: 100%;
+            object-fit: cover;
+        }
+        .container{
+            width:600px;
+            margin: 0 auto;
+            height: 700px;
+            text-align: center;
+        }/*메인콘테이너*/
+        .container .order_title{
+            /* margin-bottom: 30px; */
+            margin: 30px 0;
+        }/*메인타이틀*/
+        .container .form{
+            /* border: 0.5px solid #000; */
+            border-radius: 6px;
+            padding: 30px;
+            width: 300px;
+            margin: 0 auto;
+            height: 240px;
+            background-color: #fcf9ee;
+        } /*폼박스*/
+        .container .form label{
+            display: inline-block;
+            width: 80px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .container .form input{
+            /* border: none; */
+            border-radius: 4px;
+            display: inline-block;
+            height: 20px;
+            /* font-size: 20px; */
+        }
+        .container .form input:focus{
+            outline: none;
+        }
+        .container .form .id_label{}/*아이디라벨*/
+        .container .form .text_box_id{}/*아아디 인풋*/
+        .container .form .quantity_label{}/*수량 라벨*/
+        .container .form .text_box_quantity{}/*수량 인풋*/
+        .container .form .address_label{}/*주소 라벨*/
+        .container .form .text_box_address{}/*주소 인풋*/
+        .container .form .phoneNum_label{}/*폰넘버 라벨*/
+        .container .form .text_box_phoneNum{}/*폰넘버 박스*/
+        .container .form .order_btn{
+            border: none;
+            background-color: #222;
+            padding: 10px 30px;
+            color:#eee;
+            font-weight: bold;
+            font-size: 20px;
+            border-radius: 4px;
+            cursor:pointer;
+            box-sizing: border-box;
+            height: 50px;
+        }/*주소완료 버튼*/
+        .container .form .order_btn:hover{
+            border: 0.5px solid #333;
+            background-color: #fff;
+            color: #000;
+            box-sizing: border-box;
+        }
+    </style>
 </head>
 <body>
-<h1>주문 정보 입력</h1>
-<form id="orderForm" method="post">
-    <input type="hidden" id="productId" name="productId">
-    <label for="userId">사용자 ID:</label>
-    <input type="text" id="userId" name="userId"><br><br>
+<div class="container">
+    <h1 class="order_title">주문 정보 입력</h1>
+    <form class="form" id="orderForm" method="post">
+        <input type="hidden" id="productId" name="productId">
+        <label class="id_label" for="userId">ID :</label>
+        <input class="text_box_id" type="text" id="userId" name="userId"><br><br>
 
-    <label for="quantity">수량:</label>
-    <input type="text" id="quantity" name="quantity"><br><br>
+        <label class="quantity_label" for="quantity">수량 :</label>
+        <input class="text_box_quantity" type="text" id="quantity" name="quantity"><br><br>
 
-    <label for="address">주소:</label>
-    <input type="text" id="address" name="address"><br><br>
+        <label class="address_label" for="address">주소 :</label>
+        <input class="text_box_address" type="text" id="address" name="address"><br><br>
 
-    <label for="phoneNumber">폰번호:</label>
-    <input type="text" id="phoneNumber" name="phoneNumber"><br><br>
+        <label class="phoneNum_label" for="phoneNumber">폰번호 :</label>
+        <input class="text_box_phoneNum" type="text" id="phoneNumber" name="phoneNumber"><br><br>
 
-    <input type="submit" value="주문 생성">
-</form>
+        <input id="order_btn" class="order_btn" type="submit" value="주문 생성">
+    </form>
+
+</div>
 
 </body>
 </html>
