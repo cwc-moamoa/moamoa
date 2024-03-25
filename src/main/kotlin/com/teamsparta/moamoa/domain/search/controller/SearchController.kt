@@ -69,6 +69,7 @@ class SearchController(
         return ResponseEntity.status(HttpStatus.OK).body(popularKeywords)
     }
 
+    @Operation(summary = "별점 순 검색", description = "별점이 높은 순서로 목록을 검색합니다.")
     @GetMapping("/products/rating")
     fun searchProductsByRating(
         @PageableDefault(size = 15, sort = ["id"], direction = Sort.Direction.DESC)

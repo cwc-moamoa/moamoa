@@ -37,12 +37,13 @@ class ReviewServiceImpl(
         createReviewRequest: CreateReviewRequest,
     ): ReviewResponse {
 //        validateRating(createReviewRequest.rating)
-        val user = socialUserRepository.findByEmail(socialUser.email)
-            .orElseThrow { ModelNotFoundException("User not found", socialUser.id) }
+        val user =
+            socialUserRepository.findByEmail(socialUser.email)
+                .orElseThrow { ModelNotFoundException("User not found", socialUser.id) }
 
         val product =
-            productRepository.findByIdOrNull(productId)//findByIdAndDeletedAtIsNull를 findByIdOrNull로 하니 된다?
-                ?: throw ModelNotFoundException("Product not found or deleted", productId)
+            productRepository.findByIdAndDeletedAtIsNull(productId)
+                .orElseThrow { ModelNotFoundException("Product not found or deleted", productId) }
 
         orderRepository.findByProductIdAndSocialUserId(productId, user.id)
             .orElseThrow { ModelNotFoundException("주문내역을 확인할 수 없습니다", productId) }
@@ -53,7 +54,6 @@ class ReviewServiceImpl(
         return ReviewResponse.toReviewResponse(savedReview)
     }
 
-
     @Transactional
     override fun getReviewById(reviewId: Long): ReviewResponse {
         val review =
@@ -62,7 +62,6 @@ class ReviewServiceImpl(
 
         return ReviewResponse.toReviewResponse(review)
     }
-
 
     override fun getReviewsByProductId(productId: Long): List<ReviewResponseByList> {
         val reviews = reviewRepository.findByProductIdAndDeletedAtIsNull(productId)

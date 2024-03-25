@@ -82,9 +82,10 @@ class ReviewController(
 
     // 프론트 연결용 컨트롤러
     @GetMapping("/products/{productId}/reviews")
-    fun getProductReviews(@PathVariable productId: Long): ResponseEntity<List<ReviewResponseByList>> {
+    fun getProductReviews(
+        @PathVariable productId: Long,
+    ): ResponseEntity<List<ReviewResponseByList>> {
         val reviews = reviewService.getReviewsByProductId(productId)
         return ResponseEntity.ok(reviews)
     }
-
 }

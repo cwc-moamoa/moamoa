@@ -12,7 +12,7 @@ interface ProductRepository : JpaRepository<Product, Long>, CustomProductReposit
 
     fun findAllByDeletedAtIsNull(pageable: Pageable): Page<ProductResponse>
 
-    fun findBySellerId(sellerId:Long): List<Product>
+    fun findBySellerId(sellerId: Long): List<Product>
 
     fun findBySellerIdAndDeletedAtIsNull(seller: Long): List<Product>
 }

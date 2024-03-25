@@ -33,7 +33,5 @@ interface ReviewService {
         socialUser: UserPrincipal,
     )
 
-    fun getReviewsByProductId(
-        productId: Long
-    ): List<ReviewResponseByList>
+    fun getReviewsByProductId(productId: Long): List<ReviewResponseByList>
 }

@@ -49,7 +49,7 @@ class SecurityConfig(
                     "/fail-payment",
                     "/order/**",
                     "/order",
-                    "/**"
+                    "/**",
                 ).permitAll()
                     .anyRequest().authenticated()
             }
