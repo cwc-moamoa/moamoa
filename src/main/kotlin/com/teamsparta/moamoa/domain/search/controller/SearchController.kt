@@ -68,7 +68,7 @@ class SearchController(
         val popularKeywords = searchService.getPopularKeywords()
         return ResponseEntity.status(HttpStatus.OK).body(popularKeywords)
     }
-
+    @Operation(summary = "별점순 조회", description = "별점이 높은 순서로 목록을 조회합니다.")
     @GetMapping("/products/rating")
     fun searchProductsByRating(
         @PageableDefault(size = 15, sort = ["id"], direction = Sort.Direction.DESC)
