@@ -51,7 +51,6 @@ dependencies {
     kapt("com.querydsl:querydsl-apt:$queryDslVersion:jakarta")
     kapt("jakarta.annotation:jakarta.annotation-api")
     kapt("jakarta.persistence:jakarta.persistence-api")
-    implementation("org.springframework.boot:spring-boot-starter-validation")
 
     // 포트원
     implementation("com.github.iamport:iamport-rest-client-java:0.2.21")
