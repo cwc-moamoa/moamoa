@@ -4,12 +4,10 @@
     <meta charset="UTF-8">
     <title>결제 페이지</title>
     <script src="https://cdn.iamport.kr/v1/iamport.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-</head>
-<body>
-<script>
-    var IMP = window.IMP;
-    IMP.init("imp80172878");//요거랑
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        var IMP = window.IMP;
+        IMP.init("imp80172878");//요거랑
 
         // 결제 요청 함수
         function requestPay() {
@@ -64,7 +62,9 @@
                     }
                 });
         }
-</script>
+    </script>
+</head>
+<body>
 <button onclick="requestPay()">결제하기</button>
 </body>
 </html>
