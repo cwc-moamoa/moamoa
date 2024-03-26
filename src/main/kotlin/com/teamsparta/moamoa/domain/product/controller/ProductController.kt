@@ -37,14 +37,8 @@ class ProductController(
     fun getProduct(
         @PathVariable productId: Long,
     ): ResponseEntity<Any> {
-        try {
-            val productResponse = productService.getProductById(productId)
+        val productResponse = productService.getProductById(productId)
             return ResponseEntity.ok(productResponse)
-        } catch (ex: ModelNotFoundException) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.message)
-        } catch (ex: Exception) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal server error")
-        }
     }
 
     @Operation(summary = "상품 등록", description = "새로운 상품을 시스템에 등록합니다.")
@@ -64,10 +58,18 @@ class ProductController(
         @AuthenticationPrincipal user: UserPrincipal,
         @Parameter(description = "상품 ID") @PathVariable productId: Long,
         @RequestBody @Valid productRequest: ProductRequest,
-    ): ResponseEntity<ProductResponse> {
-        val updatedProduct = productService.updateProduct(productId, user.id, productRequest)
-        return ResponseEntity.ok(ProductResponse(updatedProduct))
+    ): ResponseEntity<Any> {
+        try {val updatedProduct = productService.updateProduct(productId, user.id, productRequest)
+            return ResponseEntity.ok(ProductResponse(updatedProduct))
+        } catch (ex: ModelNotFoundException) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.message)
+        } catch (ex: IllegalArgumentException) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.message)
+        } catch (ex: Exception) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal server error")
+        }
     }
+
 
     @Operation(summary = "상품 삭제", description = "주어진 상품 ID에 해당하는 상품을 시스템에서 삭제합니다.")
     @PutMapping("/{productId}/delete")
