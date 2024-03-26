@@ -45,7 +45,7 @@ class ReviewServiceImplSpec: BehaviorSpec() {
                 every { productRepository.findByIdAndDeletedAtIsNull(any()) } returns Optional.of(CreateProductFixture.createProduct())
 
                 val socialUserRepository = mockk<SocialUserRepository>()
-                every { socialUserRepository.findByEmail(any()) } returns CreateSocialUserFixture.createSocialUser()
+                every { socialUserRepository.findByEmail(any()) } returns Optional.of(CreateSocialUserFixture.createSocialUser())
 
                 val orderRepository = mockk<OrderRepository>()
                 every { orderRepository.findByProductIdAndSocialUserId(any(), any()) } returns Optional.of(CreateOrdersEntityFixture.createOrder())
@@ -68,6 +68,7 @@ class ReviewServiceImplSpec: BehaviorSpec() {
                     result.content shouldBe ReviewResponse.content
                     result.imageUrl shouldBe ReviewResponse.imageUrl
                     result.rating shouldBe ReviewResponse.rating
+                    result.userName shouldBe "nickname"
                 }
             }
         }
