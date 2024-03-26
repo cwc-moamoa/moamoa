@@ -52,8 +52,8 @@ class ProductServiceImpl(
             product.ratingAverage = averageRating
             productRepository.save(product)
             return ProductResponse(product)
-        } catch (ex: ModelNotFoundException) {
-            logger.error("An error occurred while getting product for productId: $productId", ex)
+        } catch (ex: Exception) {
+            logger.error("상품 조회 중 오류 발생", ex)
             throw ex
         }
     }
@@ -95,8 +95,8 @@ class ProductServiceImpl(
             productRepository.save(product)
             productStockRepository.save(productStock)
             return product
-        } catch (ex: ModelNotFoundException) {
-            logger.error("$sellerId", ex)
+        } catch (ex: Exception) {
+            logger.error("상품 등록 중 오류 발생", ex)
             throw ex
         }
     }
@@ -127,13 +127,8 @@ class ProductServiceImpl(
                 purchaseAble = request.purchaseAble
             }
             return productRepository.save(product)
-        }catch (ex: ModelNotFoundException) {
-            logger.error("An error occurred while editing product", ex)
-            throw ex
-        } catch (ex: IllegalArgumentException) {
-            logger.error("An error occurred while editing product", ex)
-            throw ex
-        } catch (ex: Exception) {
+        }catch (ex: Exception) {
+            logger.error("상품 정보 수정 중 오류 발생", ex)
             throw ex
     }
     }
@@ -158,13 +153,10 @@ class ProductServiceImpl(
 
             product.deletedAt = LocalDateTime.now()
             return productRepository.save(product)
-        } catch (ex: ModelNotFoundException) {
-            logger.error("An error occurred while deleting product", ex)
+        } catch (ex: Exception) {
+            logger.error("상품 삭제 중 오류 발생", ex)
             throw ex
-        } catch (ex: IllegalArgumentException){
-            logger.error("An error occurred while deleting product", ex)
-            throw ex
-    }
+        }
     }
 
     @Transactional
@@ -192,16 +184,10 @@ class ProductServiceImpl(
                 product.isSoldOut = true
                 productRepository.save(product)
             }
-        } catch (ex: ModelNotFoundException) {
+        } catch (ex: Exception) {
             logger.error("An error occurred while adjusting inventory quantity", ex) {
                 throw ex
             }
-        } catch (ex: IllegalStateException) {
-            logger. error("An error occurred while adjusting inventory quantity", ex) {
-                throw ex
-            }
         }
-
-
     }
 }

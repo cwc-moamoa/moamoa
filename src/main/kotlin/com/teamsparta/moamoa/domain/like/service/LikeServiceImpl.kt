@@ -3,11 +3,15 @@ package com.teamsparta.moamoa.domain.like.service
 import com.teamsparta.moamoa.domain.like.model.Like
 import com.teamsparta.moamoa.domain.like.repository.LikeRepository
 import com.teamsparta.moamoa.domain.product.repository.ProductRepository
+import com.teamsparta.moamoa.domain.product.service.ProductServiceImpl
 import com.teamsparta.moamoa.domain.review.repository.ReviewRepository
 import com.teamsparta.moamoa.domain.socialUser.repository.SocialUserRepository
 import com.teamsparta.moamoa.exception.ModelNotFoundException
 import jakarta.transaction.Transactional
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import kotlin.math.log
 
 @Service
 class LikeServiceImpl(
@@ -16,32 +20,41 @@ class LikeServiceImpl(
     private val reviewRepository: ReviewRepository,
     private val socialUserRepository: SocialUserRepository,
 ) : LikeService {
+
+    private val logger: Logger = LoggerFactory.getLogger(LikeServiceImpl::class.java)
     @Transactional
     override fun addLikeToProduct(
         productId: Long,
         socialUserId: Long,
     ) {
-        val product =
-            productRepository.findById(productId)
-                .orElseThrow { throw ModelNotFoundException("Product", productId) }
+        try {
+            val product =
+                productRepository.findById(productId)
+                    .orElseThrow { throw ModelNotFoundException("Product", productId) }
 
-        if (product.deletedAt != null) {
-            throw Exception("없는 상품입니다")
+            if (product.deletedAt != null) {
+                throw ModelNotFoundException("삭제된 상품입니다", productId)
+            }
+
+            val user =
+                socialUserRepository.findById(socialUserId)
+                    .orElseThrow { throw ModelNotFoundException("User", socialUserId) }
+
+            val existingLike = likeRepository.findByProductAndSocialUser(product, user)
+            if (existingLike != null) {
+                throw IllegalArgumentException("이미 좋아요를 누른 상품입니다")
+            }
+
+            likeRepository.save(Like(product = product, socialUser = user, status = true))
+            product.likes++
+            productRepository.save(product)
+        } catch (ex: Exception) {
+            logger.error("좋아요 생성 중 오류 발생", ex)
         }
 
-        val user =
-            socialUserRepository.findById(socialUserId)
-                .orElseThrow { throw ModelNotFoundException("User", socialUserId) }
-
-        val existingLike = likeRepository.findByProductAndSocialUser(product, user)
-        if (existingLike != null) {
-            throw IllegalArgumentException("이미 좋아요를 누른 상품입니다")
         }
 
-        likeRepository.save(Like(product = product, socialUser = user, status = true))
-        product.likes++
-        productRepository.save(product)
-    }
+
 
     @Transactional
     override fun removeLikeFromProduct(
