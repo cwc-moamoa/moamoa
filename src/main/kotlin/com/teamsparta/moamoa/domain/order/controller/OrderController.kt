@@ -35,6 +35,7 @@ class OrderController(
         return ResponseEntity.status(HttpStatus.CREATED).body(responseOrderDto)
     }
 
+
     @PostMapping("/create/swagger")
     fun createOrderAtSwagger(
         @RequestParam userId: Long,
@@ -47,6 +48,31 @@ class OrderController(
         return ResponseEntity
             .status(HttpStatus.CREATED)
             .body(responseOrderDto)
+    }
+    @PostMapping("/group/create")
+    fun createGroupOrder(request: HttpServletRequest):ResponseEntity<ResponseOrderDto>{
+        val userId =request.getParameter("userId").toLong()
+        val productId =request.getParameter("productId").toLong()
+        val quantity = request.getParameter("quantity").toInt()
+        val address =request.getParameter("address")
+        val phoneNumber =request.getParameter("phoneNumber")
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(orderService.createOrder(userId,productId,quantity, address, phoneNumber))
+        // 서비스 생성 ㄴㄴ
+    }
+    @PostMapping("/group/create/swagger")
+    fun creatGroupOrderAtSwagger(
+        @RequestParam userId: Long,
+        @RequestParam productId: Long,
+        @RequestParam quantity: Int,
+        @RequestParam address: String,
+        @RequestParam phoneNumber: String
+    ):ResponseEntity<ResponseOrderDto>{
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(orderService.createOrder(userId, productId, quantity, address, phoneNumber))
+        // 아직 ㄴㄴ
     }
 
     @PutMapping("/{orderId}/{userId}")
