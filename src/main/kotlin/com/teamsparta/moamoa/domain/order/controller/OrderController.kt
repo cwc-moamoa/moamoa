@@ -50,7 +50,7 @@ class OrderController(
     }
 
     @PostMapping("/group/create")
-    fun createGroupOrder(request: HttpServletRequest): ResponseEntity<ResponseOrderDto>  {
+    fun createGroupOrder(request: HttpServletRequest): ResponseEntity<ResponseOrderDto> {
         val userId = request.getParameter("userId").toLong()
         val productId = request.getParameter("productId").toLong()
         val quantity = request.getParameter("quantity").toInt()
@@ -68,7 +68,7 @@ class OrderController(
         @RequestParam quantity: Int,
         @RequestParam address: String,
         @RequestParam phoneNumber: String,
-    ): ResponseEntity<ResponseOrderDto>  {
+    ): ResponseEntity<ResponseOrderDto> {
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(orderService.createGroupOrder(userId, productId, quantity, address, phoneNumber))

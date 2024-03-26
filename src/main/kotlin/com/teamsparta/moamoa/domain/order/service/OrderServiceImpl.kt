@@ -49,9 +49,7 @@ class OrderServiceImpl(
         address: String,
         phoneNumber: String,
     ): ResponseOrderDto {
-
-       val (findUser, findProduct, stockCheck) = orderCommon(userId, productId, quantity)
-
+        val (findUser, findProduct, stockCheck) = orderCommon(userId, productId, quantity)
 
         val totalPrice = findProduct.price * quantity
         val finalDiscount = 0.0
@@ -67,62 +65,64 @@ class OrderServiceImpl(
         address: String,
         phoneNumber: String,
     ): ResponseOrderDto {
-
         val (findUser, findProduct, stockCheck) = orderCommon(userId, productId, quantity)
         val finalDiscount = findProduct.discount
 
-        val groupPurchaseCheck = groupPurchaseRepository.findByProductIdAndDeletedAtIsNull(productId)// 없으면 유저도 없는거니께
+        val groupPurchaseCheck = groupPurchaseRepository.findByProductIdAndDeletedAtIsNull(productId) // 없으면 유저도 없는거니께
         val groupPurchaseUserCheck = groupPurchaseCheck?.groupPurchaseUsers?.find { it.userId == findUser.id }
 
         if (groupPurchaseUserCheck == null) {
             val totalPrice = findProduct.price * quantity * (1 - findProduct.discount / 100.0)
 
-           return orderSave(findUser, findProduct, stockCheck, totalPrice, finalDiscount, address, quantity, phoneNumber).toResponse()
+            return orderSave(findUser, findProduct, stockCheck, totalPrice, finalDiscount, address, quantity, phoneNumber).toResponse()
         } else {
             throw Exception("이미 공동 구매 신청중인 유저는 주문을 신청 할 수 없습니다.")
         }
     }
+
     private fun orderSave(
         findUser: SocialUser,
         findProduct: Product,
-        stockCheck:ProductStock,
+        stockCheck: ProductStock,
         totalPrice: Double,
-        finalDiscount:Double,
+        finalDiscount: Double,
         address: String,
         quantity: Int,
-        phoneNumber: String
+        phoneNumber: String,
     ): OrdersEntity {
         val payment = PaymentEntity(price = totalPrice, status = PaymentStatus.READY)
         paymentRepository.save(payment)
-        val order = OrdersEntity(
-            productName = findProduct.title,
-            totalPrice = totalPrice,
-            address = address,
-            discount = finalDiscount,
-            product = findProduct,
-            quantity = quantity,
-            socialUser = findUser,
-            orderUid = UUID.randomUUID().toString(),
-            payment = payment,
-            phoneNumber = phoneNumber,
-            sellerId = findProduct.seller.id,
-        )
+        val order =
+            OrdersEntity(
+                productName = findProduct.title,
+                totalPrice = totalPrice,
+                address = address,
+                discount = finalDiscount,
+                product = findProduct,
+                quantity = quantity,
+                socialUser = findUser,
+                orderUid = UUID.randomUUID().toString(),
+                payment = payment,
+                phoneNumber = phoneNumber,
+                sellerId = findProduct.seller.id,
+            )
         stockCheck.discount(quantity)
         return orderRepository.save(order)
     }
+
     private fun orderCommon(
         userId: Long,
         productId: Long,
-        quantity: Int
-    ):Triple<SocialUser,Product,ProductStock>{
+        quantity: Int,
+    ): Triple<SocialUser, Product, ProductStock>  {
         val findUser = socialUserRepository.findByIdOrNull(userId) ?: throw Exception("존재하지 않는 유저입니다")
         val findProduct =
             productRepository.findByIdAndDeletedAtIsNull(productId).orElseThrow { Exception("존재하지 않는 상품입니다") }
         val stockCheck = productStockRepository.findByProduct(findProduct)
 
         if (stockCheck!!.stock <= quantity) throw Exception("재고가 모자랍니다. 판매자에게 문의해주세요")
-        return  Triple(findUser, findProduct, stockCheck)
-    }// 엔티티 찾고 에러던지고 재고 찾고 엔티티 3개 트리플로 묶어서 반환 지피티 체고
+        return Triple(findUser, findProduct, stockCheck)
+    } // 엔티티 찾고 에러던지고 재고 찾고 엔티티 3개 트리플로 묶어서 반환 지피티 체고
 
     override fun saveToRedis(
         productId: String,
