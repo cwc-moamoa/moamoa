@@ -55,60 +55,74 @@ class OrderServiceImpl(
 
         if (stockCheck!!.stock <= quantity) throw Exception("재고가 모자랍니다. 판매자에게 문의해주세요")
 
-        // 어떻게 막을지 생각하기....
-        if (findProduct.discount > 0) {
-            val groupPurchaseCheck = groupPurchaseRepository.findByProductIdAndDeletedAtIsNull(productId)
-            val groupPurchaseUserCheck = groupPurchaseCheck?.groupPurchaseUsers?.find { it.userId == findUser.id }
-            if (groupPurchaseUserCheck == null) {
-                val discountedPrice = findProduct.price * quantity * (1 - findProduct.discount / 100.0)
-                val discountedPayment = PaymentEntity(price = discountedPrice, status = PaymentStatus.READY)
-                val discountedOrder =
-                    orderRepository.save(
-                        OrdersEntity(
-                            productName = findProduct.title,
-                            totalPrice = discountedPrice,
-                            address = address,
-                            discount = findProduct.discount,
-                            product = findProduct,
-                            quantity = quantity,
-                            socialUser = findUser,
-                            orderUid = UUID.randomUUID().toString(),
-                            payment = discountedPayment,
-                            phoneNumber = phoneNumber,
-                            sellerId = findProduct.seller.id,
-                        ),
-                    )
-                paymentRepository.save(discountedPayment)
-                productStockRepository.save(stockCheck.discount(quantity))
-                return discountedOrder.toResponse()
-            } else {
-                throw Exception("이미 공동 구매 신청중인 유저는 주문을 신청 할 수 없습니다.")
-            }
-        } else {
-            val payment =
-                PaymentEntity(
-                    price = findProduct.price * quantity,
-                    status = PaymentStatus.READY,
-                )
-            val order =
+        val payment =
+            PaymentEntity(
+                price = findProduct.price * quantity,
+                status = PaymentStatus.READY,
+            )
+        val order =
+            orderRepository.save(
+                OrdersEntity(
+                    productName = findProduct.title,
+                    totalPrice = findProduct.price * quantity,
+                    address = address,
+                    discount = 0.0,
+                    product = findProduct,
+                    quantity = quantity,
+                    socialUser = findUser,
+                    orderUid = UUID.randomUUID().toString(),
+                    payment = payment,
+                    phoneNumber = phoneNumber,
+                    sellerId = findProduct.seller.id,
+                ),
+            )
+        paymentRepository.save(payment)
+        productStockRepository.save(stockCheck.discount(quantity))
+        return order.toResponse()
+    }
+
+    @Transactional
+    override fun createGroupOrder(
+        userId: Long,
+        productId: Long,
+        quantity: Int,
+        address: String,
+        phoneNumber: String,
+    ): ResponseOrderDto {
+        val findUser = socialUserRepository.findByIdOrNull(userId) ?: throw Exception("존재하지 않는 유저입니다")
+        val findProduct =
+            productRepository.findByIdAndDeletedAtIsNull(productId).orElseThrow { Exception("존재하지 않는 상품입니다") }
+        val stockCheck = productStockRepository.findByProduct(findProduct)
+
+        if (stockCheck!!.stock <= quantity) throw Exception("재고가 모자랍니다. 판매자에게 문의해주세요")
+
+        val groupPurchaseCheck = groupPurchaseRepository.findByProductIdAndDeletedAtIsNull(productId)// 없으면 유저도 없는거니께
+        val groupPurchaseUserCheck = groupPurchaseCheck?.groupPurchaseUsers?.find { it.userId == findUser.id }
+
+        if (groupPurchaseUserCheck == null) {
+            val discountedPrice = findProduct.price * quantity * (1 - findProduct.discount / 100.0)
+            val discountedPayment = PaymentEntity(price = discountedPrice, status = PaymentStatus.READY)
+            val discountedOrder =
                 orderRepository.save(
                     OrdersEntity(
                         productName = findProduct.title,
-                        totalPrice = findProduct.price * quantity,
+                        totalPrice = discountedPrice,
                         address = address,
-                        discount = 0.0,
+                        discount = findProduct.discount,
                         product = findProduct,
                         quantity = quantity,
                         socialUser = findUser,
                         orderUid = UUID.randomUUID().toString(),
-                        payment = payment,
+                        payment = discountedPayment,
                         phoneNumber = phoneNumber,
                         sellerId = findProduct.seller.id,
                     ),
                 )
-            paymentRepository.save(payment)
+            paymentRepository.save(discountedPayment)
             productStockRepository.save(stockCheck.discount(quantity))
-            return order.toResponse()
+            return discountedOrder.toResponse()
+        } else {
+            throw Exception("이미 공동 구매 신청중인 유저는 주문을 신청 할 수 없습니다.")
         }
     }
 
