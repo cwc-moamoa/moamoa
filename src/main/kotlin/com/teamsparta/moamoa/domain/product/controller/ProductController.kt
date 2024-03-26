@@ -3,14 +3,10 @@ package com.teamsparta.moamoa.domain.product.controller
 import com.teamsparta.moamoa.domain.product.dto.ProductRequest
 import com.teamsparta.moamoa.domain.product.dto.ProductResponse
 import com.teamsparta.moamoa.domain.product.service.ProductService
-import com.teamsparta.moamoa.exception.ModelNotFoundException
 import com.teamsparta.moamoa.infra.security.UserPrincipal
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import jakarta.validation.Valid
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
@@ -58,16 +54,10 @@ class ProductController(
         @AuthenticationPrincipal user: UserPrincipal,
         @Parameter(description = "상품 ID") @PathVariable productId: Long,
         @RequestBody @Valid productRequest: ProductRequest,
-    ): ResponseEntity<Any> {
-        try {val updatedProduct = productService.updateProduct(productId, user.id, productRequest)
-            return ResponseEntity.ok(ProductResponse(updatedProduct))
-        } catch (ex: ModelNotFoundException) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.message)
-        } catch (ex: IllegalArgumentException) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.message)
-        } catch (ex: Exception) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal server error")
-        }
+    ): ResponseEntity<ProductResponse> {
+        val updatedProduct = productService.updateProduct(productId, user.id, productRequest)
+        val response = ProductResponse(updatedProduct)
+        return ResponseEntity.ok(response)
     }
 
 

@@ -95,8 +95,8 @@ class ProductServiceImpl(
             productRepository.save(product)
             productStockRepository.save(productStock)
             return product
-        } catch (ex: Exception) {
-            logger.error("An error occurred while creating product $sellerId", ex)
+        } catch (ex: ModelNotFoundException) {
+            logger.error("$sellerId", ex)
             throw ex
         }
     }
@@ -117,7 +117,7 @@ class ProductServiceImpl(
 
 
             if (seller != product.seller) {
-                throw IllegalArgumentException("권한이 없습니다")
+                throw IllegalArgumentException("해당 상품에 대한 권한이 없습니다")
             }
             product.apply {
                 title = request.title
@@ -143,21 +143,28 @@ class ProductServiceImpl(
         productId: Long,
         sellerId: Long,
     ): Product {
-        val product =
-            productRepository.findByIdAndDeletedAtIsNull(productId)
-                .orElseThrow { ModelNotFoundException("Product not found or deleted", productId) }
+        try {
+            val product =
+                productRepository.findByIdAndDeletedAtIsNull(productId)
+                    .orElseThrow { ModelNotFoundException("Product not found or deleted", productId) }
 
-        val seller =
-            sellerRepository.findByIdOrNull(sellerId)
-                ?: throw ModelNotFoundException("seller", sellerId)
+            val seller =
+                sellerRepository.findByIdOrNull(sellerId)
+                    ?: throw ModelNotFoundException("seller", sellerId)
 
-        if (seller != product.seller) {
-            throw IllegalArgumentException("권한이 없습니다")
-        }
+            if (seller != product.seller) {
+                throw IllegalArgumentException("해당 상품에 대한 권한이 없습니다.")
+            }
 
-        product.deletedAt = LocalDateTime.now()
-
-        return productRepository.save(product)
+            product.deletedAt = LocalDateTime.now()
+            return productRepository.save(product)
+        } catch (ex: ModelNotFoundException) {
+            logger.error("An error occurred while deleting product", ex)
+            throw ex
+        } catch (ex: IllegalArgumentException){
+            logger.error("An error occurred while deleting product", ex)
+            throw ex
+    }
     }
 
     @Transactional
@@ -165,24 +172,36 @@ class ProductServiceImpl(
         productId: Long,
         quantity: Int,
     ) {
-        val product =
-            productRepository.findById(productId)
-                .orElseThrow { ModelNotFoundException("Product", productId) }
+        try {
+            val product =
+                productRepository.findById(productId)
+                    .orElseThrow { ModelNotFoundException("Product", productId) }
 
-        val productStock =
-            productStockRepository.findById(productId)
-                .orElseThrow { ModelNotFoundException("Product", productId) }
+            val productStock =
+                productStockRepository.findById(productId)
+                    .orElseThrow { ModelNotFoundException("Product", productId) }
 
-        if (productStock.stock < quantity) {
-            throw IllegalStateException("Not enough stock")
+            if (productStock.stock < quantity) {
+                throw IllegalStateException("Not enough stock")
+            }
+
+            productStock.stock -= quantity
+            productStockRepository.save(productStock)
+
+            if (productStock.stock == 0) {
+                product.isSoldOut = true
+                productRepository.save(product)
+            }
+        } catch (ex: ModelNotFoundException) {
+            logger.error("An error occurred while adjusting inventory quantity", ex) {
+                throw ex
+            }
+        } catch (ex: IllegalStateException) {
+            logger. error("An error occurred while adjusting inventory quantity", ex) {
+                throw ex
+            }
         }
 
-        productStock.stock -= quantity
-        productStockRepository.save(productStock)
 
-        if (productStock.stock == 0) {
-            product.isSoldOut = true
-            productRepository.save(product)
-        }
     }
 }
