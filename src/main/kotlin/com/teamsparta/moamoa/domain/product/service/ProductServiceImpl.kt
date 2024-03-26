@@ -1,5 +1,6 @@
 package com.teamsparta.moamoa.domain.product.service
 
+import com.teamsparta.moamoa.domain.product.controller.ProductController
 import com.teamsparta.moamoa.domain.product.dto.ProductRequest
 import com.teamsparta.moamoa.domain.product.dto.ProductResponse
 import com.teamsparta.moamoa.domain.product.model.Product
@@ -10,6 +11,8 @@ import com.teamsparta.moamoa.domain.review.repository.ReviewRepository
 import com.teamsparta.moamoa.domain.seller.repository.SellerRepository
 import com.teamsparta.moamoa.exception.ModelNotFoundException
 import jakarta.transaction.Transactional
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
@@ -23,6 +26,8 @@ class ProductServiceImpl(
     private val sellerRepository: SellerRepository,
     private val reviewRepository: ReviewRepository,
 ) : ProductService {
+
+    private val logger: Logger = LoggerFactory.getLogger(ProductServiceImpl::class.java)
     @Transactional
     override fun getAllProducts(): List<ProductResponse> {
         val products = productRepository.findAll().filter { it.deletedAt == null }
@@ -40,18 +45,21 @@ class ProductServiceImpl(
 
     @Transactional
     override fun getProductById(productId: Long): ProductResponse {
-        val product =
-            productRepository.findByIdAndDeletedAtIsNull(productId)
+        try {
+            val product = productRepository.findByIdAndDeletedAtIsNull(productId)
                 .orElseThrow { ModelNotFoundException("Product not found or deleted", productId) }
+            val reviews = reviewRepository.findAllByProductIdAndDeletedAtIsNull(productId, Pageable.unpaged()).content
+            val averageRating = if (reviews.isNotEmpty()) reviews.map { it.rating }.average() else 0.0
 
-        val reviews = reviewRepository.findAllByProductIdAndDeletedAtIsNull(productId, Pageable.unpaged()).content
-        val averageRating = if (reviews.isNotEmpty()) reviews.map { it.rating }.average() else 0.0
-
-        product.ratingAverage = averageRating
-        productRepository.save(product)
-
-        return ProductResponse(product)
+            product.ratingAverage = averageRating
+            productRepository.save(product)
+            return ProductResponse(product)
+        } catch (ex: Exception) {
+            logger.error("An error occurred while getting product for productId: $productId", ex)
+            throw ex
+        }
     }
+
 
     @Transactional
     override fun getPaginatedProductList(pageable: Pageable): Page<ProductResponse> {

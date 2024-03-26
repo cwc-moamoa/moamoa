@@ -14,4 +14,5 @@ class MoamoaApplication
 
 fun main(args: Array<String>) {
     runApplication<MoamoaApplication>(*args)
+
 }

@@ -3,10 +3,14 @@ package com.teamsparta.moamoa.domain.product.controller
 import com.teamsparta.moamoa.domain.product.dto.ProductRequest
 import com.teamsparta.moamoa.domain.product.dto.ProductResponse
 import com.teamsparta.moamoa.domain.product.service.ProductService
+import com.teamsparta.moamoa.exception.ModelNotFoundException
 import com.teamsparta.moamoa.infra.security.UserPrincipal
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import jakarta.validation.Valid
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
@@ -20,6 +24,7 @@ import org.springframework.web.bind.annotation.*
 @CrossOrigin(origins = ["*"], allowedHeaders = ["*"])
 class ProductController(
     private val productService: ProductService,
+
 ) {
     @Operation(summary = "모든 상품 조회", description = "시스템에 등록된 모든 상품의 목록을 조회합니다.")
     @GetMapping
@@ -31,8 +36,15 @@ class ProductController(
     @GetMapping("/{productId}")
     fun getProduct(
         @PathVariable productId: Long,
-    ): ProductResponse {
-        return productService.getProductById(productId)
+    ): ResponseEntity<Any> {
+        try {
+            val productResponse = productService.getProductById(productId)
+            return ResponseEntity.ok(productResponse)
+        } catch (ex: ModelNotFoundException) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.message)
+        } catch (ex: Exception) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal server error")
+        }
     }
 
     @Operation(summary = "상품 등록", description = "새로운 상품을 시스템에 등록합니다.")

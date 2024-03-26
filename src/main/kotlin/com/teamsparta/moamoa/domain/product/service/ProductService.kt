@@ -3,6 +3,7 @@ package com.teamsparta.moamoa.domain.product.service
 import com.teamsparta.moamoa.domain.product.dto.ProductRequest
 import com.teamsparta.moamoa.domain.product.dto.ProductResponse
 import com.teamsparta.moamoa.domain.product.model.Product
+import org.slf4j.Logger
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 
