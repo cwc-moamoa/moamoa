@@ -8,6 +8,7 @@ import com.teamsparta.moamoa.domain.product.model.ProductStock
 import com.teamsparta.moamoa.domain.product.repository.ProductRepository
 import com.teamsparta.moamoa.domain.product.repository.ProductStockRepository
 import com.teamsparta.moamoa.domain.review.repository.ReviewRepository
+import com.teamsparta.moamoa.domain.seller.model.Seller
 import com.teamsparta.moamoa.domain.seller.repository.SellerRepository
 import com.teamsparta.moamoa.exception.ModelNotFoundException
 import jakarta.transaction.Transactional
@@ -66,41 +67,41 @@ class ProductServiceImpl(
         return productRepository.findAllByDeletedAtIsNull(pageable)
     }
 
+
     @Transactional
     override fun createProduct(
         sellerId: Long,
         request: ProductRequest,
     ): Product {
-        val seller =
-            sellerRepository.findByIdOrNull(sellerId)
-                ?: throw ModelNotFoundException("seller", sellerId)
-
-        val product =
-            Product(
-                title = request.title,
-                content = request.content,
-                imageUrl = request.imageUrl,
-                price = request.price,
-                purchaseAble = request.purchaseAble,
-                userLimit = request.userLimit,
-                discount = request.discount,
-                seller = seller,
-                likes = 0,
-            )
-
-        val productStock =
-            ProductStock(
-                product = product,
-                stock = request.stock,
-                productName = request.title,
-            )
-
-        // product.productStock = productStock
-
-        productRepository.save(product)
-        productStockRepository.save(productStock)
-
-        return product
+        try {
+            val seller =
+                sellerRepository.findByIdOrNull(sellerId)
+                    ?: throw ModelNotFoundException("seller", sellerId)
+            val product =
+                Product(
+                    title = request.title,
+                    content = request.content,
+                    imageUrl = request.imageUrl,
+                    price = request.price,
+                    purchaseAble = request.purchaseAble,
+                    userLimit = request.userLimit,
+                    discount = request.discount,
+                    seller = seller,
+                    likes = 0,
+                )
+            val productStock =
+                ProductStock(
+                    product = product,
+                    stock = request.stock,
+                    productName = request.title,
+                )
+            productRepository.save(product)
+            productStockRepository.save(productStock)
+            return product
+        } catch (ex: Exception) {
+            logger.error("An error occurred while getting product for sellerId: $sellerId", ex)
+            throw ex
+        }
     }
 
     @Transactional
