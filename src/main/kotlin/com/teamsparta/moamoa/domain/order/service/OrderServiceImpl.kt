@@ -162,38 +162,32 @@ class OrderServiceImpl(
             throw Exception("주문정보가 일치하지 않습니다")
         }
 
-        if (findOrder.status == OrdersStatus.CANCELLED)
-            {
-                throw Exception("이미 취소된 주문입니다.")
-            }
+        if (findOrder.status == OrdersStatus.CANCELLED) {
+            throw Exception("이미 취소된 주문입니다.")
+        }
         // 공구 인지 아닌지
-        if (findOrder.discount > 0.0)
-            {
-                if (groupLimit == groupUserCount)
-                    {
-                        throw Exception("매칭이 완료되었기 때문에 취소가 불가합니다.")
-                        // 더 좋은 문장이 안떠오름
-                    } else if (
-                    groupUserCount == 1 // 그룹에 한명만 있을때
-                )
-                    {
-                        cancelEtc(findOrder, stock!!, findGroupJoinUser, payInfo, group)
-                        group.deletedAt = LocalDateTime.now()
-                        group.groupPurchaseUsers.remove(findGroupJoinUser)
-                    } else if (
-                    groupLimit > groupUserCount // 그룹이 완성되지 않았지만 여러명일때
-                )
-                    {
-                        cancelEtc(findOrder, stock!!, findGroupJoinUser, payInfo, group)
-                        group.groupPurchaseUsers.remove(findGroupJoinUser)
-                    }
-            } else
-            {
-                findOrder.deletedAt = LocalDateTime.now()
-                findOrder.status = OrdersStatus.CANCELLED
-                stock!!.stock += findOrder.quantity // ?.을 써서 어떤식으로 넘길지 모르겠음 세이프콜을 쓰면 오히려 재고가 안맞을수도있을거같음
-                // 일반 주문일때 재고원래대로 돌려놓고 주문 논리삭제
+        if (findOrder.discount > 0.0) {
+            if (groupLimit == groupUserCount) {
+                throw Exception("매칭이 완료되었기 때문에 취소가 불가합니다.")
+                // 더 좋은 문장이 안떠오름
+            } else if (
+                groupUserCount == 1 // 그룹에 한명만 있을때
+            ) {
+                cancelEtc(findOrder, stock!!, findGroupJoinUser, payInfo, group)
+                group.deletedAt = LocalDateTime.now()
+                group.groupPurchaseUsers.remove(findGroupJoinUser)
+            } else if (
+                groupLimit > groupUserCount // 그룹이 완성되지 않았지만 여러명일때
+            ) {
+                cancelEtc(findOrder, stock!!, findGroupJoinUser, payInfo, group)
+                group.groupPurchaseUsers.remove(findGroupJoinUser)
             }
+        } else {
+            findOrder.deletedAt = LocalDateTime.now()
+            findOrder.status = OrdersStatus.CANCELLED
+            stock!!.stock += findOrder.quantity // ?.을 써서 어떤식으로 넘길지 모르겠음 세이프콜을 쓰면 오히려 재고가 안맞을수도있을거같음
+            // 일반 주문일때 재고원래대로 돌려놓고 주문 논리삭제
+        }
         return CancelResponseDto(
             message = "주문이 취소 되었습니다",
         )
@@ -205,7 +199,7 @@ class OrderServiceImpl(
         findGroupJoinUser: GroupPurchaseJoinUserEntity,
         payInfo: PaymentEntity,
         group: GroupPurchaseEntity,
-    )  {
+    ) {
         findOrder.deletedAt = LocalDateTime.now()
         findOrder.status = OrdersStatus.CANCELLED
         stock.stock += findOrder.quantity
@@ -253,15 +247,13 @@ class OrderServiceImpl(
         // 이건 상태를 변경하는거고, 취소된 주문은 이미 상태가 cancelled 이기 때문에, 상태변경을 지원하지 않음.
         val findResult = findProductList.find { it.id == findOrder.product.id } ?: throw Exception("판매자가 파는 상품의 주문이 아닙니다")
         val stock = productStockRepository.findByProduct(findResult)
-        if (status == OrdersStatus.CANCELLED)
-            {
-                findOrder.status = status
-                stock!!.stock += findOrder.quantity
-                productStockRepository.save(stock!!)
-            } else
-            {
-                findOrder.status = status
-            }
+        if (status == OrdersStatus.CANCELLED) {
+            findOrder.status = status
+            stock!!.stock += findOrder.quantity
+            productStockRepository.save(stock!!)
+        } else {
+            findOrder.status = status
+        }
         return orderRepository.save(findOrder).toResponse()
     }
 
