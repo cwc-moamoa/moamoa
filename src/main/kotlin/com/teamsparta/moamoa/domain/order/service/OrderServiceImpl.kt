@@ -13,7 +13,7 @@ import com.teamsparta.moamoa.domain.payment.model.PaymentEntity
 import com.teamsparta.moamoa.domain.payment.model.PaymentStatus
 import com.teamsparta.moamoa.domain.payment.repository.PaymentRepository
 import com.teamsparta.moamoa.domain.product.model.ProductStock
-import com.teamsparta.moamoa.domain.product.model.ProductStock.Companion.discount
+//import com.teamsparta.moamoa.domain.product.model.ProductStock.Companion.discount
 import com.teamsparta.moamoa.domain.product.repository.ProductRepository
 import com.teamsparta.moamoa.domain.product.repository.ProductStockRepository
 import com.teamsparta.moamoa.domain.seller.repository.SellerRepository
@@ -33,7 +33,7 @@ class OrderServiceImpl(
     private val productRepository: ProductRepository,
     private val productStockRepository: ProductStockRepository,
     private val sellerRepository: SellerRepository,
-    private val redisTemplate: RedisTemplate<String, Any>,
+    private val redisConfigTemplate: RedisTemplate<String, Any>,
     private val paymentRepository: PaymentRepository,
     private val groupPurchaseRepository: GroupPurchaseRepository,
     private val socialUserRepository: SocialUserRepository,
@@ -79,7 +79,8 @@ class OrderServiceImpl(
                         ),
                     )
                 paymentRepository.save(discountedPayment)
-                productStockRepository.save(stockCheck.discount(quantity))
+//                productStockRepository.save(stockCheck.discount(quantity))
+                stockCheck.discount(quantity)
                 return discountedOrder.toResponse()
             } else {
                 throw Exception("이미 공동 구매 신청중인 유저는 주문을 신청 할 수 없습니다.")
@@ -90,6 +91,7 @@ class OrderServiceImpl(
                     price = findProduct.price * quantity,
                     status = PaymentStatus.READY,
                 )
+            paymentRepository.save(payment)
             val order =
                 orderRepository.save(
                     OrdersEntity(
@@ -106,8 +108,9 @@ class OrderServiceImpl(
                         sellerId = findProduct.seller.id,
                     ),
                 )
-            paymentRepository.save(payment)
-            productStockRepository.save(stockCheck.discount(quantity))
+
+//            productStockRepository.save(stockCheck.discount(quantity))
+            stockCheck.discount(quantity)
             return order.toResponse()
         }
     }
@@ -119,9 +122,9 @@ class OrderServiceImpl(
     ) {
         val hashKey: String = orderId
 
-        redisTemplate.opsForHash<String, String>().put(hashKey, "productId", productId)
-        redisTemplate.opsForHash<String, String>().put(hashKey, "userId", userId)
-        redisTemplate.opsForHash<String, String>().put(hashKey, "orderId", orderId)
+        redisConfigTemplate.opsForHash<String, String>().put(hashKey, "productId", productId)
+        redisConfigTemplate.opsForHash<String, String>().put(hashKey, "userId", userId)
+        redisConfigTemplate.opsForHash<String, String>().put(hashKey, "orderId", orderId)
     }
 
     @Transactional
@@ -226,6 +229,10 @@ class OrderServiceImpl(
         } else {
             throw Exception("유저와 주문정보가 일치하지 않습니다")
         }
+    }
+
+    fun getAllOrders(): List<OrdersEntity> {
+        return orderRepository.findAll()
     }
 
     override fun getOrderPage(
