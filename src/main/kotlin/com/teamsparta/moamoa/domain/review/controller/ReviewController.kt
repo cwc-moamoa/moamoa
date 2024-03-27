@@ -26,15 +26,16 @@ class ReviewController(
     fun createReview(
         @PathVariable productId: Long,
         @PathVariable orderId: Long,
-        @AuthenticationPrincipal socialUser: UserPrincipal,
+        @AuthenticationPrincipal user: UserPrincipal, // providerId를 받도록 된듯하다
         @Valid @RequestBody createReviewRequest: CreateReviewRequest,
     ): ResponseEntity<List<ReviewResponse>> {
-        val result = reviewService.createReview(productId, socialUser, createReviewRequest, orderId)
+        val result = reviewService.createReview(productId, user.id, createReviewRequest, orderId)
         val results = listOf(result)
         return ResponseEntity
             .status(HttpStatus.CREATED)
             .body(results)
     }
+
 
     @GetMapping("/review/{reviewId}")
     fun getReviewById(
@@ -52,29 +53,30 @@ class ReviewController(
         val reviews = reviewService.getPaginatedReviewList(productId, pageable)
         return ResponseEntity.ok(reviews)
     }
-
     @PutMapping("/{reviewId}")
     fun updateReview(
         @PathVariable reviewId: Long,
-        @AuthenticationPrincipal socialUser: UserPrincipal,
+        @AuthenticationPrincipal user: UserPrincipal,
         @Valid @RequestBody updateReviewRequest: UpdateReviewRequest,
     ): ResponseEntity<ReviewResponse> {
         return ResponseEntity
             .status(HttpStatus.OK)
-            .body(reviewService.updateReview(reviewId, socialUser, updateReviewRequest))
+            .body(reviewService.updateReview(reviewId, user.id, updateReviewRequest))
     }
+
 
     @DeleteMapping("/{reviewId}")
     fun deleteReview(
         @PathVariable reviewId: Long,
-        @AuthenticationPrincipal socialUser: UserPrincipal,
+        @AuthenticationPrincipal user: UserPrincipal,
     ): ResponseEntity<String> {
-        reviewService.deleteReview(reviewId, socialUser)
+        reviewService.deleteReview(reviewId, user.id)
         val deleteReviewSuccessMessage = "댓글이 성공적으로 삭제되었습니다!"
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(deleteReviewSuccessMessage)
     }
+
 
     // 프론트 연결용 컨트롤러
     @GetMapping("/products/{productId}/reviews")

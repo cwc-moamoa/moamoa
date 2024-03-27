@@ -4,21 +4,20 @@ import com.teamsparta.moamoa.domain.review.dto.CreateReviewRequest
 import com.teamsparta.moamoa.domain.review.dto.ReviewResponse
 import com.teamsparta.moamoa.domain.review.dto.ReviewResponseByList
 import com.teamsparta.moamoa.domain.review.dto.UpdateReviewRequest
-import com.teamsparta.moamoa.infra.security.UserPrincipal
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 
 interface ReviewService {
     fun createReview(
         productId: Long,
-        socialUser: UserPrincipal,
+        providerId: Long,
         createReviewRequest: CreateReviewRequest,
         orderId: Long,
     ): ReviewResponse
 
     fun updateReview(
         reviewId: Long,
-        socialUser: UserPrincipal,
+        providerId: Long,
         request: UpdateReviewRequest,
     ): ReviewResponse
 
@@ -31,7 +30,7 @@ interface ReviewService {
 
     fun deleteReview(
         reviewId: Long,
-        socialUser: UserPrincipal,
+        providerId: Long,
     )
 
     fun getReviewsByProductId(productId: Long): List<ReviewResponseByList>
