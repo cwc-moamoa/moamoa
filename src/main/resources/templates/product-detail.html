@@ -336,8 +336,11 @@
             getReviews(productId);
 
             // 주문하기 버튼 클릭 시
-            $('.order-button').click(function() {
+            $('.order-button01').click(function() {
                 window.location.href = "/order?productId=" + productId;
+            });
+            $('.order-button02').click(function() {
+                window.location.href = "/group-order?productId=" + productId;
             });
         });
     </script>
