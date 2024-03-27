@@ -7,6 +7,7 @@ import com.teamsparta.moamoa.domain.socialUser.model.SocialUser
 import com.teamsparta.moamoa.infra.BaseTimeEntity
 import jakarta.persistence.*
 
+
 @Entity
 @Table(name = "orders")
 class OrdersEntity(

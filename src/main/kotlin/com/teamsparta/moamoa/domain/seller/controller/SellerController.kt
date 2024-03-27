@@ -6,6 +6,7 @@ import com.teamsparta.moamoa.domain.seller.dto.SellerSignInResponse
 import com.teamsparta.moamoa.domain.seller.dto.SellerSignUpRequest
 import com.teamsparta.moamoa.domain.seller.service.SellerService
 import com.teamsparta.moamoa.infra.security.UserPrincipal
+import jakarta.servlet.http.HttpServletResponse
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
@@ -27,11 +28,11 @@ class SellerController(
 
     @PostMapping("/signin")
     fun signInSeller(
-        @RequestBody sellerSignInRequest: SellerSignInRequest,
+        @RequestBody sellerSignInRequest: SellerSignInRequest, response: HttpServletResponse
     ): ResponseEntity<SellerSignInResponse> {
         return ResponseEntity
             .status(HttpStatus.OK)
-            .body(sellerService.signInSeller(sellerSignInRequest))
+            .body(sellerService.signInSeller(sellerSignInRequest, response))
     }
 
     @DeleteMapping

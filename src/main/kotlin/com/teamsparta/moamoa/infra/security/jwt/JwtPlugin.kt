@@ -4,6 +4,8 @@ import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jws
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.security.Keys
+import jakarta.servlet.http.Cookie
+import jakarta.servlet.http.HttpServletResponse
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import java.nio.charset.StandardCharsets
@@ -28,8 +30,11 @@ class JwtPlugin(
         subject: String,
         nickname: String,
         email: String,
+        response: HttpServletResponse
     ): String {
-        return generateToken(subject, nickname, email, Duration.ofHours(accessTokenExpirationHour))
+        val token = generateToken(subject, nickname, email, Duration.ofHours(accessTokenExpirationHour))
+        addTokenToCookie(token,response)
+        return token
     }
 
     private fun generateToken(
@@ -54,5 +59,13 @@ class JwtPlugin(
             .claims(claims)
             .signWith(key)
             .compact()
+    }
+
+    private fun addTokenToCookie(token: String, response: HttpServletResponse) {
+        val cookie = Cookie("jwt_token", token)
+        cookie.isHttpOnly = true
+        cookie.maxAge = (accessTokenExpirationHour * 60 * 60 * 24 * 7).toInt() // 일주일
+        cookie.path = "/"
+        response.addCookie(cookie)
     }
 }

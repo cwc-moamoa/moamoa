@@ -3,7 +3,6 @@ package com.teamsparta.moamoa.domain.like.service
 import com.teamsparta.moamoa.domain.like.model.Like
 import com.teamsparta.moamoa.domain.like.repository.LikeRepository
 import com.teamsparta.moamoa.domain.product.repository.ProductRepository
-import com.teamsparta.moamoa.domain.product.service.ProductServiceImpl
 import com.teamsparta.moamoa.domain.review.repository.ReviewRepository
 import com.teamsparta.moamoa.domain.socialUser.repository.SocialUserRepository
 import com.teamsparta.moamoa.exception.ModelNotFoundException
@@ -49,7 +48,7 @@ class LikeServiceImpl(
             product.likes++
             productRepository.save(product)
         } catch (ex: Exception) {
-            logger.error("좋아요 생성 중 오류 발생", ex)
+            logger.error("상품 좋아요 생성 중 오류 발생", ex)
         }
 
         }
@@ -61,27 +60,34 @@ class LikeServiceImpl(
         productId: Long,
         socialUserId: Long,
     ) {
-        val product =
-            productRepository.findById(productId)
-                .orElseThrow { throw ModelNotFoundException("Product", productId) }
-        val user =
-            socialUserRepository.findById(socialUserId)
-                .orElseThrow { throw ModelNotFoundException("User", socialUserId) }
+        try {
+            val product =
+                productRepository.findById(productId)
+                    .orElseThrow { throw ModelNotFoundException("Product", productId) }
+            val user =
+                socialUserRepository.findById(socialUserId)
+                    .orElseThrow { throw ModelNotFoundException("User", socialUserId) }
 
-        val like = likeRepository.findByProductAndSocialUser(product, user)
-        if (like != null) {
-            if (like.socialUser.id != socialUserId) {
-                throw IllegalArgumentException("권한이 없습니다")
-            }
-            likeRepository.delete(like)
+            val like = likeRepository.findByProductAndSocialUser(product, user)
+            if (like != null) {
+                if (like.socialUser.id != socialUserId) {
+                    throw IllegalArgumentException("해당 상품에 좋아요를 누르지 않았습니다. ")
+                }
+                likeRepository.delete(like)
 
-            if (product.likes > 0) {
-                product.likes--
-                productRepository.save(product)
+                if (product.likes > 0) {
+                    product.likes--
+                    productRepository.save(product)
+                }
+            } else {
+                throw IllegalArgumentException("좋아요가 없습니다")
             }
-        } else {
-            throw IllegalArgumentException("좋아요가 없습니다")
+
+        } catch (ex: Exception) {
+            logger.error("상품 좋아요 취소 중 오류 발생", ex)
+            throw ex
         }
+
     }
 
     @Transactional
@@ -89,26 +95,32 @@ class LikeServiceImpl(
         reviewId: Long,
         socialUserId: Long,
     ) {
-        val review =
-            reviewRepository.findById(reviewId)
-                .orElseThrow { throw ModelNotFoundException("Review", reviewId) }
+        try {
+            val review =
+                reviewRepository.findById(reviewId)
+                    .orElseThrow { throw ModelNotFoundException("Review", reviewId) }
 
-        if (review.deletedAt != null) {
-            throw Exception("없는 리뷰입니다")
+            if (review.deletedAt != null) {
+                throw Exception("없는 리뷰입니다")
+            }
+
+            val user =
+                socialUserRepository.findById(socialUserId)
+                    .orElseThrow { throw ModelNotFoundException("User", socialUserId) }
+
+            val existingLike = likeRepository.findByReviewAndSocialUser(review, user)
+            if (existingLike != null) {
+                throw IllegalArgumentException("이미 좋아요를 누른 리뷰입니다")
+            }
+
+            likeRepository.save(Like(review = review, socialUser = user, status = true))
+            review.likes++
+            reviewRepository.save(review)
+        } catch (ex: Exception) {
+            logger.error("리뷰 좋아요 생성 중 오류 발생", ex)
+            throw ex
         }
 
-        val user =
-            socialUserRepository.findById(socialUserId)
-                .orElseThrow { throw ModelNotFoundException("User", socialUserId) }
-
-        val existingLike = likeRepository.findByReviewAndSocialUser(review, user)
-        if (existingLike != null) {
-            throw IllegalArgumentException("이미 좋아요를 누른 리뷰입니다")
-        }
-
-        likeRepository.save(Like(review = review, socialUser = user, status = true))
-        review.likes++
-        reviewRepository.save(review)
     }
 
     @Transactional
@@ -116,26 +128,34 @@ class LikeServiceImpl(
         reviewId: Long,
         socialUserId: Long,
     ) {
-        val review =
-            reviewRepository.findById(reviewId)
-                .orElseThrow { throw ModelNotFoundException("Review", reviewId) }
-        val user =
-            socialUserRepository.findById(socialUserId)
-                .orElseThrow { throw ModelNotFoundException("User", socialUserId) }
 
-        val like = likeRepository.findByReviewAndSocialUser(review, user)
-        if (like != null) {
-            if (like.socialUser.id != socialUserId) {
-                throw IllegalArgumentException("권한이 없습니다")
-            }
-            likeRepository.delete(like)
+        try {
+            val review =
+                reviewRepository.findById(reviewId)
+                    .orElseThrow { throw ModelNotFoundException("Review", reviewId) }
+            val user =
+                socialUserRepository.findById(socialUserId)
+                    .orElseThrow { throw ModelNotFoundException("User", socialUserId) }
 
-            if (review.likes > 0) {
-                review.likes--
-                reviewRepository.save(review)
+            val like = likeRepository.findByReviewAndSocialUser(review, user)
+            if (like != null) {
+                if (like.socialUser.id != socialUserId) {
+                    throw IllegalArgumentException("권한이 없습니다")
+                }
+                likeRepository.delete(like)
+
+                if (review.likes > 0) {
+                    review.likes--
+                    reviewRepository.save(review)
+                }
+            } else {
+                throw IllegalArgumentException("좋아요가 없습니다")
             }
-        } else {
-            throw IllegalArgumentException("좋아요가 없습니다")
+
+        } catch (ex: Exception) {
+            logger.error("리뷰 좋아요 취소 중 오류 발생", ex)
+            throw ex
         }
+
     }
 }
