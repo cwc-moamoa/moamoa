@@ -24,35 +24,36 @@ class ReviewServiceImpl(
     private val socialUserRepository: SocialUserRepository,
     private val orderRepository: OrderRepository,
 ) : ReviewService {
-    //    private fun validateRating(rating: Int) {
-//        if (rating < 1 || rating > 5) {
-//            throw IllegalArgumentException("Rating must be between 1 and 5.")
-//        }
-//    }
+
 
     @Transactional
     override fun createReview(
         productId: Long,
         socialUser: UserPrincipal,
         createReviewRequest: CreateReviewRequest,
+        orderId: Long,
     ): ReviewResponse {
-//        validateRating(createReviewRequest.rating)
-        val user =
-            socialUserRepository.findByEmail(socialUser.email)
-                .orElseThrow { ModelNotFoundException("User not found", socialUser.id) }
-
-        val product =
-            productRepository.findByIdAndDeletedAtIsNull(productId)
-                .orElseThrow { ModelNotFoundException("Product not found or deleted", productId) }
-
-        orderRepository.findByProductIdAndSocialUserId(productId, user.id)
-            .orElseThrow { ModelNotFoundException("주문내역을 확인할 수 없습니다", productId) }
-
-        val review = createReviewRequest.toReview(product, user)
+        // 주문에 대한 리뷰가 이미 있는지 확인
+        reviewRepository.findByOrderId(orderId).ifPresent {
+            throw IllegalStateException("이미 이 주문에 대한 리뷰가 작성되었습니다.")
+        }
+//이메일로 유저가 있는지 확인
+        val socialUser = socialUserRepository.findByEmail(socialUser.email)
+            .orElseThrow { ModelNotFoundException("User not found", socialUser.id) }
+//제품이 있는지, 소프트딜리트인지 확인
+        val product = productRepository.findByIdAndDeletedAtIsNull(productId)
+            .orElseThrow { ModelNotFoundException("Product not found or deleted", productId) }
+//아이디가 없으면
+        val userId = socialUser.id ?: throw IllegalArgumentException("사용자 ID가 없습니다")
+// orderId와 userId로 주문을 했는지
+        val order = orderRepository.findByIdAndSocialUserId(orderId, userId)
+            .orElseThrow { ModelNotFoundException("주문내역을 확인할 수 없습니다", orderId) }
+        val review = createReviewRequest.toReview(product, socialUser, order)
 
         val savedReview = reviewRepository.save(review)
         return ReviewResponse.toReviewResponse(savedReview)
     }
+
 
     @Transactional
     override fun getReviewById(reviewId: Long): ReviewResponse {
@@ -91,7 +92,6 @@ class ReviewServiceImpl(
             throw IllegalAccessException("권한이 없습니다.")
         }
 
-//        validateRating(request.rating)
 
         request.toUpdateReview(review)
 

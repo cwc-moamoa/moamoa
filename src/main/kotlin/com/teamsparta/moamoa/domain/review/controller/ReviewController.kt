@@ -15,29 +15,25 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.validation.annotation.Validated
-import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @Validated
 @RestController
 class ReviewController(
     private val reviewService: ReviewService,
 ) {
-    @PostMapping("/{productId}")
+    @PostMapping("/{productId}/reviews/{orderId}")
     fun createReview(
         @PathVariable productId: Long,
+        @PathVariable orderId: Long,
         @AuthenticationPrincipal socialUser: UserPrincipal,
         @Valid @RequestBody createReviewRequest: CreateReviewRequest,
-    ): ResponseEntity<ReviewResponse> {
-        val result = reviewService.createReview(productId, socialUser, createReviewRequest)
+    ): ResponseEntity<List<ReviewResponse>> {
+        val result = reviewService.createReview(productId, socialUser, createReviewRequest, orderId)
+        val results = listOf(result)
         return ResponseEntity
             .status(HttpStatus.CREATED)
-            .body(result)
+            .body(results)
     }
 
     @GetMapping("/review/{reviewId}")

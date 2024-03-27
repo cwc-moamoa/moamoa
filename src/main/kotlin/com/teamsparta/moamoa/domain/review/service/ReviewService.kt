@@ -13,6 +13,7 @@ interface ReviewService {
         productId: Long,
         socialUser: UserPrincipal,
         createReviewRequest: CreateReviewRequest,
+        orderId: Long,
     ): ReviewResponse
 
     fun updateReview(
