@@ -158,13 +158,13 @@ class OrderController(
             .body(orderService.getOrderPageBySellerId(sellerId, page, size))
     }
 
-    @PostMapping("/saveToRedis")
-    fun saveDataToRedis(
-        @RequestParam productId: String,
-        @RequestParam userId: String,
-        @RequestParam orderId: String,
-    ): ResponseEntity<Unit> {
-        orderService.saveToRedis(productId, userId, orderId) // 여기 순서 중요함!!
-        return ResponseEntity.status(HttpStatus.OK).build()
-    }
+//    @PostMapping("/saveToRedis")
+//    fun saveDataToRedis(
+//        @RequestParam productId: String,
+//        @RequestParam userId: String,
+//        @RequestParam orderId: String,
+//    ): ResponseEntity<Unit> {
+//        orderService.saveToRedis(productId, userId, orderId) // 여기 순서 중요함!!
+//        return ResponseEntity.status(HttpStatus.OK).build()
+//    }
 }

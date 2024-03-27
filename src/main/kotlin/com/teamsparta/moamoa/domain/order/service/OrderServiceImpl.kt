@@ -34,7 +34,6 @@ class OrderServiceImpl(
     private val productRepository: ProductRepository,
     private val productStockRepository: ProductStockRepository,
     private val sellerRepository: SellerRepository,
-    private val redisTemplate: RedisTemplate<String, Any>,
     private val paymentRepository: PaymentRepository,
     private val groupPurchaseRepository: GroupPurchaseRepository,
     private val socialUserRepository: SocialUserRepository,
@@ -122,19 +121,20 @@ class OrderServiceImpl(
 
         if (stockCheck!!.stock <= quantity) throw Exception("재고가 모자랍니다. 판매자에게 문의해주세요")
         return Triple(findUser, findProduct, stockCheck)
-    } // 엔티티 찾고 에러던지고 재고 찾고 엔티티 3개 트리플로 묶어서 반환 지피티 체고
-
-    override fun saveToRedis(
-        productId: String,
-        userId: String,
-        orderId: String,
-    ) {
-        val hashKey: String = orderId
-
-        redisTemplate.opsForHash<String, String>().put(hashKey, "productId", productId)
-        redisTemplate.opsForHash<String, String>().put(hashKey, "userId", userId)
-        redisTemplate.opsForHash<String, String>().put(hashKey, "orderId", orderId)
     }
+
+
+//    override fun saveToRedis(
+//        productId: String,
+//        userId: String,
+//        orderId: String,
+//    ) {
+//        val hashKey: String = orderId
+//
+//        redisTemplate.opsForHash<String, String>().put(hashKey, "productId", productId)
+//        redisTemplate.opsForHash<String, String>().put(hashKey, "userId", userId)
+//        redisTemplate.opsForHash<String, String>().put(hashKey, "orderId", orderId)
+//    }
 
     @Transactional
     override fun updateOrder(
