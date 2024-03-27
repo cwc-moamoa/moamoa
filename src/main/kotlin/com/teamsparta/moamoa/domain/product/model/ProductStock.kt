@@ -18,18 +18,17 @@ class ProductStock(
     @Column(name = "product_name")
     val productName: String,
 ) : BaseTimeEntity() {
+    //    fun discount(num: Int) {
+//        this.stock -= num
+    companion object
 
-    fun discount(num: Int) {
-        this.stock - num
-//    companion object {
-
-//            val discountNum = stock - num
-//            return ProductStock(
-//                id = id!!,
-//                stock = discountNum,
-//                productName = productName,
-//                product = product,
-//            )
-//        }
+    fun discount(num: Int): ProductStock {
+        val discountNum = stock - num
+        return ProductStock(
+            id = id!!,
+            stock = discountNum,
+            productName = productName,
+            product = product,
+        )
     }
 }
