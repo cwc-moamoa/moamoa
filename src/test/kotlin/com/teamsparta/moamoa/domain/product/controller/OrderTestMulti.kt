@@ -19,8 +19,6 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
-import org.springframework.data.redis.core.RedisTemplate
-import org.springframework.test.context.ActiveProfiles
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -33,28 +31,34 @@ class OrderTestMulti
     private val productRepository: ProductRepository,
     private val productStockRepository: ProductStockRepository,
     private val sellerRepository: SellerRepository,
-    private val redisConfigTemplate: RedisTemplate<String, Any>,
     private val paymentRepository: PaymentRepository,
     private val groupPurchaseRepository: GroupPurchaseRepository,
     private val socialUserRepository: SocialUserRepository,
     private val groupPurchaseJoinUserRepository: GroupPurchaseJoinUserRepository,
 ) {
     private val orderService = OrderServiceImpl(
-        orderRepository, productRepository, productStockRepository, sellerRepository,
-        redisConfigTemplate,
-        paymentRepository, groupPurchaseRepository, socialUserRepository, groupPurchaseJoinUserRepository
+        orderRepository,
+        productRepository,
+        productStockRepository,
+        sellerRepository,
+        paymentRepository,
+        groupPurchaseRepository,
+        socialUserRepository,
+        groupPurchaseJoinUserRepository
     )
 
     @Test
     fun `여러 사용자가 동시에 주문을 할시 테스트`() {
         // GIVEN
-        val executorService: ExecutorService = Executors.newFixedThreadPool(5)
+        val executorService: ExecutorService = Executors.newFixedThreadPool(100)
 
-        val latch = CountDownLatch(5)
+        val latch = CountDownLatch(10)
 
 
         // WHEN
-        repeat(15) {
+        repeat(
+            50
+        ) {
             executorService.execute {
 
                 val user = SocialUser(
@@ -92,13 +96,13 @@ class OrderTestMulti
 
 
                 orderService.createOrder(
-                        userId = user.id!!,
-                        productId = product.id!!,
-                        quantity = 1,
-                        address = "Address",
-                        phoneNumber = "123-456-7890",
-                    )
-                    latch.countDown()
+                    userId = user.id!!,
+                    productId = product.id!!,
+                    quantity = 1,
+                    address = "Address",
+                    phoneNumber = "123-456-7890",
+                )
+                latch.countDown()
             }
         }
 
@@ -106,9 +110,8 @@ class OrderTestMulti
 
         executorService.shutdown()
 
-        // THEN
         val orders = orderService.getAllOrders()
-        orders.size shouldBe 15
+        orders.size shouldBe 50
     }
 }
 

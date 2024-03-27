@@ -19,8 +19,6 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
-import org.springframework.data.redis.core.RedisTemplate
-import org.springframework.test.context.ActiveProfiles
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -30,16 +28,20 @@ class OrderTest
     private val productRepository: ProductRepository,
     private val productStockRepository: ProductStockRepository,
     private val sellerRepository: SellerRepository,
-    private val redisConfigTemplate: RedisTemplate<String, Any>,
     private val paymentRepository: PaymentRepository,
     private val groupPurchaseRepository: GroupPurchaseRepository,
     private val socialUserRepository: SocialUserRepository,
     private val groupPurchaseJoinUserRepository: GroupPurchaseJoinUserRepository,
 ) {
     private val orderService = OrderServiceImpl(
-        orderRepository, productRepository, productStockRepository, sellerRepository,
-        redisConfigTemplate,
-        paymentRepository, groupPurchaseRepository, socialUserRepository, groupPurchaseJoinUserRepository
+        orderRepository,
+        productRepository,
+        productStockRepository,
+        sellerRepository,
+        paymentRepository,
+        groupPurchaseRepository,
+        socialUserRepository,
+        groupPurchaseJoinUserRepository
     )
 
     @Test
