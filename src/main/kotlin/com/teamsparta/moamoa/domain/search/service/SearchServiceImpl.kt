@@ -1,8 +1,6 @@
 package com.teamsparta.moamoa.domain.search.service
 
-import com.teamsparta.moamoa.domain.product.model.Product
 import com.teamsparta.moamoa.domain.product.repository.ProductRepository
-import com.teamsparta.moamoa.domain.review.model.Review
 import com.teamsparta.moamoa.domain.review.repository.ReviewRepository
 import com.teamsparta.moamoa.domain.search.dto.ProductSearchResponse
 import com.teamsparta.moamoa.domain.search.dto.ReviewSearchResponse
@@ -60,18 +58,44 @@ class SearchServiceImpl(
     override fun searchProducts(
         keyword: String,
         pageable: Pageable,
-    ): Page<Product> {
+    ): Page<ProductSearchResponse> {
         saveSearchHistory(keyword) // 검색하면 히스토리에 저장된다는 뜻
-        return searchProductRepository.findByTitleContaining(keyword, pageable)
+
+        val productPage = searchProductRepository.findByTitleContaining(keyword, pageable)
+
+        return productPage.map { product ->
+            ProductSearchResponse(
+                productId = product.id!!,
+                title = product.title,
+                content = product.content,
+                imageUrl = product.imageUrl,
+                price = product.price,
+                ratingAverage = product.ratingAverage,
+                likes = product.likes
+            )
+        }
     }
 
     @Transactional
     override fun searchReviews(
         keyword: String,
         pageable: Pageable,
-    ): Page<Review> {
+    ): Page<ReviewSearchResponse> {
         saveSearchHistory(keyword)
-        return searchReviewRepository.findReviewsByTitleContaining(keyword, pageable)
+
+        val reviewsPage = searchReviewRepository.findReviewsByTitleContaining(keyword, pageable)
+
+        return reviewsPage.map { review ->
+            ReviewSearchResponse(
+                reviewId = review.id!!,
+                productId = review.product.id!!,
+                title = review.title,
+                content = review.content,
+                imageUrl = review.imageUrl,
+                name = review.socialUser.nickname,
+                likes = review.likes,
+            )
+        }
     }
 
     @Transactional
