@@ -13,6 +13,14 @@ interface OrderService {
         phoneNumber: String,
     ): ResponseOrderDto
 
+    fun createGroupOrder(
+        userId: Long,
+        productId: Long,
+        quantity: Int,
+        address: String,
+        phoneNumber: String,
+    ): ResponseOrderDto
+
     // 주문 생성
     fun updateOrder(
         userId: Long,
@@ -59,9 +67,9 @@ interface OrderService {
         size: Int,
     ): Page<ResponseOrderDto>
 
-    fun saveToRedis(
-        productId: String,
-        userId: String,
-        orderId: String,
-    )
+//    fun saveToRedis(
+//        productId: String,
+//        userId: String,
+//        orderId: String,
+//    )
 }

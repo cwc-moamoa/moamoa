@@ -336,8 +336,12 @@
             getReviews(productId);
 
             // 주문하기 버튼 클릭 시
-            $('.order-button').click(function() {
+            $('#order-button01').click(function() {
                 window.location.href = "/order?productId=" + productId;
+            });
+
+            $('#order-button02').click(function() {
+                window.location.href = "/groupOrder?productId=" + productId;
             });
         });
     </script>
@@ -353,8 +357,8 @@
             <!-- 여기에 상품 정보가 표시됩니다 -->
         </div>
         <div class="order_btn_box">
-            <a href="#" class="order-button order-button01">주문하기</a>
-            <a href="#" class="order-button order-button02">공동주문하기</a>
+            <a href="#" class="order-button" id="order-button01">주문하기</a>
+            <a href="#" class="order-button" id="order-button02">공동주문하기</a>
         </div>
 
     </div>

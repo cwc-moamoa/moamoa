@@ -49,6 +49,31 @@ class OrderController(
             .body(responseOrderDto)
     }
 
+    @PostMapping("/group/create")
+    fun createGroupOrder(request: HttpServletRequest): ResponseEntity<ResponseOrderDto> {
+        val userId = request.getParameter("userId").toLong()
+        val productId = request.getParameter("productId").toLong()
+        val quantity = request.getParameter("quantity").toInt()
+        val address = request.getParameter("address")
+        val phoneNumber = request.getParameter("phoneNumber")
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(orderService.createGroupOrder(userId, productId, quantity, address, phoneNumber))
+    }
+
+    @PostMapping("/group/create/swagger")
+    fun creatGroupOrderAtSwagger(
+        @RequestParam userId: Long,
+        @RequestParam productId: Long,
+        @RequestParam quantity: Int,
+        @RequestParam address: String,
+        @RequestParam phoneNumber: String,
+    ): ResponseEntity<ResponseOrderDto> {
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(orderService.createGroupOrder(userId, productId, quantity, address, phoneNumber))
+    }
+
     @PutMapping("/{orderId}/{userId}")
     fun updateOrder(
         @PathVariable orderId: Long,
@@ -133,13 +158,13 @@ class OrderController(
             .body(orderService.getOrderPageBySellerId(sellerId, page, size))
     }
 
-    @PostMapping("/saveToRedis")
-    fun saveDataToRedis(
-        @RequestParam productId: String,
-        @RequestParam userId: String,
-        @RequestParam orderId: String,
-    ): ResponseEntity<Unit> {
-        orderService.saveToRedis(productId, userId, orderId) // 여기 순서 중요함!!
-        return ResponseEntity.status(HttpStatus.OK).build()
-    }
+//    @PostMapping("/saveToRedis")
+//    fun saveDataToRedis(
+//        @RequestParam productId: String,
+//        @RequestParam userId: String,
+//        @RequestParam orderId: String,
+//    ): ResponseEntity<Unit> {
+//        orderService.saveToRedis(productId, userId, orderId) // 여기 순서 중요함!!
+//        return ResponseEntity.status(HttpStatus.OK).build()
+//    }
 }
