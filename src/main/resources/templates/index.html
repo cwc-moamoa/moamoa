@@ -519,7 +519,7 @@
 <!--                <div class="search_btn">검색</div>-->
 <!--            </div>-->
 <!--            <div class="login_btn">-->
-<!--                <a href="http://localhost:8080/oauth2/login/kakao">-->
+<!--                <a href="/oauth2/login/kakao">-->
 <!--                    <img src="https://www.epost.go.kr/images/btn_login_kakao.jpg" alt="kakao_btn">-->
 
 <!--                </a>-->
@@ -583,52 +583,105 @@
 
 <!--</body>-->
 
+<script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.1/kakao.min.js"
+        integrity="sha384-kDljxUXHaJ9xAb2AzRd59KxjrFjzHa5TAoFQ6GbYTCAG0bjM55XohjjDT7tDDC01" crossorigin="anonymous"></script>
+<script>
+    Kakao.init('f6656ea06fd4e1e2e928fb3b5f406b48'); // 사용하려는 앱의 JavaScript 키 입력
+</script>
 
-<!--</html>-->
+<a id="kakao-login-btn">
+    <img src="https://k.kakaocdn.net/14/dn/btroDszwNrM/I6efHub1SN5KCJqLm1Ovx1/o.jpg" width="222"
+         alt="카카오 로그인 버튼" />
+</a>
+<p id="token-result"></p>
+<script>
+
+    document.getElementById('kakao-login-btn').addEventListener('click', function() {
+        login();
+    });
+
+    function login() {
+        Kakao.Auth.login({
+            success: function() {
+                // 로그인이 성공한 경우
+                // 여기에 메인 페이지로 리디렉션하는 코드를 추가할 수 있습니다.
+                goMain();
+            },
+            fail: function(err) {
+                // 로그인이 실패한 경우
+                console.error(err);
+                alert('로그인에 실패하였습니다.');
+                // 여기에 실패 시에 추가적으로 실행할 로직을 작성할 수 있습니다.
+                goMain();
+            }
+        });
+    }
+
+    function goMain() {
+        location.href = '/start8080'; // 메인 페이지의 경로를 지정해야 합니다.
+    }
+
+
+
+</script>
+
+
+<button class="api-btn" onclick="kakaoLogout()">log out</button>
 
 <script>
-    const kakaoLoginBtn = document.getElementById("kakaoLoginBtn");
-
-    kakaoLoginBtn.addEventListener("click", function() {
-        // 카카오 로그인 인증 URL 생성
-        const redirectUri = "http://localhost:8080/oauth2/callback/kakao"; // 실제 리다이렉트 URL로 변경
-        const kakaoLoginUrl = `https://kauth.kakao.com/oauth/authorize?client_id=f6656ea06fd4e1e2e928fb3b5f406b48&redirect_uri=${redirectUri}&response_type=code&scope=account_email,profile`;
-
-        // 새 창으로 카카오 로그인 페이지 열기
-        window.open(kakaoLoginUrl, "_blank");
-    });
-
-    // 로그인 후 리다이렉트되는 페이지 (http://localhost:8080/oauth2/callback/kakao) 에서 토큰 저장 로직 추가
-    window.addEventListener("load", function() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const code = urlParams.get("code");
-
-        // code 파라미터가 존재한다면 (카카오 로그인 성공 후 리다이렉트)
-        if (code) {
-            // 서버로부터 토큰 발급 요청 (fetch API 사용)
-            fetch("/login/auth/kakao/token", {
-                method: "POST",
-                body: JSON.stringify({ code }),
-                headers: { "Content-Type": "application/json" }
+    function kakaoLogout() {
+        Kakao.Auth.logout()
+            .then(function() {
+                alert('logout ok\naccess token -> ' + Kakao.Auth.getAccessToken());
+                deleteCookie();
             })
-                .then(response => response.json())
-                .then(data => {
-                    // 토큰 받기 성공
-                    const accessToken = data.accessToken;
+            .catch(function() {
+                alert('Not logged in');
+            });
+    }
 
-                    // 로컬 스토리지에 토큰 저장
-                    localStorage.setItem("accessToken", accessToken);
-
-                    // 토큰 저장 후 수행할 작업 (예: 페이지 이동, 로그인 상태 표시 등)
-                    console.log("토큰 저장 완료:", accessToken);
-
-                    // 필요에 따라 다른 페이지로 이동
-                    // window.location.href = "...";
-                })
-                .catch(error => {
-                    console.error("토큰 발급 오류:", error);
-                    // 오류 처리
-                });
-        }
-    });
+    // 아래는 데모를 위한 UI 코드입니다.
+    function deleteCookie() {
+        document.cookie = 'authorize-access-token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    }
 </script>
+
+<button class="api-btn" onclick="unlinkApp()">앱 탈퇴하기</button>
+
+<script>
+    function unlinkApp() {
+        Kakao.API.request({
+            url: '/v1/user/unlink',
+        })
+            .then(function(res) {
+                alert('success: ' + JSON.stringify(res));
+                deleteCookie();
+            })
+            .catch(function(err) {
+                alert('fail: ' + JSON.stringify(err));
+            });
+    }
+
+    // 아래는 데모를 위한 UI 코드입니다.
+    function deleteCookie() {
+        document.cookie = 'authorize-access-token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    }
+</script>
+
+
+
+
+<!--<!DOCTYPE html>-->
+<!--<html lang="ko">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>Login</title>-->
+<!--</head>-->
+<!--<script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.1/kakao.min.js"-->
+<!--        integrity="sha384-kDljxUXHaJ9xAb2AzRd59KxjrFjzHa5TAoFQ6GbYTCAG0bjM55XohjjDT7tDDC01" crossorigin="anonymous"></script>-->
+<!--<script>-->
+<!--    Kakao.init('49a5663a8b1218c664e41f7d294e4ce6'); // 사용하려는 앱의 JavaScript 키 입력-->
+<!--</script>-->
+
+
+<!--</html>-->

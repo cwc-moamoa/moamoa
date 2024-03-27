@@ -24,4 +24,6 @@ class HomeController {
     ): String {
         return "product-detail"
     }
+
+
 }

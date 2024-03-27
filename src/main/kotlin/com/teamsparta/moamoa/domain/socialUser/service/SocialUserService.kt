@@ -4,7 +4,9 @@ import com.teamsparta.moamoa.domain.socialUser.dto.OAuth2UserInfo
 import com.teamsparta.moamoa.domain.socialUser.model.OAuth2Provider
 import com.teamsparta.moamoa.domain.socialUser.model.SocialUser
 import com.teamsparta.moamoa.domain.socialUser.repository.SocialUserRepository
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
+import java.net.URI
 
 @Service
 class SocialUserService(
@@ -19,4 +21,10 @@ class SocialUserService(
             socialUserRepository.findByProviderAndProviderId(provider, userInfo.id)
         }
     }
+
+    fun getKakaoLoginPage(): String{
+        return "http://localhost:8080/oauth2/login/kakao"
+    }
+
+
 }

@@ -39,7 +39,6 @@ class JwtAuthenticationFilter(
                     SecurityContextHolder.getContext().authentication = auth
                 }
         }
-
         response.addHeader(HttpHeaders.AUTHORIZATION, "Bearer $jwt")
         filterChain.doFilter(request, response)
     }

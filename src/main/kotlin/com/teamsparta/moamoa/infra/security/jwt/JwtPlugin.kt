@@ -8,6 +8,7 @@ import jakarta.servlet.http.Cookie
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
+import java.awt.SystemColor.window
 import java.nio.charset.StandardCharsets
 import java.time.Duration
 import java.time.Instant
@@ -63,7 +64,7 @@ class JwtPlugin(
 
     private fun addTokenToCookie(token: String, response: HttpServletResponse) {
         val cookie = Cookie("jwt_token", token)
-        cookie.isHttpOnly = true
+        cookie.isHttpOnly = false
         cookie.maxAge = (accessTokenExpirationHour * 60 * 60 * 24 * 7).toInt() // 일주일
         cookie.path = "/"
         response.addCookie(cookie)
