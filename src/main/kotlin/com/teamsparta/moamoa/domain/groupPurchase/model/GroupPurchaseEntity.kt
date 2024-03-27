@@ -15,7 +15,7 @@ class GroupPurchaseEntity(
     var userCount: Int,
     @Column(name = "time_limit")
     val timeLimit: LocalDateTime?,
-    @OneToMany(mappedBy = "groupPurchase", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
+    @OneToMany(mappedBy = "groupPurchase", fetch = FetchType.EAGER, cascade = [CascadeType.ALL])
     val groupPurchaseUsers: MutableList<GroupPurchaseJoinUserEntity> = mutableListOf(),
 ) : BaseTimeEntity() {
     @Id
