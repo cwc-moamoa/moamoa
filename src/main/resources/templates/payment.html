@@ -22,15 +22,15 @@
             var buyerPhone = "[[${requestDto.buyerPhone}]]";
 
             IMP.request_pay({
-                    pg: "nice_v2.iamport00m", //요고
-                    pay_method: "card",
+                    pg : "nice_v2.iamport00m",//요고
+                    pay_method : "card",
                     merchant_uid: orderUid, // 주문 번호
-                    name: itemName, // 상품 이름
-                    amount: paymentPrice, // 상품 가격
-                    buyer_name: buyerName, // 구매자 이름
-                    buyer_tel: buyerPhone, // 전화번호
-                    buyer_addr: buyerAddress, // 구매자 주소
-                    buyer_postcode: "123-456", // 임의의 값
+                    name : itemName, // 상품 이름
+                    amount : paymentPrice, // 상품 가격
+                    buyer_name : buyerName, // 구매자 이름
+                    buyer_tel : buyerPhone, // 전화번호
+                    buyer_addr : buyerAddress, // 구매자 주소
+                    buyer_postcode : "123-456", // 임의의 값
                 },
                 rsp => { // callback
                     console.log(rsp);
@@ -40,24 +40,22 @@
                         console.log(msg)
                     } else {
                         let data = {};
-                        data.imp_uid = rsp.imp_uid;
-                        data.merchant_uid = rsp.merchant_uid;
+                        data.imp_uid= rsp.imp_uid;
+                        data.merchant_uid= rsp.merchant_uid;
                         console.log(data)
                         $.ajax({
-                            headers: {
-                                "Content-Type": "application/json"
-                            },
+                            headers: {"Content-Type": "application/json"},
                             method: "POST",
                             url: "/payment",
                             data: JSON.stringify({
-                                "payment_uid": rsp.imp_uid, // 결제 고유번호
+                                "payment_uid": rsp.imp_uid,      // 결제 고유번호
                                 "order_uid": rsp.merchant_uid,
                             })
-                        }).done(function (response) {
+                        }).done(function(response) {
                             console.log(response.data);
                             alert("주문에 성공했습니다.")
                             window.location.href = "/success-payment"
-                        }).fail(function (xhr, status, error) {
+                        }).fail(function(xhr, status, error) {
                             console.error(xhr.response);
                             alert("주문에 실패하셨습니다.")
                             window.location.href = "/fail-payment"

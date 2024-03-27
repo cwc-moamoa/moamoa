@@ -45,8 +45,8 @@ class ReviewServiceImpl(
             productRepository.findByIdAndDeletedAtIsNull(productId)
                 .orElseThrow { ModelNotFoundException("Product not found or deleted", productId) }
 
-        orderRepository.findByProductIdAndSocialUserId(productId, user.id)
-            .orElseThrow { ModelNotFoundException("주문내역을 확인할 수 없습니다", productId) }
+//        orderRepository.findByProductIdAndSocialUserId(productId, user.id)
+//            .orElseThrow { ModelNotFoundException("주문내역을 확인할 수 없습니다", productId) }
 
         val review = createReviewRequest.toReview(product, user)
 
