@@ -229,7 +229,7 @@ class OrderServiceImpl(
             return if (findOrder.socialUser.id == findUser.id) {
                 findOrder.toResponse()
             } else {
-                throw InvalidCredentialException()
+                throw InvalidCredentialException("주문정보가 일치하지 않습니다.")
             }
 
     }
@@ -256,7 +256,7 @@ class OrderServiceImpl(
             }
             val findOrder = orderRepository.findByIdAndDeletedAtIsNull(orderId).orElseThrow { ModelNotFoundException("Order", orderId) }
             // 이건 상태를 변경하는거고, 취소된 주문은 이미 상태가 cancelled 이기 때문에, 상태변경을 지원하지 않음.
-            val findResult = findProductList.find { it.id == findOrder.product.id } ?: throw InvalidCredentialException()
+            val findResult = findProductList.find { it.id == findOrder.product.id } ?: throw ModelNotFoundException("Order", null)
             val stock = productStockRepository.findByProduct(findResult)
             if (status == OrdersStatus.CANCELLED)
             {
@@ -283,7 +283,7 @@ class OrderServiceImpl(
         return if (findOrder.product.seller.id == findSeller.id) {
             findOrder.toResponse()
         } else {
-            throw InvalidCredentialException()
+            throw InvalidCredentialException("로그인 정보가 올바르지 않습니다. ")
         }
     }
 

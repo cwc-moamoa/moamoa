@@ -6,6 +6,7 @@ import com.teamsparta.moamoa.domain.groupPurchase.repository.GroupPurchaseJoinUs
 import com.teamsparta.moamoa.domain.groupPurchase.repository.GroupPurchaseRepository
 import com.teamsparta.moamoa.domain.product.repository.ProductRepository
 import com.teamsparta.moamoa.exception.ClosedException
+import com.teamsparta.moamoa.exception.DuplicateParticipationException
 import com.teamsparta.moamoa.exception.ModelNotFoundException
 import jakarta.transaction.Transactional
 import org.springframework.data.redis.core.RedisTemplate
@@ -58,7 +59,7 @@ class GroupPurchaseService(
         if (groupPurchase.userCount >= groupPurchase.userLimit) throw ClosedException("공동 구매 상품", groupPurchaseId )
 
         val existingJoinUser = groupPurchaseJoinUserRepository.findByUserIdAndGroupPurchaseId(userId, groupPurchaseId)
-        if (existingJoinUser != null) throw DuplicateParticipationException()
+        if (existingJoinUser != null) throw DuplicateParticipationException("중복된 시도입니다.")
 
         val groupPurchaseJoinUser = GroupPurchaseJoinUserEntity(userId, groupPurchase, orderId)
         groupPurchase.groupPurchaseUsers.add(groupPurchaseJoinUser)
