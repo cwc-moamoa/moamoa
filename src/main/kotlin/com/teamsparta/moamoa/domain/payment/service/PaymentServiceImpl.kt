@@ -100,15 +100,15 @@ class PaymentServiceImpl(
             val paymentChange = order.payment.changePaymentBySuccess(PaymentStatus.OK, iamportResponse.response.impUid)
             paymentRepository.save(paymentChange)
 
-            if (order.discount > 0.0) {
-                orderService.saveToRedis(
-                    order.product.id.toString(),
-                    order.socialUser.id.toString(),
-                    order.id.toString(),
-                )
-                val discountAppliedEvent = DiscountPaymentEvent(order.id.toString(), order.socialUser.id.toString())
-                applicationEventPublisher.publishEvent(discountAppliedEvent)
-            }
+//            if (order.discount > 0.0) {
+//                orderService.saveToRedis(
+//                    order.product.id.toString(),
+//                    order.socialUser.id.toString(),
+//                    order.id.toString(),
+//                )
+//                val discountAppliedEvent = DiscountPaymentEvent(order.id.toString(), order.socialUser.id.toString())
+//                applicationEventPublisher.publishEvent(discountAppliedEvent)
+//            }
             return iamportResponse
         } catch (e: IamportResponseException) {
             throw RuntimeException(e)

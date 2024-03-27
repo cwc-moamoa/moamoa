@@ -33,7 +33,7 @@ class OrderServiceImpl(
     private val productRepository: ProductRepository,
     private val productStockRepository: ProductStockRepository,
     private val sellerRepository: SellerRepository,
-    private val redisConfigTemplate: RedisTemplate<String, Any>,
+//    private val redisConfigTemplate: RedisTemplate<String, Any>,
     private val paymentRepository: PaymentRepository,
     private val groupPurchaseRepository: GroupPurchaseRepository,
     private val socialUserRepository: SocialUserRepository,
@@ -115,17 +115,17 @@ class OrderServiceImpl(
         }
     }
 
-    override fun saveToRedis(
-        productId: String,
-        userId: String,
-        orderId: String,
-    ) {
-        val hashKey: String = orderId
-
-        redisConfigTemplate.opsForHash<String, String>().put(hashKey, "productId", productId)
-        redisConfigTemplate.opsForHash<String, String>().put(hashKey, "userId", userId)
-        redisConfigTemplate.opsForHash<String, String>().put(hashKey, "orderId", orderId)
-    }
+//    override fun saveToRedis(
+//        productId: String,
+//        userId: String,
+//        orderId: String,
+//    ) {
+//        val hashKey: String = orderId
+//
+//        redisConfigTemplate.opsForHash<String, String>().put(hashKey, "productId", productId)
+//        redisConfigTemplate.opsForHash<String, String>().put(hashKey, "userId", userId)
+//        redisConfigTemplate.opsForHash<String, String>().put(hashKey, "orderId", orderId)
+//    }
 
     @Transactional
     override fun updateOrder(
