@@ -13,7 +13,8 @@ interface OrderService {
         phoneNumber: String,
     ): ResponseOrderDto
 
-    fun createGroupOrder(
+    //테스트용 락 없는 코드
+    fun createOrderNoLock(
         userId: Long,
         productId: Long,
         quantity: Int,
@@ -21,7 +22,7 @@ interface OrderService {
         phoneNumber: String,
     ): ResponseOrderDto
 
-    fun createOrderWithLock(
+    fun createGroupOrder(
         userId: Long,
         productId: Long,
         quantity: Int,
@@ -75,9 +76,4 @@ interface OrderService {
         size: Int,
     ): Page<ResponseOrderDto>
 
-//    fun saveToRedis(
-//        productId: String,
-//        userId: String,
-//        orderId: String,
-//    )
 }

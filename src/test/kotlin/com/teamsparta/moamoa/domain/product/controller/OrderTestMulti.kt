@@ -67,7 +67,7 @@ class OrderTestMulti
                         )
                     socialUserRepository.save(user)
 
-                    orderService.createOrder(
+                    orderService.createOrderNoLock(
                         userId = user.id!!,
                         productId = 2,
                         quantity = 1,
