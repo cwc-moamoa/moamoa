@@ -5,113 +5,88 @@ import com.teamsparta.moamoa.domain.groupPurchase.repository.GroupPurchaseReposi
 import com.teamsparta.moamoa.domain.order.repository.OrderRepository
 import com.teamsparta.moamoa.domain.order.service.OrderServiceImpl
 import com.teamsparta.moamoa.domain.payment.repository.PaymentRepository
-import com.teamsparta.moamoa.domain.product.model.Product
-import com.teamsparta.moamoa.domain.product.model.ProductStock
 import com.teamsparta.moamoa.domain.product.repository.ProductRepository
 import com.teamsparta.moamoa.domain.product.repository.ProductStockRepository
-import com.teamsparta.moamoa.domain.seller.model.Seller
 import com.teamsparta.moamoa.domain.seller.repository.SellerRepository
 import com.teamsparta.moamoa.domain.socialUser.model.OAuth2Provider
 import com.teamsparta.moamoa.domain.socialUser.model.SocialUser
 import com.teamsparta.moamoa.domain.socialUser.repository.SocialUserRepository
+import com.teamsparta.moamoa.infra.redis.RedissonLockManager
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
+import org.springframework.boot.test.context.SpringBootTest
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
-@DataJpaTest
+@SpringBootTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class OrderTestMulti
-@Autowired constructor(
-    private val orderRepository: OrderRepository,
-    private val productRepository: ProductRepository,
-    private val productStockRepository: ProductStockRepository,
-    private val sellerRepository: SellerRepository,
-    private val paymentRepository: PaymentRepository,
-    private val groupPurchaseRepository: GroupPurchaseRepository,
-    private val socialUserRepository: SocialUserRepository,
-    private val groupPurchaseJoinUserRepository: GroupPurchaseJoinUserRepository,
-) {
-    private val orderService = OrderServiceImpl(
-        orderRepository,
-        productRepository,
-        productStockRepository,
-        sellerRepository,
-        paymentRepository,
-        groupPurchaseRepository,
-        socialUserRepository,
-        groupPurchaseJoinUserRepository
-    )
+    @Autowired
+    constructor(
+        private val orderRepository: OrderRepository,
+        private val productRepository: ProductRepository,
+        private val productStockRepository: ProductStockRepository,
+        private val sellerRepository: SellerRepository,
+        private val paymentRepository: PaymentRepository,
+        private val groupPurchaseRepository: GroupPurchaseRepository,
+        private val socialUserRepository: SocialUserRepository,
+        private val groupPurchaseJoinUserRepository: GroupPurchaseJoinUserRepository,
+        private val redissonLockManager: RedissonLockManager,
+    ) {
+        private val orderService =
+            OrderServiceImpl(
+                orderRepository,
+                productRepository,
+                productStockRepository,
+                sellerRepository,
+                paymentRepository,
+                groupPurchaseRepository,
+                socialUserRepository,
+                groupPurchaseJoinUserRepository,
+                redissonLockManager,
+            )
 
-    @Test
-    fun `여러 사용자가 동시에 주문을 할시 테스트`() {
-        // GIVEN
-        val executorService: ExecutorService = Executors.newFixedThreadPool(100)
+        @Test
+        fun `여러 사용자가 동시에 한 상품을 주문하는 테스트`() {
+            // GIVEN
+            val executorService: ExecutorService = Executors.newFixedThreadPool(5)
+            val latch = CountDownLatch(5)
 
-        val latch = CountDownLatch(10)
+            // WHEN
+            repeat(5) {
+                executorService.execute {
+                    val user =
+                        SocialUser(
+                            nickname = "nick$it",
+                            email = "zzz$it",
+                            provider = OAuth2Provider.KAKAO,
+                            providerId = "123$it",
+                        )
+                    socialUserRepository.save(user)
 
+                    orderService.createOrder(
+                        userId = user.id!!,
+                        productId = 2,
+                        quantity = 1,
+                        address = "Address",
+                        phoneNumber = "123-456-7890",
+                    )
 
-        // WHEN
-        repeat(
-            50
-        ) {
-            executorService.execute {
-
-                val user = SocialUser(
-                    nickname = "nick$it", email = "zzz$it", provider = OAuth2Provider.KAKAO, providerId = "123$it"
-                )
-                socialUserRepository.save(user)
-
-                val seller = Seller(
-                    nickname = "seller$it",
-                    email = "seller$it@example.com",
-                    address = "123 Street",
-                    bizRegistrationNumber = "123456789$it",
-                    password = "password$it",
-                    phoneNumber = "123-456-$it"
-                )
-                sellerRepository.save(seller)
-
-                val product = Product(
-                    content = "123$it",
-                    discount = 0.0,
-                    imageUrl = "string$it",
-                    likes = 0,
-                    price = 200.0,
-                    purchaseAble = false,
-                    seller = seller,
-                    title = "yyy$it",
-                    userLimit = 4
-                )
-                productRepository.save(product)
-
-                val productStock = ProductStock(
-                    product = product, stock = 1000, productName = product.title
-                )
-                productStockRepository.save(productStock)
-
-
-                orderService.createOrder(
-                    userId = user.id!!,
-                    productId = product.id!!,
-                    quantity = 1,
-                    address = "Address",
-                    phoneNumber = "123-456-7890",
-                )
-                latch.countDown()
+                    latch.countDown()
+                }
             }
+
+            latch.await()
+            executorService.shutdown()
+
+            // THEN
+            val findProduct = productRepository.findByIdAndDeletedAtIsNull(2).orElseThrow { Exception("존재하지 않는 상품입니다") }
+            val stockCheck = productStockRepository.findByProduct(findProduct)
+
+            stockCheck!!.stock shouldBe 3530
+            // 동시성 이슈 때문에, 성공할수가 없는 테스트이다.
         }
-
-        latch.await()
-
-        executorService.shutdown()
-
-        val orders = orderService.getAllOrders()
-        orders.size shouldBe 50
     }
-}
-
