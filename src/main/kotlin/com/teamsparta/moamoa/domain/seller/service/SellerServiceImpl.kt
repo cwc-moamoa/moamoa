@@ -26,13 +26,8 @@ class SellerServiceImpl(
     private val productRepository: ProductRepository,
 ) : SellerService {
 
-    companion object {
-        private val logger: Logger = LoggerFactory.getLogger(SellerServiceImpl::class.java)
-    }
-
     @Transactional
     override fun signUpSeller(sellerSignUpRequest: SellerSignUpRequest): SellerResponse {
-        try {
             if (sellerRepository.existsByEmail(sellerSignUpRequest.email)) {
                 throw IllegalStateException("이미 사용중인 이메일입니다. ")
             }
@@ -40,17 +35,10 @@ class SellerServiceImpl(
                 throw InvalidCredentialException("비밀번호를 확인해주세요.")
             val seller = sellerRepository.save(sellerSignUpRequest.toEntity(passwordEncoder))
             return SellerResponse.toResponse(seller)
-        }
-        catch (ex: Exception) {
-            logger.error("판매자 회원가입 중 오류 발생", ex)
-            throw ex
-        }
-
     }
 
     @Transactional
     override fun signInSeller(sellerSignInRequest: SellerSignInRequest, response: HttpServletResponse): SellerSignInResponse {
-        try {
             val seller =
                 sellerRepository.findByEmail(sellerSignInRequest.email) ?: throw ModelNotFoundException("User", null)
             if (!passwordEncoder.matches(
@@ -67,20 +55,16 @@ class SellerServiceImpl(
                     response = response
                 ),
             )
-        } catch (ex: Exception) {
-            logger.error("판매자 로그인 중 오류 발생", ex)
-            throw ex
-        }
     }
 
     @Transactional
     override fun deleteSeller(sellerId: Long): SellerResponse {
-        try {
+
             val seller = sellerRepository.findByIdAndDeletedAtIsNull(sellerId)
                 .orElseThrow { ModelNotFoundException("Seller", sellerId) }
 
             if (sellerId != seller.id) {
-                throw InvalidCredentialException()
+                throw InvalidCredentialException("로그인 정보가 일치하지 않습니다. ")
             }
             val foundOrders = orderRepository.findBySellerIdAndDeletedAtIsNull(sellerId)
             if (foundOrders.any { it.status != OrdersStatus.DELIVERED && it.status != OrdersStatus.CANCELLED }) {
@@ -95,10 +79,5 @@ class SellerServiceImpl(
             sellerRepository.save(seller)
 
             return SellerResponse.toResponse(seller)
-        } catch (ex: Exception) {
-            logger.error("판매자 회원 탈퇴 중 오류 발생", ex)
-            throw ex
-        }
-
     }
 }

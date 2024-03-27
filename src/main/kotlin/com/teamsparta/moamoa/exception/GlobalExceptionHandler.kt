@@ -29,6 +29,23 @@ class GlobalExceptionHandler {
             .body(ErrorResponseDto(e.message))
     }
 
+    @ExceptionHandler(DuplicateParticipationException::class)
+    fun handleDuplicateParticipationException(e: DuplicateParticipationException): ResponseEntity<ErrorResponseDto> {
+        logger.error("DuplicateParticipationException 발생", e)
+        return ResponseEntity
+            .status(HttpStatus.BAD_REQUEST)
+            .body(ErrorResponseDto(e.message))
+    }
+
+    @ExceptionHandler(ClosedException::class)
+    fun handleClosedException(e: ClosedException): ResponseEntity<ErrorResponseDto> {
+        logger.error("ClosedException 발생", e)
+        return ResponseEntity
+            .status(HttpStatus.BAD_REQUEST)
+            .body(ErrorResponseDto(e.message))
+    }
+
+
     @ExceptionHandler(IllegalArgumentException::class)
     fun handleIllegalArgumentException(e: IllegalArgumentException): ResponseEntity<ErrorResponseDto> {
         logger.error("IllegalArgumentException 발생", e)

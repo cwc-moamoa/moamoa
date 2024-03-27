@@ -10,8 +10,6 @@ import com.teamsparta.moamoa.domain.review.repository.ReviewRepository
 import com.teamsparta.moamoa.domain.seller.repository.SellerRepository
 import com.teamsparta.moamoa.exception.ModelNotFoundException
 import jakarta.transaction.Transactional
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
@@ -25,13 +23,10 @@ class ProductServiceImpl(
     private val sellerRepository: SellerRepository,
     private val reviewRepository: ReviewRepository,
 ) : ProductService {
-
-    private val logger: Logger = LoggerFactory.getLogger(ProductServiceImpl::class.java)
     @Transactional
     override fun getAllProducts(): List<ProductResponse> {
         val products = productRepository.findAll().filter { it.deletedAt == null }
         return products.map { product ->
-
             val reviews = reviewRepository.findAllByProductIdAndDeletedAtIsNull(product.id!!, Pageable.unpaged()).content
             val averageRating = if (reviews.isNotEmpty()) reviews.map { it.rating }.average() else 0.0
 
@@ -44,18 +39,13 @@ class ProductServiceImpl(
 
     @Transactional
     override fun getProductById(productId: Long): ProductResponse {
-        try {
             val product = productRepository.findByIdAndDeletedAtIsNull(productId)
-                .orElseThrow { ModelNotFoundException("Product not found or deleted", productId) }
+                .orElseThrow { ModelNotFoundException("Product", productId) }
             val reviews = reviewRepository.findAllByProductIdAndDeletedAtIsNull(productId, Pageable.unpaged()).content
             val averageRating = if (reviews.isNotEmpty()) reviews.map { it.rating }.average() else 0.0
             product.ratingAverage = averageRating
             productRepository.save(product)
             return ProductResponse(product)
-        } catch (ex: Exception) {
-            logger.error("상품 조회 중 오류 발생", ex)
-            throw ex
-        }
     }
 
 
@@ -70,10 +60,8 @@ class ProductServiceImpl(
         sellerId: Long,
         request: ProductRequest,
     ): Product {
-        try {
             val seller =
-                sellerRepository.findByIdOrNull(sellerId)
-                    ?: throw ModelNotFoundException("seller", sellerId)
+                sellerRepository.findByIdOrNull(sellerId) ?: throw ModelNotFoundException("Seller", sellerId)
             val product =
                 Product(
                     title = request.title,
@@ -95,10 +83,6 @@ class ProductServiceImpl(
             productRepository.save(product)
             productStockRepository.save(productStock)
             return product
-        } catch (ex: Exception) {
-            logger.error("상품 등록 중 오류 발생", ex)
-            throw ex
-        }
     }
 
     @Transactional
@@ -107,13 +91,12 @@ class ProductServiceImpl(
         sellerId: Long,
         request: ProductRequest,
     ): Product {
-        try {
             val seller =
                 sellerRepository.findByIdOrNull(sellerId)
-                    ?: throw ModelNotFoundException("seller", sellerId)
+                    ?: throw ModelNotFoundException("Seller", sellerId)
             val product =
                 productRepository.findByIdAndDeletedAtIsNull(productId)
-                    .orElseThrow { ModelNotFoundException("Product not found or deleted", productId) }
+                    .orElseThrow { ModelNotFoundException("Product", productId) }
 
 
             if (seller != product.seller) {
@@ -127,10 +110,6 @@ class ProductServiceImpl(
                 purchaseAble = request.purchaseAble
             }
             return productRepository.save(product)
-        }catch (ex: Exception) {
-            logger.error("상품 정보 수정 중 오류 발생", ex)
-            throw ex
-    }
     }
 
     @Transactional
@@ -138,14 +117,13 @@ class ProductServiceImpl(
         productId: Long,
         sellerId: Long,
     ): Product {
-        try {
             val product =
                 productRepository.findByIdAndDeletedAtIsNull(productId)
-                    .orElseThrow { ModelNotFoundException("Product not found or deleted", productId) }
+                    .orElseThrow { ModelNotFoundException("Product", productId) }
 
             val seller =
                 sellerRepository.findByIdOrNull(sellerId)
-                    ?: throw ModelNotFoundException("seller", sellerId)
+                    ?: throw ModelNotFoundException("Seller", sellerId)
 
             if (seller != product.seller) {
                 throw IllegalArgumentException("해당 상품에 대한 권한이 없습니다.")
@@ -153,10 +131,6 @@ class ProductServiceImpl(
 
             product.deletedAt = LocalDateTime.now()
             return productRepository.save(product)
-        } catch (ex: Exception) {
-            logger.error("상품 삭제 중 오류 발생", ex)
-            throw ex
-        }
     }
 
     @Transactional
@@ -164,7 +138,6 @@ class ProductServiceImpl(
         productId: Long,
         quantity: Int,
     ) {
-        try {
             val product =
                 productRepository.findById(productId)
                     .orElseThrow { ModelNotFoundException("Product", productId) }
@@ -184,10 +157,5 @@ class ProductServiceImpl(
                 product.isSoldOut = true
                 productRepository.save(product)
             }
-        } catch (ex: Exception) {
-            logger.error("An error occurred while adjusting inventory quantity", ex) {
-                throw ex
-            }
-        }
     }
 }

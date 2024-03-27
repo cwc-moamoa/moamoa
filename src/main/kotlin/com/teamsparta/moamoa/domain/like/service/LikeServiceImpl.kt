@@ -5,12 +5,12 @@ import com.teamsparta.moamoa.domain.like.repository.LikeRepository
 import com.teamsparta.moamoa.domain.product.repository.ProductRepository
 import com.teamsparta.moamoa.domain.review.repository.ReviewRepository
 import com.teamsparta.moamoa.domain.socialUser.repository.SocialUserRepository
+import com.teamsparta.moamoa.exception.DuplicateParticipationException
 import com.teamsparta.moamoa.exception.ModelNotFoundException
 import jakarta.transaction.Transactional
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import kotlin.math.log
 
 @Service
 class LikeServiceImpl(
@@ -26,31 +26,18 @@ class LikeServiceImpl(
         productId: Long,
         socialUserId: Long,
     ) {
-        try {
-            val product =
-                productRepository.findById(productId)
-                    .orElseThrow { throw ModelNotFoundException("Product", productId) }
+            val product = productRepository.findByIdAndDeletedAtIsNull(productId).orElseThrow { throw ModelNotFoundException("Product", productId) }
 
-            if (product.deletedAt != null) {
-                throw ModelNotFoundException("삭제된 상품입니다", productId)
-            }
-
-            val user =
-                socialUserRepository.findById(socialUserId)
-                    .orElseThrow { throw ModelNotFoundException("User", socialUserId) }
+            val user = socialUserRepository.findById(socialUserId).orElseThrow { throw ModelNotFoundException("User", socialUserId) }
 
             val existingLike = likeRepository.findByProductAndSocialUser(product, user)
             if (existingLike != null) {
-                throw IllegalArgumentException("이미 좋아요를 누른 상품입니다")
+                throw DuplicateParticipationException("중복된 시도입니다.")
             }
 
             likeRepository.save(Like(product = product, socialUser = user, status = true))
             product.likes++
             productRepository.save(product)
-        } catch (ex: Exception) {
-            logger.error("상품 좋아요 생성 중 오류 발생", ex)
-        }
-
         }
 
 
@@ -60,7 +47,6 @@ class LikeServiceImpl(
         productId: Long,
         socialUserId: Long,
     ) {
-        try {
             val product =
                 productRepository.findById(productId)
                     .orElseThrow { throw ModelNotFoundException("Product", productId) }
@@ -71,7 +57,7 @@ class LikeServiceImpl(
             val like = likeRepository.findByProductAndSocialUser(product, user)
             if (like != null) {
                 if (like.socialUser.id != socialUserId) {
-                    throw IllegalArgumentException("해당 상품에 좋아요를 누르지 않았습니다. ")
+                    throw ModelNotFoundException("Like", null )
                 }
                 likeRepository.delete(like)
 
@@ -80,14 +66,8 @@ class LikeServiceImpl(
                     productRepository.save(product)
                 }
             } else {
-                throw IllegalArgumentException("좋아요가 없습니다")
+                throw ModelNotFoundException("Like", "")
             }
-
-        } catch (ex: Exception) {
-            logger.error("상품 좋아요 취소 중 오류 발생", ex)
-            throw ex
-        }
-
     }
 
     @Transactional
@@ -95,13 +75,12 @@ class LikeServiceImpl(
         reviewId: Long,
         socialUserId: Long,
     ) {
-        try {
             val review =
                 reviewRepository.findById(reviewId)
                     .orElseThrow { throw ModelNotFoundException("Review", reviewId) }
 
             if (review.deletedAt != null) {
-                throw Exception("없는 리뷰입니다")
+                throw ModelNotFoundException("Review", reviewId)
             }
 
             val user =
@@ -110,17 +89,12 @@ class LikeServiceImpl(
 
             val existingLike = likeRepository.findByReviewAndSocialUser(review, user)
             if (existingLike != null) {
-                throw IllegalArgumentException("이미 좋아요를 누른 리뷰입니다")
+                throw DuplicateParticipationException("이미 좋아요를 누른 리뷰입니다")
             }
 
             likeRepository.save(Like(review = review, socialUser = user, status = true))
             review.likes++
             reviewRepository.save(review)
-        } catch (ex: Exception) {
-            logger.error("리뷰 좋아요 생성 중 오류 발생", ex)
-            throw ex
-        }
-
     }
 
     @Transactional
@@ -128,8 +102,6 @@ class LikeServiceImpl(
         reviewId: Long,
         socialUserId: Long,
     ) {
-
-        try {
             val review =
                 reviewRepository.findById(reviewId)
                     .orElseThrow { throw ModelNotFoundException("Review", reviewId) }
@@ -139,9 +111,8 @@ class LikeServiceImpl(
 
             val like = likeRepository.findByReviewAndSocialUser(review, user)
             if (like != null) {
-                if (like.socialUser.id != socialUserId) {
-                    throw IllegalArgumentException("권한이 없습니다")
-                }
+                if (like.socialUser.id != socialUserId) throw ModelNotFoundException("Like", like.id)
+
                 likeRepository.delete(like)
 
                 if (review.likes > 0) {
@@ -149,13 +120,7 @@ class LikeServiceImpl(
                     reviewRepository.save(review)
                 }
             } else {
-                throw IllegalArgumentException("좋아요가 없습니다")
+                throw ModelNotFoundException("Like", null)
             }
-
-        } catch (ex: Exception) {
-            logger.error("리뷰 좋아요 취소 중 오류 발생", ex)
-            throw ex
-        }
-
     }
 }

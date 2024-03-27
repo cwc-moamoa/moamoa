@@ -5,6 +5,7 @@ import com.teamsparta.moamoa.domain.groupPurchase.model.GroupPurchaseJoinUserEnt
 import com.teamsparta.moamoa.domain.groupPurchase.repository.GroupPurchaseJoinUserRepository
 import com.teamsparta.moamoa.domain.groupPurchase.repository.GroupPurchaseRepository
 import com.teamsparta.moamoa.domain.product.repository.ProductRepository
+import com.teamsparta.moamoa.exception.ClosedException
 import com.teamsparta.moamoa.exception.ModelNotFoundException
 import jakarta.transaction.Transactional
 import org.springframework.data.redis.core.RedisTemplate
@@ -23,12 +24,10 @@ class GroupPurchaseService(
         userId: String,
         orderId: String,
     ) {
-        val uniqueOrderId = redisTemplate.opsForHash<String, String>().get(orderId, "productId") ?: throw Exception("redis에 정보가 없습니다")
+        val uniqueOrderId = redisTemplate.opsForHash<String, String>().get(orderId, "productId") ?: throw ModelNotFoundException("order", orderId)
         val productId = uniqueOrderId.toLong()
         val groupPurchase = groupPurchaseRepository.findByProductIdAndDeletedAtIsNull(productId)
-        val findProduct =
-            productRepository.findById(productId)
-                .orElseThrow { ModelNotFoundException("product", productId) }
+        val findProduct = productRepository.findById(productId).orElseThrow { ModelNotFoundException("product", productId) }
 
         if (groupPurchase == null) {
             val newGroupPurchase =
@@ -55,18 +54,11 @@ class GroupPurchaseService(
         groupPurchaseId: Long,
         orderId: Long,
     ) {
-        val groupPurchase =
-            groupPurchaseRepository.findByIdAndDeletedAtIsNull(groupPurchaseId) ?: throw ModelNotFoundException(
-                "GroupPurchase", groupPurchaseId,
-            )
-        if (groupPurchase.userCount >= groupPurchase.userLimit) {
-            throw Exception("GroupPurchase is full")
-        }
+        val groupPurchase = groupPurchaseRepository.findByIdAndDeletedAtIsNull(groupPurchaseId) ?: throw ModelNotFoundException("GroupPurchase", groupPurchaseId)
+        if (groupPurchase.userCount >= groupPurchase.userLimit) throw ClosedException("공동 구매 상품", groupPurchaseId )
 
         val existingJoinUser = groupPurchaseJoinUserRepository.findByUserIdAndGroupPurchaseId(userId, groupPurchaseId)
-        if (existingJoinUser != null) {
-            throw Exception("이미 신청한 공동구매 입니다.")
-        }
+        if (existingJoinUser != null) throw DuplicateParticipationException()
 
         val groupPurchaseJoinUser = GroupPurchaseJoinUserEntity(userId, groupPurchase, orderId)
         groupPurchase.groupPurchaseUsers.add(groupPurchaseJoinUser)
@@ -101,7 +93,7 @@ class GroupPurchaseService(
             )
         val groupPurchaseJoinUser =
             groupPurchaseJoinUserRepository.findByUserIdAndGroupPurchaseId(userId, groupPurchaseId)
-                ?: throw Exception("userId or groupPurchaseId not found")
+                ?: throw ModelNotFoundException("user or groupPurchase", groupPurchaseId)
 
         groupPurchase.groupPurchaseUsers.remove(groupPurchaseJoinUser) // 이건 나도 해야댐
         groupPurchase.userCount--
