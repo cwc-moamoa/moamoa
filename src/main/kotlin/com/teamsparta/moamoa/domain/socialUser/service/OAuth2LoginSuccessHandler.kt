@@ -21,6 +21,8 @@ class OAuth2LoginSuccessHandler(
         val userInfo = authentication.principal as OAuth2UserInfo
         val accessToken = jwtHelper.generateAccessToken(userInfo.id, userInfo.nickname, userInfo.email)
         response.contentType = MediaType.APPLICATION_JSON_VALUE
-        response.writer.write(accessToken)
+        response.setHeader("Authorization", "Bearer $accessToken") // 헤더에 담는 걸로 바꿈
+//        response.contentType = MediaType.APPLICATION_JSON_VALUE
+//        response.writer.write(accessToken) // 본문 응답했었음
     }
 }
