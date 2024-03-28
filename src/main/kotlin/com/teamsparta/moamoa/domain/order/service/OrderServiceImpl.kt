@@ -23,6 +23,7 @@ import com.teamsparta.moamoa.domain.socialUser.model.SocialUser
 import com.teamsparta.moamoa.domain.socialUser.repository.SocialUserRepository
 import com.teamsparta.moamoa.exception.ModelNotFoundException
 import com.teamsparta.moamoa.infra.redis.RedissonLockManager
+import com.teamsparta.moamoa.infra.security.UserPrincipal
 import org.springframework.data.domain.Page
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -42,6 +43,55 @@ class OrderServiceImpl(
     private val groupPurchaseJoinUserRepository: GroupPurchaseJoinUserRepository,
     private val redissonLockManager: RedissonLockManager
 ) : OrderService {
+
+    @Transactional
+    override fun createOrderTest(
+        user : UserPrincipal,
+        productId: Long,
+        quantity: Int,
+        address: String,
+        phoneNumber: String,
+    ): ResponseOrderDto {
+        val lockKey = "createOrderWithLock_$productId"
+        val lockAcquired = redissonLockManager.acquireLock(lockKey, 15000, 60000)
+        if (!lockAcquired) {
+            throw Exception("락을 획득할 수 없습니다. 잠시 후 다시 시도해주세요.")
+        }
+
+        try {
+            val (findUser, findProduct, stockCheck) = orderCommonTest(user, productId, quantity)
+
+            val totalPrice = findProduct.price * quantity
+            val finalDiscount = 0.0
+
+            return orderSave(
+                findUser,
+                findProduct,
+                stockCheck,
+                totalPrice,
+                finalDiscount,
+                address,
+                quantity,
+                phoneNumber
+            ).toResponse()
+        } finally {
+            redissonLockManager.releaseLock(lockKey)
+        }
+    }
+
+    private fun orderCommonTest(
+        user : UserPrincipal,
+        productId: Long,
+        quantity: Int,
+    ): Triple<SocialUser, Product, ProductStock>  {
+        val findUser = socialUserRepository.findByProviderId(user.id.toString()) ?: throw Exception("존재하지 않는 유저입니다")
+        val findProduct =
+            productRepository.findByIdAndDeletedAtIsNull(productId).orElseThrow { Exception("존재하지 않는 상품입니다") }
+        val stockCheck = productStockRepository.findByProduct(findProduct)
+
+        if (stockCheck!!.stock <= quantity) throw Exception("재고가 모자랍니다. 판매자에게 문의해주세요")
+        return Triple(findUser, findProduct, stockCheck)
+    }
 
     @Transactional
     override fun createOrder(
