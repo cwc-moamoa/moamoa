@@ -1,6 +1,7 @@
 package com.teamsparta.moamoa.domain.groupPurchase.controller
 
 import com.teamsparta.moamoa.domain.groupPurchase.service.GroupPurchaseService
+import io.swagger.v3.oas.annotations.Operation
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
