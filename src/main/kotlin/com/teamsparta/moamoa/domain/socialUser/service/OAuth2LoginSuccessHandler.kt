@@ -36,9 +36,7 @@ class OAuth2LoginSuccessHandler(
             httpServletResponse.addHeader("Authorization", "Bearer $accessToken") // 헤더에 담는 걸로 바꿈
             httpServletResponse.contentType = MediaType.APPLICATION_JSON_VALUE
             httpServletResponse.sendRedirect("/")
-
-//        response.contentType = MediaType.APPLICATION_JSON_VALUE
-//        response.writer.write(accessToken) // 본문 응답했었음
+            httpServletResponse.writer.write(accessToken) // 본문 응답했었음
 
             // 없으면 가져온 정보 응답함
         } else {
