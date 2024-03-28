@@ -2,9 +2,18 @@ package com.teamsparta.moamoa.domain.order.service
 
 import com.teamsparta.moamoa.domain.order.dto.*
 import com.teamsparta.moamoa.domain.order.model.OrdersStatus
+import com.teamsparta.moamoa.infra.security.UserPrincipal
 import org.springframework.data.domain.Page
 
 interface OrderService {
+    fun createOrderTest(
+        user : UserPrincipal,
+        productId: Long,
+        quantity: Int,
+        address: String,
+        phoneNumber: String,
+    ): ResponseOrderDto
+
     fun createOrder(
         userId: Long,
         productId: Long,

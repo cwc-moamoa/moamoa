@@ -2,10 +2,12 @@ package com.teamsparta.moamoa.domain.order.controller
 import com.teamsparta.moamoa.domain.order.dto.*
 import com.teamsparta.moamoa.domain.order.model.OrdersStatus
 import com.teamsparta.moamoa.domain.order.service.OrderService
+import com.teamsparta.moamoa.infra.security.UserPrincipal
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.data.domain.Page
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.GetMapping
@@ -24,6 +26,20 @@ import org.springframework.web.bind.annotation.RestController
 class OrderController(
     private val orderService: OrderService,
 ) {
+    @PostMapping("/create/swagger/test")
+    fun createOrderAtSwaggerTest(
+        @AuthenticationPrincipal user: UserPrincipal,
+        @RequestParam productId: Long,
+        @RequestParam quantity: Int,
+        @RequestParam address: String,
+        @RequestParam phoneNumber: String,
+    ): ResponseEntity<ResponseOrderDto> {
+        val responseOrderDto = orderService.createOrderTest(user, productId, quantity, address, phoneNumber)
+        return ResponseEntity
+            .status(HttpStatus.CREATED)
+            .body(responseOrderDto)
+    }
+
     @PostMapping("/create")
     fun createOrder(request: HttpServletRequest): ResponseEntity<ResponseOrderDto> {
         val userId = request.getParameter("userId").toLong() // 널포인트 익셉션뜸

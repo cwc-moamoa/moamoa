@@ -67,6 +67,7 @@ class ReviewServiceImpl(
         return ReviewResponse.toReviewResponse(review)
     }
 
+    @Transactional
     override fun getReviewsByProductId(productId: Long): List<ReviewResponseByList> {
         val reviews = reviewRepository.findByProductIdAndDeletedAtIsNull(productId)
         return ReviewResponseByList.toReviewResponseByList(reviews)
