@@ -51,7 +51,8 @@ dependencies {
     kapt("com.querydsl:querydsl-apt:$queryDslVersion:jakarta")
     kapt("jakarta.annotation:jakarta.annotation-api")
     kapt("jakarta.persistence:jakarta.persistence-api")
-    implementation("org.springframework.boot:spring-boot-starter-validation")
+    // 레디션(락)
+    implementation("org.redisson:redisson-spring-boot-starter:3.27.2")
 
     // 포트원
     implementation("com.github.iamport:iamport-rest-client-java:0.2.21")
@@ -62,7 +63,7 @@ dependencies {
 
     runtimeOnly("org.postgresql:postgresql")
 
-    // implementation("com.h2database:h2")
+    implementation("com.h2database:h2")
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
 
     // validation 추가

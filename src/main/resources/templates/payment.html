@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <title>결제 페이지</title>
@@ -7,7 +8,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
         var IMP = window.IMP;
-        IMP.init("imp80172878");//요거랑
+        IMP.init("imp80172878"); //요거랑
 
         // 결제 요청 함수
         function requestPay() {
@@ -63,8 +64,46 @@
                 });
         }
     </script>
+    <style>
+        .btn_box {
+            width: 700px;
+            margin: 0 auto;
+            height: 700px;
+            /* background-color: aqua; */
+            padding-top: 164px;
+            box-sizing: border-box;
+        }
+
+        .btn_box .pay_btn {
+            display: block;
+            margin: 0 auto;
+            width: 532px;
+            height: 303px;
+            cursor: pointer;
+            border: none;
+            background-color: #07C5F5;
+            border-radius: 4px;
+            font-size: 30px;
+            color: red;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        .btn_box .pay_btn:hover {
+            /* background-color: red; */
+            border: 0.5px solid #07C5F5;
+            color: #07C5F5;
+            background-image: url(https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2F8sfqX%2FbtsF6F3fWJK%2Fe7gsO1Gz9DAr2IPXmCNLB1%2Fimg.png);
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
+    </style>
 </head>
+
 <body>
-<button onclick="requestPay()">결제하기</button>
+    <div class="btn_box">
+        <button class="pay_btn" onclick="requestPay()">결제하기</button>
+    </div>
 </body>
+
 </html>
