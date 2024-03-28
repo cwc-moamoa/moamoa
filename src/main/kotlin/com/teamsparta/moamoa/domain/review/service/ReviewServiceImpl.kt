@@ -44,9 +44,9 @@ class ReviewServiceImpl(
             .orElseThrow { ModelNotFoundException("Product not found or deleted", productId) }
         // 아이디가 없으면
         val userId = socialUser.id ?: throw IllegalArgumentException("사용자 ID가 없습니다")
-        // orderId와 userId로 주문을 했는지
-        val order = orderRepository.findByIdAndSocialUserId(orderId, userId)
-            .orElseThrow { ModelNotFoundException("주문내역을 확인할 수 없습니다", orderId) }
+        // orderId와 userId로 주문을 했는지뿐만 아니라 productId도 받아서
+        val order = orderRepository.findByIdAndSocialUserIdAndProductId(orderId, userId, productId)
+            .orElseThrow { ModelNotFoundException("해당 상품에 대한 주문내역을 확인할 수 없습니다.", orderId) }
         // 이제 리뷰를 생성
         val review = createReviewRequest.toReview(product, socialUser, order)
 

@@ -32,8 +32,7 @@ interface OrderRepository : JpaRepository<OrdersEntity, Long>, CustomOrderReposi
 
     fun findBySellerIdAndDeletedAtIsNull(sellerId: Long): List<OrdersEntity>
 
-    // 주문당 리뷰를 위한 마음의 선물
-    fun findByIdAndSocialUserId(orderId: Long, socialUserId: Long): Optional<OrdersEntity>
-
+    // 주문당 리뷰가 상품당 주문당 리뷰로 바꿈
+    fun findByIdAndSocialUserIdAndProductId(orderId: Long, socialUserId: Long, productId: Long): Optional<OrdersEntity>
 
 }
