@@ -82,7 +82,7 @@ class ReviewServiceImpl(
     @Transactional
     override fun updateReview(
         reviewId: Long,
-        providerId: Long, // providerId를 직접 매개변수로 받음
+        providerId: Long,
         request: UpdateReviewRequest,
     ): ReviewResponse {
         val review =
@@ -106,7 +106,7 @@ class ReviewServiceImpl(
     @Transactional
     override fun deleteReview(
         reviewId: Long,
-        providerId: Long, // providerId를 직접 매개변수로 받음
+        providerId: Long,
     ) {
         val review =
             reviewRepository.findByIdOrNull(reviewId)
