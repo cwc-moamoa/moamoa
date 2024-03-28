@@ -26,7 +26,6 @@ class Review(
     var likes: Int = 0,
     @Column(name = "rating")
     var rating: Int,
-//이러면 연결되겠지
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = false)
     val order: OrdersEntity,
