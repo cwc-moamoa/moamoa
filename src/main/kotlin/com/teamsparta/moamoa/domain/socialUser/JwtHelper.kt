@@ -1,6 +1,7 @@
 package com.teamsparta.moamoa.domain.socialUser
 
 import com.teamsparta.moamoa.infra.security.jwt.JwtPlugin
+import jakarta.servlet.http.HttpServletResponse
 import org.springframework.stereotype.Component
 
 @Component
@@ -11,7 +12,9 @@ class JwtHelper(
         subject: String,
         nickname: String,
         email: String,
+        httpServletResponse: HttpServletResponse
     ): String {
-        return jwtPlugin.generateAccessToken(subject, nickname, email)
+        return jwtPlugin.generateAccessTokenForSocialUser(subject, nickname, email, httpServletResponse)
     }
+
 }
