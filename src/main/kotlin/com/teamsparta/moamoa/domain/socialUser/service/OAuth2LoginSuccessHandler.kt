@@ -35,8 +35,25 @@ class OAuth2LoginSuccessHandler(
             )
             httpServletResponse.addHeader("Authorization", "Bearer $accessToken") // 헤더에 담는 걸로 바꿈
             httpServletResponse.contentType = MediaType.APPLICATION_JSON_VALUE
-            httpServletResponse.sendRedirect("/")
-            httpServletResponse.writer.write(accessToken) // 본문 응답했었음
+//            httpServletResponse.sendRedirect("/")
+//            httpServletResponse.characterEncoding = "UTF-8"
+//            httpServletResponse.contentType = "application/json;charset=UTF-8"
+//
+//            val responseMap = mutableMapOf<String, Any>()
+//            responseMap["message"] = "로그인에 성공했습니다."
+//
+//            val userInfoMap = mutableMapOf<String, Any>()
+//            userInfoMap["email"] = userInfo.email
+//            userInfoMap["provider"] = userInfo.provider
+//            userInfoMap["providerId"] = userInfo.providerId
+//            userInfoMap["nickname"] = userInfo.nickname
+//
+//            responseMap["userInfo"] = userInfoMap
+//
+//            httpServletResponse.writer.write(
+//                jacksonObjectMapper().writeValueAsString(responseMap)
+//            )
+
 
             // 없으면 가져온 정보 응답함
         } else {

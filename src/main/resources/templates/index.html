@@ -531,10 +531,36 @@ $(document).ready(function () {
             </div>
 
             <script>
+
+
+
                 document.querySelector('.login_btn a').addEventListener('click', function() {
                     location.href = '/oauth2/login/kakao';
+
+
+                    // const loginBtn =document.querySelector('.login_btn')
+                    // loginBtn.style.display ="none"
+
                 });
-                //
+
+                // fetch('localhost:8080/oauth2/login/kakao') // 데이터를 가져올 URL을 전달합니다.
+                //     .then(response => {
+                //         // 서버 응답을 JSON 형태로 파싱합니다.
+                //         return response.json();
+                //     })
+                //     .then(data => {
+                //         // 가져온 데이터를 이용하여 작업합니다.
+                //         console.log(data);
+                //     })
+                //     .catch(error => {
+                //         // 에러가 발생했을 때 처리합니다.
+                //         console.error('데이터를 가져오는 중 에러 발생:', error);
+                //     });
+
+
+
+
+
                 // window.addEventListener('message', function(event) {
                 //     const response = event.data;
                 //     const token = response.headers.get('Authorization');
@@ -544,7 +570,13 @@ $(document).ready(function () {
                 //         console.log('토큰:', token);
                 //     }
                 // });
+
+
+
             </script>
+
+
+
 
         </header>
     </div>
@@ -607,3 +639,4 @@ $(document).ready(function () {
 
 
 </html>
+
