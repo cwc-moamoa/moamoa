@@ -7,6 +7,9 @@
     <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> -->
     <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
 
+
+
+
     <style>
         * {
             margin: 0;
@@ -367,7 +370,7 @@
         }
     </style>
     <script defer>
-    
+
 //         $(document).ready(function () {
 //     const pageSize = 16; // 한 페이지에 표시할 상품 수
 //     let currentPage = 0; // 현재 페이지 번호
@@ -451,10 +454,10 @@ $(document).ready(function () {
                     success: function(products) {
                         // 총 페이지 수 업데이트
                         totalPages = products.totalPages;
-                        
+
                         // 상품 목록 업데이트
                         updateProductContainer(products.content);
-                        
+
                         // 페이지네이션 업데이트
                         updatePagination();
                     },
@@ -505,7 +508,10 @@ $(document).ready(function () {
                 });
             }
         });
-    </script>
+
+
+
+
     </script>
     <link rel="icon" href="data:;base64,iVBORw0KGgo=">
 </head>
@@ -519,11 +525,27 @@ $(document).ready(function () {
                 <div class="search_btn">검색</div>
             </div>
             <div class="login_btn">
-                <a href="http://localhost:8080/oauth2/login/kakao">
+                <a href="javascript:;">
                     <img src="https://www.epost.go.kr/images/btn_login_kakao.jpg" alt="kakao_btn">
-
                 </a>
             </div>
+
+            <script>
+                document.querySelector('.login_btn a').addEventListener('click', function() {
+                    location.href = '/oauth2/login/kakao';
+                });
+                //
+                // window.addEventListener('message', function(event) {
+                //     const response = event.data;
+                //     const token = response.headers.get('Authorization');
+                //
+                //     if (token) {
+                //         localStorage.setItem('accessToken', token);
+                //         console.log('토큰:', token);
+                //     }
+                // });
+            </script>
+
         </header>
     </div>
     <div class="container_outer">
