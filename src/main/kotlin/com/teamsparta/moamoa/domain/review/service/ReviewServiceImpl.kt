@@ -39,7 +39,7 @@ class ReviewServiceImpl(
         }
         // 이메일대신 프로바이더아이디 인식하게 바꿈
         val socialUser = socialUserRepository.findByProviderId(providerId.toString())
-//            .orElseThrow { ModelNotFoundException("User not found", providerId) }
+            .orElseThrow { ModelNotFoundException("User not found", providerId) }
         // 제품이 있는지, 소프트딜리트인지 확인
         val product = productRepository.findByIdAndDeletedAtIsNull(productId)
             .orElseThrow { ModelNotFoundException("Product not found or deleted", productId) }
@@ -93,7 +93,7 @@ class ReviewServiceImpl(
                 ?: throw ModelNotFoundException("Review", reviewId)
 
         val socialUser = socialUserRepository.findByProviderId(providerId.toString())
-//            .orElseThrow { ModelNotFoundException("User not found", providerId) }
+            .orElseThrow { ModelNotFoundException("User not found", providerId) }
 
         if (review.socialUser.email != socialUser.email) {
             throw IllegalAccessException("권한이 없습니다.")
@@ -116,7 +116,7 @@ class ReviewServiceImpl(
                 ?: throw ModelNotFoundException("Review", reviewId)
 
         val socialUser = socialUserRepository.findByProviderId(providerId.toString())
-//            .orElseThrow { ModelNotFoundException("User not found", providerId) }
+            .orElseThrow { ModelNotFoundException("User not found", providerId) }
 
         if (review.socialUser.email != socialUser.email) {
             throw IllegalAccessException("권한이 없습니다.")

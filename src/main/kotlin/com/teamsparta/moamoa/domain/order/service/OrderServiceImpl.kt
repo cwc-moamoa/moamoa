@@ -84,7 +84,7 @@ class OrderServiceImpl(
         productId: Long,
         quantity: Int,
     ): Triple<SocialUser, Product, ProductStock>  {
-        val findUser = socialUserRepository.findByProviderId(user.id.toString()) ?: throw Exception("존재하지 않는 유저입니다")
+        val findUser = socialUserRepository.findByProviderId(user.id.toString()).orElseThrow() ?: throw Exception("존재하지 않는 유저입니다")
         val findProduct =
             productRepository.findByIdAndDeletedAtIsNull(productId).orElseThrow { Exception("존재하지 않는 상품입니다") }
         val stockCheck = productStockRepository.findByProduct(findProduct)
