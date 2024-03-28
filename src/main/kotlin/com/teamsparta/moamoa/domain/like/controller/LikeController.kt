@@ -22,14 +22,6 @@ class LikeController(private val likeService: LikeService) {
         likeService.addLikeToProduct(productId, user.id)
         return ResponseEntity.status(HttpStatus.CREATED).build()
     }
-//    @Operation(summary = "상품에 '좋아요' 추가", description = "특정 상품에 대한 사용자의 '좋아요'를 추가합니다.")
-//    @PostMapping("/product/{productId}/socialUser/{socialUserId}")
-//    fun addLikeToProduct(
-//        @Parameter(description = "상품 ID")@PathVariable productId: Long,
-//        @Parameter(description = "소셜 사용자 ID")@PathVariable socialUserId: Long,
-//    ) {
-//        likeService.addLikeToProduct(productId, socialUserId)
-//    }
 
 
     @Operation(summary = "상품에서 '좋아요' 제거", description = "특정 상품에 대한 사용자의 '좋아요'를 제거합니다.")
