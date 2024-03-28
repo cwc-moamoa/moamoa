@@ -40,9 +40,23 @@ class OrderController(
             .body(responseOrderDto)
     }
 
+    @PostMapping("/create/test")
+    fun createOrderFrontTest(
+        @AuthenticationPrincipal user: UserPrincipal,
+        @RequestParam productId: Long,
+        @RequestParam quantity: Int,
+        @RequestParam address: String,
+        @RequestParam phoneNumber: String,
+    ): ResponseEntity<ResponseOrderDto> {
+        val responseOrderDto = orderService.createOrderTest(user, productId, quantity, address, phoneNumber)
+        return ResponseEntity
+            .status(HttpStatus.CREATED)
+            .body(responseOrderDto)
+    }
+
     @PostMapping("/create")
     fun createOrder(request: HttpServletRequest): ResponseEntity<ResponseOrderDto> {
-        val userId = request.getParameter("userId").toLong() // 널포인트 익셉션뜸
+        val userId = request.getParameter("userId").toLong()
         val productId = request.getParameter("productId").toLong()
         val quantity = request.getParameter("quantity").toInt()
         val address = request.getParameter("address")

@@ -9,6 +9,7 @@
             // URL에서 상품 ID 가져오기
             var productId = new URLSearchParams(window.location.search).get('productId');
             $('#productId').val(productId);
+            setToken();
 
             // 주문 생성 폼 제출 시
             $('#orderForm').submit(function(event) {
@@ -16,17 +17,17 @@
 
                 // 폼 데이터를 객체로 구성
                 var formData = {
-                    userId: $('#userId').val(),
                     productId: $('#productId').val(),
                     quantity: $('#quantity').val(),
                     address: $('#address').val(),
-                    phoneNumber: $('#phoneNumber').val()
+                    phoneNumber: $('#phoneNumber').val(),
+                    token: $('#token').val()
                 };
 
                 // 서버로 POST 요청 보내기
                 $.ajax({
                     type: 'POST',
-                    url: '/api/orders/create',
+                    url: '/api/orders/create/test',
                     data: formData, // 객체 형태로 전송
                     success: function(response) {
                         alert('주문이 성공적으로 생성되었습니다!');
@@ -41,6 +42,32 @@
                 });
             });
         });
+
+        function setToken() {
+            // 쿠키에서 토큰을 가져옵니다.
+            var token = getCookie('jwt_token');
+
+            // 가져온 토큰을 히든 인풋 필드에 설정합니다.
+            $('#token').val(token);
+        }
+
+        // 쿠키 이름으로부터 쿠키 값을 가져오는 함수
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = cookies[i].trim();
+                    // 쿠키 이름이 일치하는 경우, 해당 쿠키 값을 반환합니다.
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
     </script>
     <style>
         * {
@@ -109,8 +136,8 @@
         .container .form input:focus{
             outline: none;
         }
-        .container .form .id_label{}/*아이디라벨*/
-        .container .form .text_box_id{}/*아아디 인풋*/
+        /*.container .form .id_label{}!*아이디라벨*!*/
+        /*.container .form .text_box_id{}!*아아디 인풋*!*/
         .container .form .quantity_label{}/*수량 라벨*/
         .container .form .text_box_quantity{}/*수량 인풋*/
         .container .form .address_label{}/*주소 라벨*/
@@ -142,7 +169,9 @@
     <h1 class="order_title">주문 정보 입력</h1>
     <form class="form" id="orderForm" method="post">
         <input type="hidden" id="productId" name="productId">
-        <label class="id_label" for="userId">ID :</label>
+<!--        <input type="hidden" id="userId" name="userId">-->
+
+                <label class="id_label" for="userId">ID :</label>
         <input class="text_box_id" type="text" id="userId" name="userId"><br><br>
 
         <label class="quantity_label" for="quantity">수량 :</label>
