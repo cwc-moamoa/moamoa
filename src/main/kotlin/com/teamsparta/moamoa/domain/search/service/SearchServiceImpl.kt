@@ -71,7 +71,7 @@ class SearchServiceImpl(
                 imageUrl = product.imageUrl,
                 price = product.price,
                 ratingAverage = product.ratingAverage,
-                likes = product.likes
+                likes = product.likes,
             )
         }
     }

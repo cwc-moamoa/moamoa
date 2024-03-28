@@ -8,7 +8,7 @@ import jakarta.persistence.*
 class GroupPurchaseJoinUserEntity(
     @Column(name = "user_id")
     val userId: Long,
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "group_purchase_id")
     val groupPurchase: GroupPurchaseEntity,
     @Column(name = "order_id")

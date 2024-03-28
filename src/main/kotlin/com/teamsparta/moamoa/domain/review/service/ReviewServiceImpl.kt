@@ -32,6 +32,7 @@ class ReviewServiceImpl(
         createReviewRequest: CreateReviewRequest,
         orderId: Long,
     ): ReviewResponse {
+
         // 주문에 대한 리뷰가 이미 있는지 확인
         reviewRepository.findByOrderId(orderId).ifPresent {
             throw IllegalStateException("이미 이 주문에 대한 리뷰가 작성되었습니다.")
@@ -49,6 +50,7 @@ class ReviewServiceImpl(
             .orElseThrow { ModelNotFoundException("해당 상품에 대한 주문내역을 확인할 수 없습니다.", orderId) }
         // 이제 리뷰를 생성
         val review = createReviewRequest.toReview(product, socialUser, order)
+
 
         val savedReview = reviewRepository.save(review)
         return ReviewResponse.toReviewResponse(savedReview)
