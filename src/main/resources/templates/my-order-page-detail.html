@@ -147,7 +147,7 @@
                 // 서버로 AJAX 요청을 보냅니다.
                 $.ajax({
                     type: 'POST',
-                    url: '/reviews/' + productId, // productId를 사용하여 리뷰를 생성하는 엔드포인트에 접근합니다.
+                    url: '/reviews/' + productId,
                     contentType: 'application/json',
                     data: JSON.stringify(reviewData),
                     success: function (response) {
