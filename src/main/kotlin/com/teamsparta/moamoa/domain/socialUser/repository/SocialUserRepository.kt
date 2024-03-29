@@ -17,5 +17,4 @@ interface SocialUserRepository : CrudRepository<SocialUser, Long> {
     ): SocialUser
 
     fun findByProviderId(providerId: String): Optional<SocialUser>
-
 }

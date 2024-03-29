@@ -12,9 +12,8 @@ class JwtHelper(
         subject: String,
         nickname: String,
         email: String,
-        httpServletResponse: HttpServletResponse
+        httpServletResponse: HttpServletResponse,
     ): String {
         return jwtPlugin.generateAccessTokenForSocialUser(subject, nickname, email, httpServletResponse)
     }
-
 }

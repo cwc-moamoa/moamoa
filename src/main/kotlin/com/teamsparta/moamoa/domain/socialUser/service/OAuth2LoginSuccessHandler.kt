@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component
 @Component
 class OAuth2LoginSuccessHandler(
     private val jwtHelper: JwtHelper,
-    private val socialUserService: SocialUserService
+    private val socialUserService: SocialUserService,
 ) : AuthenticationSuccessHandler {
     override fun onAuthenticationSuccess(
         request: HttpServletRequest,
@@ -30,12 +30,16 @@ class OAuth2LoginSuccessHandler(
         // 있으면 검색한 정보로 토큰 발급하고
         if (existedUser) {
             val user = socialUserService.findUser(OAuth2Provider.valueOf(userInfo.provider), userInfo.providerId, userInfo.email)
-            val accessToken = jwtHelper.generateAccessToken(
-                user.providerId, user.nickname, user.email, httpServletResponse
-            )
+            val accessToken =
+                jwtHelper.generateAccessToken(
+                    user.providerId,
+                    user.nickname,
+                    user.email,
+                    httpServletResponse,
+                )
             httpServletResponse.addHeader("Authorization", "Bearer $accessToken") // 헤더에 담는 걸로 바꿈
             httpServletResponse.contentType = MediaType.APPLICATION_JSON_VALUE
-//            httpServletResponse.sendRedirect("/")
+            httpServletResponse.sendRedirect("/")
 //            httpServletResponse.characterEncoding = "UTF-8"
 //            httpServletResponse.contentType = "application/json;charset=UTF-8"
 //
@@ -54,7 +58,6 @@ class OAuth2LoginSuccessHandler(
 //                jacksonObjectMapper().writeValueAsString(responseMap)
 //            )
 
-
             // 없으면 가져온 정보 응답함
         } else {
             httpServletResponse.contentType = MediaType.APPLICATION_JSON_VALUE
@@ -64,9 +67,9 @@ class OAuth2LoginSuccessHandler(
                         userInfo.email,
                         userInfo.provider,
                         userInfo.providerId,
-                        userInfo.nickname
-                    )
-                )
+                        userInfo.nickname,
+                    ),
+                ),
             )
         }
     }

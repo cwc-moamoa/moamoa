@@ -66,7 +66,6 @@ class SecurityConfig(
                 }.userInfoEndpoint {
                     it.userService(oAuth2UserService)
                 }.successHandler(oAuth2LoginSuccessHandler)
-
             }
             .sessionManagement {
                 it.sessionCreationPolicy(SessionCreationPolicy.STATELESS)

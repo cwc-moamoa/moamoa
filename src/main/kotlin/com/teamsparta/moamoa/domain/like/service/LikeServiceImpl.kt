@@ -111,7 +111,6 @@ class LikeServiceImpl(
         if (like != null) {
             likeRepository.delete(like)
 
-
             if (review.likes > 0) {
                 review.likes--
                 reviewRepository.save(review)

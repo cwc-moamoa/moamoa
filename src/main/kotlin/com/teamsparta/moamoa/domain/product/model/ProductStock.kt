@@ -19,6 +19,7 @@ data class ProductStock(
     val productName: String,
 ) : BaseTimeEntity() {
     companion object
+
     fun discountForTest(num: Int): ProductStock {
         val discountNum = stock - num
         return ProductStock(
@@ -28,6 +29,7 @@ data class ProductStock(
             product = product,
         )
     }
+
     fun discount(num: Int) {
         this.stock - num
     }
