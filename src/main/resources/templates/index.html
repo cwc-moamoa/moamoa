@@ -368,8 +368,8 @@
             function updateProductList(page) {
                 // AJAX를 통해 서버에서 상품 정보 가져오기
                 $.ajax({
-                    url     : `/products/pages?page=${page}&size=${pageSize}`,
-                    method  : 'GET',
+                    url: `/products/pages?page=${page}&size=${pageSize}`,
+                    method: 'GET',
                     dataType: 'json',
                     success: function (products) {
                         // 총 페이지 수 업데이트
@@ -470,38 +470,34 @@
     <header class="header">
         <a href="/" class="logo">MOAMOA</a>
 
-        // 검색창
+        <!--        검색창-->
         <div class="search_box">
             <input type="search" name="search" id="searchInput">
             <div class="search_btn" onclick="searchProducts()">검색</div>
         </div>
         <div id="searchResults"></div>
 
-
-        // 로그인 버튼
+        <!--        로그인 버튼-->
         <div class="login_btn" id="loginBtn">
             <a href="javascript:;">
-                <img src="https://developers.kakao.com/tool/resource/static/img/button/login/full/ko/kakao_login_medium_wide.png" alt="kakao_btn"></a>
+                <img src="https://developers.kakao.com/tool/resource/static/img/button/login/full/ko/kakao_login_medium_wide.png"
+                     alt="kakao_btn"></a>
         </div>
 
         <div id="welcomeMessage" style="display: none;">
             <p>환영합니다!</p>
             <button id="my-page-button">마이페이지로 이동하기</button>
         </div>
-  
 
-        
-                
-      
-        
 
         <script>
 
-          // 로그인 함수
-        
+            // 로그인 함수
+
             document.querySelector('.login_btn a').addEventListener('click', function () {
-                location.href = '/oauth2/login/kakao';});
-        
+                location.href = '/oauth2/login/kakao';
+            });
+
             document.addEventListener("DOMContentLoaded", function () {
                 var loginButton = document.getElementById('loginBtn');
 
@@ -550,7 +546,6 @@
         </script>
 
 
-
     </header>
 </div>
 <div class="container_outer">
@@ -567,7 +562,7 @@
         </ul>
     </div>
 </div>
-  
+
 <footer class="footer">
     <div class="footer_inner">
         <div class="footer_left">
