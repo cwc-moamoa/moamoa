@@ -8,8 +8,6 @@
     <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
 
 
-
-
     <style>
         * {
             margin: 0;
@@ -155,11 +153,13 @@
         .login-form input[type="submit"]:hover {
             background-color: #0056b3;
         }
-        .container_outer{
+
+        .container_outer {
             width: 1000px;
             height: 1600px;
             margin: 0 auto;
         }
+
         .container {
             max-width: 800px;
             /* height: 1300px; */
@@ -371,72 +371,7 @@
     </style>
     <script defer>
 
-//         $(document).ready(function () {
-//     const pageSize = 16; // 한 페이지에 표시할 상품 수
-//     let currentPage = 0; // 현재 페이지 번호
-
-//     // 페이지네이션 버튼 클릭 이벤트
-//     $('.pagination li').on('click', function () {
-//         currentPage = parseInt($(this).text()) - 1;
-//         updateProductList(currentPage);
-//     });
-
-//     // 초기에 첫 번째 페이지 로드
-//     updateProductList(currentPage);
-
-//     // 페이지를 업데이트하는 함수
-//     function updateProductList(page) {
-//         const container = $('#productContainer');
-//         container.empty(); // 이전 상품들 제거
-
-//         // AJAX를 통해 서버에서 상품 정보 가져오기
-//         $.ajax({
-//             url: `/products/pages?page=${page}&size=${pageSize}`,
-//             method: 'GET',
-//             dataType: 'json',
-//             success: function(products) {
-//                 // 각 상품 정보를 동적으로 추가
-//                 products.content.forEach(product => {
-//                     const productDiv = $('<div class="product"></div>');
-//                     productDiv.html(`
-//                         <div class="product-image">
-//                             <a href="/product-detail?productId=${product.id}"><img src="${product.image}" alt="${product.name}"></a>
-//                         </div>
-//                         <div class="product-info">
-//                             <h2>${product.title}</h2>
-//                             <p>${product.description}</p>
-//                             <p>가격: ${product.price}</p>
-//                         </div>
-//                     `);
-//                     container.append(productDiv);
-//                 });
-//                 updatePagination(products.number, products.totalPages);
-//             },
-//             error: function(jqXHR, textStatus, errorThrown) {
-//                 console.error('상품 정보를 가져오는 데 실패했습니다.', textStatus, errorThrown);
-//             }
-//         });
-//     }
-
-//     // 페이지네이션을 업데이트하는 함수
-//     function updatePagination(currentPage, totalPages) {
-//         const paginationList = $('.pagination');
-//         paginationList.empty();
-
-//         for (let i = 0; i < totalPages; i++) {
-//             const pageNumber = i;
-//             const pageButton = $(`<li class="page-item"><a class="page-link" href="#">${i + 1}</a></li>`);
-//             pageButton.on('click', function () {
-//                 updateProductList(pageNumber);
-//             });
-//             paginationList.append(pageButton);
-//         }
-
-//         paginationList.find('li').eq(currentPage).addClass('active');
-//     }
-// });
-
-$(document).ready(function () {
+        $(document).ready(function () {
             const pageSize = 16; // 한 페이지에 표시할 상품 수
             let currentPage = 0; // 현재 페이지 번호
             let totalPages = 0; // 총 페이지 수
@@ -451,7 +386,7 @@ $(document).ready(function () {
                     url: `/products/pages?page=${page}&size=${pageSize}`,
                     method: 'GET',
                     dataType: 'json',
-                    success: function(products) {
+                    success: function (products) {
                         // 총 페이지 수 업데이트
                         totalPages = products.totalPages;
 
@@ -461,7 +396,7 @@ $(document).ready(function () {
                         // 페이지네이션 업데이트
                         updatePagination();
                     },
-                    error: function(jqXHR, textStatus, errorThrown) {
+                    error: function (jqXHR, textStatus, errorThrown) {
                         console.error('상품 정보를 가져오는 데 실패했습니다.', textStatus, errorThrown);
                     }
                 });
@@ -510,172 +445,134 @@ $(document).ready(function () {
         });
 
 
-
-
     </script>
     <link rel="icon" href="data:;base64,iVBORw0KGgo=">
 </head>
 
 <body>
-    <div class="header_outer">
-        <header>
-            <a href="#" class="logo">MOAMOA</a>
-            <div class="search_box">
-                <input type="search" name="search" id="search">
-                <div class="search_btn">검색</div>
-            </div>
-            <div class="login_btn" id="loginBtn">
-                <a href="javascript:;">
-                    <img src="https://www.epost.go.kr/images/btn_login_kakao.jpg" alt="kakao_btn">
-                </a>
-            </div>
-            <div id="welcomeMessage" style="display: none;">
-                <p>환영합니다!</p>
-                <button id="my-page-button">마이페이지로 이동하기</button>
-            </div>
+<div class="header_outer">
+    <header>
+        <a href="#" class="logo">MOAMOA</a>
+        <div class="search_box">
+            <input type="search" name="search" id="search">
+            <div class="search_btn">검색</div>
+        </div>
+        <div class="login_btn" id="loginBtn">
+            <a href="javascript:;">
+                <img src="https://www.epost.go.kr/images/btn_login_kakao.jpg" alt="kakao_btn">
+            </a>
+        </div>
+        <div id="welcomeMessage" style="display: none;">
+            <p>환영합니다!</p>
+            <button id="my-page-button">마이페이지로 이동하기</button>
+        </div>
 
-            <script>
+        <script>
 
-                document.addEventListener("DOMContentLoaded", function() {
-                    var loginButton = document.getElementById('loginBtn');
+            document.addEventListener("DOMContentLoaded", function () {
+                var loginButton = document.getElementById('loginBtn');
 
-                    // 쿠키에서 JWT 토큰을 가져오는 함수
-                    function extractJwtTokenFromCookies() {
-                        const cookies = document.cookie.split(';'); // 쿠키 문자열을 세미콜론을 기준으로 나눕니다.
+                // 쿠키에서 JWT 토큰을 가져오는 함수
+                function extractJwtTokenFromCookies() {
+                    const cookies = document.cookie.split(';'); // 쿠키 문자열을 세미콜론을 기준으로 나눕니다.
 
-                        // 쿠키 배열을 반복하면서 JWT 토큰을 찾습니다.
-                        for (let i = 0; i < cookies.length; i++) {
-                            const cookie = cookies[i].trim(); // 공백을 제거합니다.
-                            if (cookie.startsWith('jwt_token=')) {
-                                // 'jwt_token=' 부분을 제외하고 추출하여 반환합니다.
-                                return cookie.substring('jwt_token='.length);
-                            }
+                    // 쿠키 배열을 반복하면서 JWT 토큰을 찾습니다.
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim(); // 공백을 제거합니다.
+                        if (cookie.startsWith('jwt_token=')) {
+                            // 'jwt_token=' 부분을 제외하고 추출하여 반환합니다.
+                            return cookie.substring('jwt_token='.length);
                         }
-
-                        // JWT 토큰이 없으면 null을 반환합니다.
-                        return null;
                     }
 
-                    // 쿠키에서 JWT 토큰 가져오기
-                    var jwtToken = extractJwtTokenFromCookies();
+                    // JWT 토큰이 없으면 null을 반환합니다.
+                    return null;
+                }
 
-                    // JWT 토큰이 존재하는 경우
-                    if (jwtToken) {
-                        // 로그인 버튼을 숨깁니다.
-                        loginButton.style.display = 'none';
-                        welcomeMessage.style.display = 'block';
-                    } else {
-                        // JWT 토큰이 존재하지 않는 경우, 로그인 버튼을 표시합니다.
-                        loginButton.style.display = 'block';
-                    }
+                // 쿠키에서 JWT 토큰 가져오기
+                var jwtToken = extractJwtTokenFromCookies();
+
+                // JWT 토큰이 존재하는 경우
+                if (jwtToken) {
+                    // 로그인 버튼을 숨깁니다.
+                    loginButton.style.display = 'none';
+                    welcomeMessage.style.display = 'block';
+                } else {
+                    // JWT 토큰이 존재하지 않는 경우, 로그인 버튼을 표시합니다.
+                    loginButton.style.display = 'block';
+                }
+            });
+
+            $(document).ready(function () {
+                $('#my-page-button').click(function () {
+                    window.location.href = "/my-order-page";
                 });
+            });
 
-                $(document).ready(function() {
-                    $('#my-page-button').click(function() {
-                        window.location.href = "/my-order-page";
-                    });
-                });
+            document.querySelector('.login_btn a').addEventListener('click', function () {
+                location.href = '/oauth2/login/kakao';
 
-                document.querySelector('.login_btn a').addEventListener('click', function() {
-                    location.href = '/oauth2/login/kakao';
+            });
 
-
-                    // const loginBtn =document.querySelector('.login_btn')
-                    // loginBtn.style.display ="none"
-
-                });
-
-                // fetch('localhost:8080/oauth2/login/kakao') // 데이터를 가져올 URL을 전달합니다.
-                //     .then(response => {
-                //         // 서버 응답을 JSON 형태로 파싱합니다.
-                //         return response.json();
-                //     })
-                //     .then(data => {
-                //         // 가져온 데이터를 이용하여 작업합니다.
-                //         console.log(data);
-                //     })
-                //     .catch(error => {
-                //         // 에러가 발생했을 때 처리합니다.
-                //         console.error('데이터를 가져오는 중 에러 발생:', error);
-                //     });
+        </script>
 
 
-
-
-
-                // window.addEventListener('message', function(event) {
-                //     const response = event.data;
-                //     const token = response.headers.get('Authorization');
-                //
-                //     if (token) {
-                //         localStorage.setItem('accessToken', token);
-                //         console.log('토큰:', token);
-                //     }
-                // });
-
-
-
-            </script>
-
-
-
-
-        </header>
+    </header>
+</div>
+<div class="container_outer">
+    <div class="container">
+        <h1>상품 목록</h1>
+        <div class="float_box" id="productContainer">
+        </div>
+        <ul class="pagination" id="pagination">
+            <li class="num01">1</li>
+            <li class="num02">2</li>
+            <li class="num03">3</li>
+            <li class="num04">4</li>
+            <li class="num05">5</li>
+        </ul>
     </div>
-    <div class="container_outer">
-        <div class="container">
-            <h1>상품 목록</h1>
-            <div class="float_box" id="productContainer">
+</div>
+</div>
+
+
+<footer class="footer">
+    <div class="footer_inner">
+        <div class="footer_left">
+            <div class="footer_menu">
+                <ul>
+                    <li>고객서비스</li>
+                    <li>회사소개</li>
+                    <li>소셜 네트워크</li>
+                    <li>이용약관</li>
+                    <li>개인정보처리방침</li>
+                </ul>
             </div>
-            <ul class="pagination" id="pagination">
-                <li class="num01">1</li>
-                <li class="num02">2</li>
-                <li class="num03">3</li>
-                <li class="num04">4</li>
-                <li class="num05">5</li>
-            </ul>
+            <div class="info">
+                <p>모아모아(주) 대표: kim, sun-byuong(jake), 부산광역시 남구 유엔평화로 29번길 117 동원rose 205호</p>
+                <p>
+                    사업자등록번호: 000-00-0000 &nbsp;
+                    <span> 통신판매업신고번호: 부산성심당-3849호 </span>
+                    <span>사업자정보조회</span>
+                </p>
+                <p>고객관리지원팀: (054)000-0000 &nbsp; <span> njunju77@nate.com </span></p>
+                <p>호스팅서비스 사업자: (주)에스케이테레콤</p>
+                <p>(c) MOAMOA 2024 <span>대한민국</span></p>
+            </div>
         </div>
+        <div class="footer_right">
+            <div class="logo_box">
+                <p>
+                    MoA
+                    <br/>
+                    MOA
+                </p>
+                <p>myeok jul-ki and nakgopsae </p>
+            </div>
+
         </div>
     </div>
-    
-
-    <footer class="footer">
-        <div class="footer_inner">
-            <div class="footer_left">
-                <div class="footer_menu">
-                    <ul>
-                        <li>고객서비스</li>
-                        <li>회사소개</li>
-                        <li>소셜 네트워크</li>
-                        <li>이용약관</li>
-                        <li>개인정보처리방침</li>
-                    </ul>
-                </div>
-                <div class="info">
-                    <p>모아모아(주) 대표: kim, sun-byuong(jake), 부산광역시 남구 유엔평화로 29번길 117 동원rose 205호</p>
-                    <p>
-                        사업자등록번호: 000-00-0000 &nbsp;
-                        <span> 통신판매업신고번호: 부산성심당-3849호 </span>
-                        <span>사업자정보조회</span>
-                    </p>
-                    <p>고객관리지원팀: (054)000-0000 &nbsp; <span> njunju77@nate.com </span></p>
-                    <p>호스팅서비스 사업자: (주)에스케이테레콤</p>
-                    <p>(c) MOAMOA 2024 <span>대한민국</span></p>
-                </div>
-            </div>
-            <div class="footer_right">
-                <div class="logo_box">
-                    <p>
-                        MoA
-                        <br />
-                        MOA
-                    </p>
-                    <p>myeok jul-ki and nakgopsae </p>
-                </div>
-
-            </div>
-        </div>
-    </footer>
+</footer>
 
 </body>
 
