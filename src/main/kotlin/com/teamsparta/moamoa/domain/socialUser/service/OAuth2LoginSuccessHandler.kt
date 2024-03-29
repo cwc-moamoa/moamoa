@@ -41,8 +41,8 @@ class OAuth2LoginSuccessHandler(
             httpServletResponse.addHeader("Authorization", "Bearer $accessToken") // 헤더에 담는 걸로 바꿈
             httpServletResponse.contentType = MediaType.APPLICATION_JSON_VALUE
             httpServletResponse.sendRedirect("/") // 로그인 후 홈으로 안 가게 하려면 이거 끄면 돼요
-            httpServletResponse.characterEncoding = "UTF-8"
-            httpServletResponse.contentType = "application/json;charset=UTF-8"
+//            httpServletResponse.characterEncoding = "UTF-8"
+//            httpServletResponse.contentType = "application/json;charset=UTF-8"
 
 //            val responseMap = mutableMapOf<String, Any>()
 //            responseMap["message"] = "로그인에 성공했습니다."
