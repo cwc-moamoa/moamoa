@@ -38,4 +38,6 @@ interface OrderRepository : JpaRepository<OrdersEntity, Long>, CustomOrderReposi
         socialUserId: Long,
         productId: Long,
     ): Optional<OrdersEntity>
+
+    fun findBySocialUserId(userId: Long): List<OrdersEntity>
 }

@@ -7,6 +7,7 @@ import com.teamsparta.moamoa.domain.order.service.OrderService
 import com.teamsparta.moamoa.infra.security.UserPrincipal
 import org.springframework.data.domain.Page
 import org.springframework.http.HttpStatus
+import org.springframework.http.HttpStatusCode
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.validation.annotation.Validated
@@ -141,17 +142,24 @@ class OrderController(
 
     // 주문 취소니까 수정으로 함 삭제면 삭제지!
 
-    @GetMapping("/{orderId}/{userId}")
+    @GetMapping("/getOne/{orderId}")
     fun getOrder(
+        @AuthenticationPrincipal user: UserPrincipal,
         @PathVariable orderId: Long,
-        @PathVariable userId: Long,
     ): ResponseEntity<ResponseOrderDto> {
         return ResponseEntity
             .status(HttpStatus.OK)
-            .body(orderService.getOrder(userId, orderId))
+            .body(orderService.getOrder(user, orderId))
     }
 
     // 주문 조회
+
+    @GetMapping("/getAllOrders")
+    fun getAllOrders(
+        @AuthenticationPrincipal user: UserPrincipal,
+    ): ResponseEntity<List<ResponseOrderDto>> {
+        return ResponseEntity.status(HttpStatus.OK).body(orderService.getOrderList(user))
+    }
 
     @GetMapping("/{userId}")
     fun getOrderPage(

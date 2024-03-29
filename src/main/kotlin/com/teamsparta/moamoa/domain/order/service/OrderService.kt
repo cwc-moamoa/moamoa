@@ -54,11 +54,18 @@ interface OrderService {
 
     // 주문취소 / 유저
     fun getOrder(
-        userId: Long,
+        user: UserPrincipal,
         orderId: Long,
     ): ResponseOrderDto
 
     // 주문 단건조회
+
+    fun getOrderList(
+    user: UserPrincipal,
+    ) : List<ResponseOrderDto>
+
+    //주문 리스트 조회
+
     fun getOrderPage(
         userId: Long,
         page: Int,

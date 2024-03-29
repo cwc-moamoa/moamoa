@@ -18,6 +18,7 @@ import com.teamsparta.moamoa.domain.product.model.Product
 import com.teamsparta.moamoa.domain.product.model.ProductStock
 import com.teamsparta.moamoa.domain.product.repository.ProductRepository
 import com.teamsparta.moamoa.domain.product.repository.ProductStockRepository
+import com.teamsparta.moamoa.domain.review.dto.ReviewResponseByList
 import com.teamsparta.moamoa.domain.seller.repository.SellerRepository
 import com.teamsparta.moamoa.domain.socialUser.model.SocialUser
 import com.teamsparta.moamoa.domain.socialUser.repository.SocialUserRepository
@@ -343,17 +344,40 @@ class OrderServiceImpl(
         group.userCount -= 1
     } // 중복이 넘 많아서 함수로 묶고 다른부분만 따로 정리해줌
 
+    @Transactional
     override fun getOrder(
-        userId: Long,
+        user: UserPrincipal,
         orderId: Long,
     ): ResponseOrderDto {
-        val findUser = socialUserRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("user", userId)
+        val findUser =
+            socialUserRepository.findByProviderId(user.id.toString()).orElseThrow() ?: throw Exception("존재하지 않는 유저입니다")
         val findOrder = orderRepository.findByIdOrNull(orderId) ?: throw Exception("존재하지 않는 주문 입니다")
         // 취소된 주문도 조회는 가능해야 한다 생각해서, 논리삭제된것도 찾을수 있게 함
         return if (findOrder.socialUser.id == findUser.id) {
             findOrder.toResponse()
         } else {
             throw Exception("유저와 주문정보가 일치하지 않습니다")
+        }
+    }
+
+    @Transactional
+    override fun getOrderList(user: UserPrincipal): List<ResponseOrderDto> {
+        val findUser =
+            socialUserRepository.findByProviderId(user.id.toString()).orElseThrow() ?: throw Exception("존재하지 않는 유저입니다")
+        val orders = orderRepository.findBySocialUserId(findUser.id!!)
+        return orders.map { order ->
+            ResponseOrderDto(
+                orderId = order.id!!,
+                productName = order.productName,
+                totalPrice = order.totalPrice,
+                address = order.address,
+                createdAt = order.createdAt,
+                updatedAt = order.updatedAt,
+                status = order.status.toString(),
+                discount = order.discount,
+                quantity = order.quantity,
+                orderUid = order.orderUid!!
+            )
         }
     }
 
