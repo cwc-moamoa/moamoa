@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <title>상품 목록</title>
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            height: 100%;
+        }
+
+        body {
+            min-height: 100%;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        li {
+            list-style: none;
+        }
+
+        a {
+            display: block;
+            text-decoration: none;
+            color: #000;
+        }
+
+        img {
+            display: block;
+            width: 100%;
+            object-fit: cover;
+        }
+
+        .header_outer {
+            width: 100%;
+            background-color: #333333;
+        }
+
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            text-align: right;
+            position: relative;
+            height: 100px;
+            box-sizing: border-box;
+            margin: 0 auto;
+            width: 70%;
+        }
+
+        header .logo {
+            position: absolute;
+            left: 60px;
+            top: 22%;
+            color: #fff;
+            padding: 11px;
+            font-size: 35px;
+        }
+
+        header .login_btn {
+            position: absolute;
+            right: 25px;
+            top: 36%;
+            width: 270px;
+            height: 30px;
+            border-radius: 4px;
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        header .login_btn img {
+            width: 100%;
+        }
+
+        .search_box {
+            width: 50%;
+            margin: 0 auto;
+            overflow: hidden;
+            padding-left: 25%;
+            padding-top: 30px;
+        }
+
+        .search_box input {
+            display: block;
+            float: left;
+            width: 50%;
+            border-radius: 4px;
+            margin-right: 10px;
+            padding: 5px;
+            border: none;
+        }
+
+        .search_box input:focus {
+            outline: none;
+        }
+
+        .search_box .search_btn {
+            display: block;
+            float: left;
+            background-color: #eee;
+            color: #000;
+            padding: 2px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .search_box .search_btn:hover {
+            font-weight: bold;
+            color: #eee;
+            background-color: darkgray;
+        }
+
+        .login-form input[type="text"],
+        .login-form input[type="password"],
+        .login-form input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+
+        .login-form input[type="submit"] {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        .login-form input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        .container_outer {
+            width: 1000px;
+            height: 1600px;
+            margin: 0 auto;
+        }
+
+        .container {
+            max-width: 800px;
+            /* height: 1300px; */
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .float_box {
+            overflow: hidden;
+            height: 100%;
+            width: 100%;
+        }
+
+        .product {
+            float: left;
+            width: calc(25% - 20px);
+            vertical-align: top;
+            margin-right: 20px;
+            margin-bottom: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            box-sizing: border-box;
+            height: 300px;
+
+        }
+
+        .product:last-child {
+            margin-right: 0;
+        }
+
+        .product-info {
+            padding: 20px;
+            border-radius: 4px;
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+
+        .product-info p:first-child {
+            font-size: 13px;
+        }
+
+        .product-info p {
+            font-size: 11px;
+            margin: 0;
+            padding: 5px 0;
+            /* 긴 텍스트가 있을 경우 줄 바꿈 */
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            white-space: nowrap;
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+
+
+        .product-image {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .product-image img {
+            max-width: 100%;
+            height: 180px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .footer {
+            width: 100%;
+            height: 300px;
+            margin: 0 auto;
+            background-color: #333;
+            color: #fff;
+            padding: 25px;
+            box-sizing: border-box;
+            overflow: hidden;
+            font-size: 12px;
+        }
+
+        .footer .footer_inner {
+            height: 200px;
+            margin: 0 auto;
+            border: 0.3px solid #ddd;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .footer .footer_inner .footer_left {
+            padding-left: 115px;
+        }
+
+        .footer .footer_inner .footer_left .footer_menu {
+            margin-bottom: 30px;
+        }
+
+        .footer .footer_inner .footer_left .footer_menu ul {
+            display: flex;
+            margin-top: 35px;
+        }
+
+        .footer .footer_inner .footer_left .footer_menu ul li {
+            margin-right: 30px;
+            cursor: pointer;
+        }
+
+        .footer .footer_inner .footer_left .info p {
+            margin-bottom: 10px;
+        }
+
+        .footer .footer_inner .footer_left .info span {
+            margin-left: 30px;
+        }
+
+        .footer .footer_inner .footer_left .info p:nth-child(2) span:last-child {
+            text-decoration: underline;
+        }
+
+        .footer .footer_inner .footer_left .info p:nth-child(4) {
+            margin-bottom: 40px;
+        }
+
+        .footer .footer_inner .footer_left .info p:last-child span {
+            text-decoration: underline;
+        }
+
+        .footer .footer_inner .footer_right {
+            margin-right: 250px;
+        }
+
+        .footer .footer_inner .footer_right .logo_box {
+            margin-top: 30px;
+            width: 140px;
+            height: 70px;
+            font-size: 12px;
+            margin-bottom: 70px;
+        }
+
+        .footer .footer_inner .footer_right .logo_box p {
+            border: 1px solid #fff;
+            text-align: center;
+            box-sizing: border-box;
+        }
+
+        .footer .footer_inner .footer_right .logo_box p:last-child {
+            border-top: none;
+            white-space: nowrap;
+            box-sizing: border-box;
+            font-size: 10px;
+            overflow: hidden;
+        }
+
+        .footer .footer_inner .footer_right .sns_icon {
+            display: flex;
+            overflow: hidden;
+        }
+
+        .footer .footer_inner .footer_right .sns_icon div {
+            width: 40px;
+            height: 40px;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+
+        .pagination {
+            width: 200px;
+            height: 20px;
+            display: flex;
+            margin: 0 auto;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        .pagination li {
+            border: 0.5px solid #000;
+            width: 40px;
+            text-align: center;
+            line-height: 30px;
+            margin-right: 5px;
+            border-radius: 4px;
+            height: 30px;
+            cursor: pointer;
+
+        }
+
+        .pagination li:hover {
+            background: #000;
+            color: #fff;
+            transition-delay: 0.05s;
+            font-weight: bold;
+        }
+
+        .pagination li:last-child {
+            margin-right: 0;
+        }
+    </style>
+
+
+    <script defer>
+        $(document).ready(function () {
+            const pageSize = 16; // 한 페이지에 표시할 상품 수
+            let currentPage = 0; // 현재 페이지 번호
+            let totalPages = 0; // 총 페이지 수
+
+            // 초기에 첫 번째 페이지 로드
+            updateProductList(currentPage);
+
+            // 페이지를 업데이트하는 함수
+            function updateProductList(page) {
+                // AJAX를 통해 서버에서 상품 정보 가져오기
+                $.ajax({
+                    url: `/products/pages?page=${page}&size=${pageSize}`,
+                    method: 'GET',
+                    dataType: 'json',
+                    success: function (products) {
+                        // 총 페이지 수 업데이트
+                        totalPages = products.totalPages;
+
+                        // 상품 목록 업데이트
+                        updateProductContainer(products.content);
+
+                        // 페이지네이션 업데이트
+                        updatePagination();
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        console.error('상품 정보를 가져오는 데 실패했습니다.', textStatus, errorThrown);
+                    }
+                });
+            }
+
+            // 페이지네이션을 업데이트하는 함수
+            function updatePagination() {
+                const paginationList = $('.pagination');
+                paginationList.empty();
+
+                // 페이지네이션 버튼 생성
+                for (let i = 0; i < totalPages; i++) {
+                    const pageNumber = i;
+                    const pageButton = $(`<li class="page-item"><a class="page-link" href="#">${i + 1}</a></li>`);
+                    pageButton.on('click', function () {
+                        updateProductList(pageNumber);
+                    });
+                    paginationList.append(pageButton);
+                }
+
+                // 현재 페이지에 active 클래스 추가
+                paginationList.find('li').eq(currentPage).addClass('active');
+            }
+
+            // 상품 목록을 업데이트하는 함수
+            function updateProductContainer(products) {
+                const container = $('#productContainer');
+                container.empty(); // 이전 상품들 제거
+
+                // 각 상품 정보를 동적으로 추가
+                products.forEach(product => {
+                    const productDiv = $('<div class="product"></div>');
+                    productDiv.html(`
+                        <div class="product-image">
+                            <a href="/product-detail?productId=${product.id}"><img src="${product.imageUrl}" alt="${product.name}"></a>
+                        </div>
+                        <div class="product-info">
+                            <h2>${product.title}</h2>
+                            <p>${product.description}</p>
+                            <p>가격: ${product.price}</p>
+                        </div>
+                    `);
+                    container.append(productDiv);
+                });
+            }
+        });
+
+
+        // 상품 검색하는 함수
+        function searchProducts() {
+            const keyword = document.getElementById('searchInput').value; // 검색어 가져오기
+            fetch(`api/search/products?keyword=${encodeURIComponent(keyword)}`) // 백엔드 서버로 검색 요청
+                .then(response => response.json()) // JSON 형태로 응답 받기
+                .then(data => displaySearchResults(data)) // 검색 결과를 화면에 표시하는 함수 호출
+                .catch(error => console.error('Error:', error)); // 에러 처리
+        }
+
+        // 검색 결과들 보여주는 함수
+        function displaySearchResults(results) {
+            const container = $('#productContainer');
+            container.empty(); // 이전 검색 결과 제거
+
+
+            results.content.forEach(product => { // 검색 결과를 동적으로 추가
+                const productDiv = $('<div class="product"></div>');
+                productDiv.html(`
+            <div class="product-image">
+                <a href="/product-detail?productId=${product.productId}"><img src="${product.imageUrl}" alt="${product.title}"></a>
+            </div>
+            <div class="product-info">
+                <h2>${product.title}</h2>
+                <p>${product.content}</p>
+                <p>가격: ${product.price}</p>
+            </div>
+        `);
+                container.append(productDiv);
+            });
+        }
+    </script>
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+</head>
+
+<body>
+<div class="header_outer">
+
+    <header class="header">
+        <a href="/" class="logo">MOAMOA</a>
+
+        <!--        검색창-->
+        <div class="search_box">
+            <input type="search" name="search" id="searchInput">
+            <div class="search_btn" onclick="searchProducts()">검색</div>
+        </div>
+        <div id="searchResults"></div>
+
+        <!--        로그인 버튼-->
+        <div class="login_btn" id="loginBtn">
+            <a href="javascript:;">
+                <img src="https://developers.kakao.com/tool/resource/static/img/button/login/full/ko/kakao_login_medium_wide.png"
+                     alt="kakao_btn"></a>
+        </div>
+
+        <div id="welcomeMessage" style="display: none;">
+            <p>환영합니다!</p>
+            <button id="my-page-button">마이페이지로 이동하기</button>
+        </div>
+
+
+        <script>
+
+            // 로그인 함수
+
+            document.querySelector('.login_btn a').addEventListener('click', function () {
+                location.href = '/oauth2/login/kakao';
+            });
+
+            document.addEventListener("DOMContentLoaded", function () {
+                var loginButton = document.getElementById('loginBtn');
+
+                // 쿠키에서 JWT 토큰을 가져오는 함수
+                function extractJwtTokenFromCookies() {
+                    const cookies = document.cookie.split(';'); // 쿠키 문자열을 세미콜론을 기준으로 나눕니다.
+
+                    // 쿠키 배열을 반복하면서 JWT 토큰을 찾습니다.
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim(); // 공백을 제거합니다.
+                        if (cookie.startsWith('jwt_token=')) {
+                            // 'jwt_token=' 부분을 제외하고 추출하여 반환합니다.
+                            return cookie.substring('jwt_token='.length);
+                        }
+                    }
+
+                    // JWT 토큰이 없으면 null을 반환합니다.
+                    return null;
+                }
+
+                // 쿠키에서 JWT 토큰 가져오기
+                var jwtToken = extractJwtTokenFromCookies();
+
+                // JWT 토큰이 존재하는 경우
+                if (jwtToken) {
+                    // 로그인 버튼을 숨깁니다.
+                    loginButton.style.display = 'none';
+                    welcomeMessage.style.display = 'block';
+                } else {
+                    // JWT 토큰이 존재하지 않는 경우, 로그인 버튼을 표시합니다.
+                    loginButton.style.display = 'block';
+                }
+            });
+
+            $(document).ready(function () {
+                $('#my-page-button').click(function () {
+                    window.location.href = "/my-order-page";
+                });
+            });
+
+            document.querySelector('.login_btn a').addEventListener('click', function () {
+                location.href = '/oauth2/login/kakao';
+
+            });
+
+        </script>
+
+
+    </header>
+</div>
+<div class="container_outer">
+    <div class="container">
+        <h1>상품 목록</h1>
+        <div class="float_box" id="productContainer">
+        </div>
+        <ul class="pagination" id="pagination">
+            <li class="num01">1</li>
+            <li class="num02">2</li>
+            <li class="num03">3</li>
+            <li class="num04">4</li>
+            <li class="num05">5</li>
+        </ul>
+    </div>
+</div>
+
+<footer class="footer">
+    <div class="footer_inner">
+        <div class="footer_left">
+            <div class="footer_menu">
+                <ul>
+                    <li>고객서비스</li>
+                    <li>회사소개</li>
+                    <li>소셜 네트워크</li>
+                    <li>이용약관</li>
+                    <li>개인정보처리방침</li>
+                </ul>
+            </div>
+            <div class="info">
+                <p>모아모아(주) 대표: kim, sun-byuong(jake), 부산광역시 남구 유엔평화로 29번길 117 동원rose 205호</p>
+                <p>
+                    사업자등록번호: 000-00-0000 &nbsp;
+                    <span> 통신판매업신고번호: 부산성심당-3849호 </span>
+                    <span>사업자정보조회</span>
+                </p>
+                <p>고객관리지원팀: (054)000-0000 &nbsp; <span> njunju77@nate.com </span></p>
+                <p>호스팅서비스 사업자: (주)에스케이테레콤</p>
+                <p>(c) MOAMOA 2024 <span>대한민국</span></p>
+            </div>
+        </div>
+        <div class="footer_right">
+            <div class="logo_box">
+                <p>
+                    MoA
+                    <br/>
+                    MOA
+                </p>
+                <p>myeok jul-ki and nakgopsae </p>
+            </div>
+
+        </div>
+    </div>
+</footer>
+
+</body>
+
+
+</html>
+

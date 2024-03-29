@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>내 주문 페이지</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <style>
+        /* 주문 컨테이너 스타일 */
+        #orderContainer {
+            margin-top: 20px;
+        }
+        /* 주문 스타일 */
+        .order {
+            border: 1px solid #ccc;
+            margin-bottom: 20px;
+            padding: 15px;
+            overflow: hidden; /* 내용이 넘칠 경우 가리지 않도록 설정 */
+        }
+        /* 주문 세부 정보 스타일 */
+        .order-details {
+            float: left;
+            width: 70%;
+        }
+        /* 주문 액션 스타일 */
+        .order-actions {
+            float: right;
+            width: 30%;
+            text-align: right;
+        }
+        .order-actions button {
+            cursor: pointer;
+            padding: 8px 16px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+        }
+        /* 주문이 없을 때 메시지 스타일 */
+        #noOrdersMessage {
+            margin-top: 20px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+<div id="orderContainer">
+    <!-- 주문 목록이 여기에 추가됩니다. -->
+</div>
+<script>
+    // 페이지가 로드될 때 주문 목록을 가져오는 함수를 호출합니다.
+    $(document).ready(function () {
+        getOrderList();
+    });
+
+    function extractJwtTokenFromCookies() {
+        const cookies = document.cookie.split(';'); // 쿠키 문자열을 세미콜론을 기준으로 나눕니다.
+
+        // 쿠키 배열을 반복하면서 JWT 토큰을 찾습니다.
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim(); // 공백을 제거합니다.
+            if (cookie.startsWith('jwt_token=')) {
+                // 'jwt_token=' 부분을 제외하고 추출하여 반환합니다.
+                return cookie.substring('jwt_token='.length);
+            }
+        }
+
+        // JWT 토큰이 없으면 null을 반환합니다.
+        return null;
+    }
+
+    // 현재 페이지의 쿠키에서 JWT 토큰을 추출합니다.
+    const jwtToken = extractJwtTokenFromCookies();
+
+    console.log(jwtToken);
+
+    // 주문 목록을 가져오는 함수
+    function getOrderList() {
+        $.ajax({
+            type: 'GET',
+            url: '/api/orders/getAllOrders',
+            headers: {
+                'Authorization': 'Bearer ' + extractJwtTokenFromCookies()
+            },
+            success: function (response) {
+                if (response.length === 0) {
+                    displayNoOrdersMessage();
+                } else {
+                    updateOrderContainer(response);
+                }
+            },
+            error: function (xhr, status, error) {
+                alert('주문 목록을 가져오는 데 실패했습니다.');
+            }
+        });
+    }
+
+    function updateOrderContainer(orders) {
+        const container = $('#orderContainer');
+        container.empty(); // 이전 주문들 제거
+
+        // 각 주문 정보를 동적으로 추가
+        orders.forEach(order => {
+            const orderDiv = $('<div class="order"></div>');
+            orderDiv.html(`
+            <div class="order-details">
+                <p>주문 ID: ${order.orderId}</p>
+                <p>상품명: ${order.productName}</p>
+                <p>가격: ${order.totalPrice}</p>
+                <p>상태: ${order.status}</p>
+            </div>
+            <div class="order-actions">
+                <button onclick="viewOrderDetail(${order.orderId})">주문 상세 보기</button>
+            </div>
+        `);
+            container.append(orderDiv);
+        });
+    }
+
+    // 주문 상세 페이지로 이동하는 함수
+    function viewOrderDetail(orderId) {
+        window.location.href = `/my-order-page-detail?orderId=${orderId}`;
+    }
+
+    function displayNoOrdersMessage() {
+        $('#noOrdersMessage').show();
+    }
+</script>
+</body>
+</html>
