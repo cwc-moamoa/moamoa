@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam
 
 @Controller
 class HomeController {
-    @GetMapping("/start8080")
+    @GetMapping("/")
     fun home(): String {
         return "index"
     }

@@ -29,20 +29,21 @@ class OAuth2LoginSuccessHandler(
 
         // 있으면 검색한 정보로 토큰 발급하고
         if (existedUser) {
-            val user = socialUserService.findUser(OAuth2Provider.valueOf(userInfo.provider), userInfo.providerId, userInfo.email)
-            val accessToken =
-                jwtHelper.generateAccessToken(
-                    user.providerId,
-                    user.nickname,
-                    user.email,
-                    httpServletResponse,
-                )
+
+            val user = socialUserService.findUser(
+                OAuth2Provider.valueOf(userInfo.provider),
+                userInfo.providerId,
+                userInfo.email
+            )
+            val accessToken = jwtHelper.generateAccessToken(
+                user.providerId, user.nickname, user.email, httpServletResponse
+            )
             httpServletResponse.addHeader("Authorization", "Bearer $accessToken") // 헤더에 담는 걸로 바꿈
             httpServletResponse.contentType = MediaType.APPLICATION_JSON_VALUE
-            httpServletResponse.sendRedirect("/")
-//            httpServletResponse.characterEncoding = "UTF-8"
-//            httpServletResponse.contentType = "application/json;charset=UTF-8"
-//
+            httpServletResponse.sendRedirect("/") // 로그인 후 홈으로 안 가게 하려면 이거 끄면 돼요
+            httpServletResponse.characterEncoding = "UTF-8"
+            httpServletResponse.contentType = "application/json;charset=UTF-8"
+
 //            val responseMap = mutableMapOf<String, Any>()
 //            responseMap["message"] = "로그인에 성공했습니다."
 //
