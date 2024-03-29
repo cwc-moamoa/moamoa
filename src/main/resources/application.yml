@@ -1,8 +1,6 @@
 server:
   port: 8080
 spring:
-  jackson:
-    time-zone: UTC
   datasource:
     url: ${SPRING_DATASOURCE_URL}
     username: ${SPRING_DATASOURCE_USERNAME}
