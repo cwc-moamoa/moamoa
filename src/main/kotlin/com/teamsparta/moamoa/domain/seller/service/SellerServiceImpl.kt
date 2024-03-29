@@ -33,21 +33,23 @@ class SellerServiceImpl(
 
     @Transactional
     override fun signInSeller(sellerSignInRequest: SellerSignInRequest): SellerSignInResponse {
-        val seller = sellerRepository.findByEmail(sellerSignInRequest.email) ?: throw ModelNotFoundException("User", null)
+        val seller =
+            sellerRepository.findByEmail(sellerSignInRequest.email) ?: throw ModelNotFoundException("User", null)
         if (!passwordEncoder.matches(sellerSignInRequest.password, seller.password)) throw InvalidCredentialException()
         return SellerSignInResponse(
             accessToken =
-                jwtPlugin.generateAccessToken(
-                    subject = seller.id.toString(),
-                    nickname = seller.nickname,
-                    email = seller.email,
-                ),
+            jwtPlugin.generateAccessToken(
+                subject = seller.id.toString(),
+                nickname = seller.nickname,
+                email = seller.email,
+            ),
         )
     }
 
     @Transactional
     override fun deleteSeller(sellerId: Long): SellerResponse {
-        val seller = sellerRepository.findByIdAndDeletedAtIsNull(sellerId).orElseThrow { ModelNotFoundException("Seller", sellerId) }
+        val seller = sellerRepository.findByIdAndDeletedAtIsNull(sellerId)
+            .orElseThrow { ModelNotFoundException("Seller", sellerId) }
         if (sellerId != seller.id) {
             throw InvalidCredentialException()
         }

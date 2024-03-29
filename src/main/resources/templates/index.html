@@ -4,10 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>상품 목록</title>
-    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> -->
     <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
-
-
     <style>
         * {
             margin: 0;
@@ -60,7 +57,6 @@
         }
 
         header .logo {
-            /* background-color: #fff; */
             position: absolute;
             left: 60px;
             top: 22%;
@@ -112,7 +108,6 @@
             background-color: #eee;
             color: #000;
             padding: 2px 10px;
-            /* margin-top: 2spx; */
             border-radius: 4px;
             cursor: pointer;
         }
@@ -121,15 +116,6 @@
             font-weight: bold;
             color: #eee;
             background-color: darkgray;
-        }
-
-        .login-form {
-            padding: 10px;
-            background-color: #eee;
-            border-radius: 4px;
-            margin-top: 10px;
-            width: 200px;
-            display: inline-block;
         }
 
         .login-form input[type="text"],
@@ -183,7 +169,6 @@
         }
 
         .product {
-            /* display: inline-block; */
             float: left;
             width: calc(25% - 20px);
             vertical-align: top;
@@ -203,7 +188,6 @@
 
         .product-info {
             padding: 20px;
-            /*border-bottom: 1px solid #ccc;*/
             border-radius: 4px;
             overflow: hidden;
             box-sizing: border-box;
@@ -369,8 +353,9 @@
             margin-right: 0;
         }
     </style>
-    <script defer>
 
+
+    <script defer>
         $(document).ready(function () {
             const pageSize = 16; // 한 페이지에 표시할 상품 수
             let currentPage = 0; // 현재 페이지 번호
@@ -383,8 +368,8 @@
             function updateProductList(page) {
                 // AJAX를 통해 서버에서 상품 정보 가져오기
                 $.ajax({
-                    url: `/products/pages?page=${page}&size=${pageSize}`,
-                    method: 'GET',
+                    url     : `/products/pages?page=${page}&size=${pageSize}`,
+                    method  : 'GET',
                     dataType: 'json',
                     success: function (products) {
                         // 총 페이지 수 업데이트
@@ -445,30 +430,78 @@
         });
 
 
+        // 상품 검색하는 함수
+        function searchProducts() {
+            const keyword = document.getElementById('searchInput').value; // 검색어 가져오기
+            fetch(`api/search/products?keyword=${encodeURIComponent(keyword)}`) // 백엔드 서버로 검색 요청
+                .then(response => response.json()) // JSON 형태로 응답 받기
+                .then(data => displaySearchResults(data)) // 검색 결과를 화면에 표시하는 함수 호출
+                .catch(error => console.error('Error:', error)); // 에러 처리
+        }
+
+        // 검색 결과들 보여주는 함수
+        function displaySearchResults(results) {
+            const container = $('#productContainer');
+            container.empty(); // 이전 검색 결과 제거
+
+
+            results.content.forEach(product => { // 검색 결과를 동적으로 추가
+                const productDiv = $('<div class="product"></div>');
+                productDiv.html(`
+            <div class="product-image">
+                <a href="/product-detail?productId=${product.productId}"><img src="${product.imageUrl}" alt="${product.title}"></a>
+            </div>
+            <div class="product-info">
+                <h2>${product.title}</h2>
+                <p>${product.content}</p>
+                <p>가격: ${product.price}</p>
+            </div>
+        `);
+                container.append(productDiv);
+            });
+        }
     </script>
     <link rel="icon" href="data:;base64,iVBORw0KGgo=">
 </head>
 
 <body>
 <div class="header_outer">
-    <header>
-        <a href="#" class="logo">MOAMOA</a>
+
+    <header class="header">
+        <a href="/" class="logo">MOAMOA</a>
+
+        // 검색창
         <div class="search_box">
-            <input type="search" name="search" id="search">
-            <div class="search_btn">검색</div>
+            <input type="search" name="search" id="searchInput">
+            <div class="search_btn" onclick="searchProducts()">검색</div>
         </div>
+        <div id="searchResults"></div>
+
+
+        // 로그인 버튼
         <div class="login_btn" id="loginBtn">
             <a href="javascript:;">
-                <img src="https://www.epost.go.kr/images/btn_login_kakao.jpg" alt="kakao_btn">
-            </a>
+                <img src="https://developers.kakao.com/tool/resource/static/img/button/login/full/ko/kakao_login_medium_wide.png" alt="kakao_btn"></a>
         </div>
+
         <div id="welcomeMessage" style="display: none;">
             <p>환영합니다!</p>
             <button id="my-page-button">마이페이지로 이동하기</button>
         </div>
+  
+
+        
+                
+      
+        
 
         <script>
 
+          // 로그인 함수
+        
+            document.querySelector('.login_btn a').addEventListener('click', function () {
+                location.href = '/oauth2/login/kakao';});
+        
             document.addEventListener("DOMContentLoaded", function () {
                 var loginButton = document.getElementById('loginBtn');
 
@@ -517,6 +550,7 @@
         </script>
 
 
+
     </header>
 </div>
 <div class="container_outer">
@@ -533,9 +567,7 @@
         </ul>
     </div>
 </div>
-</div>
-
-
+  
 <footer class="footer">
     <div class="footer_inner">
         <div class="footer_left">
