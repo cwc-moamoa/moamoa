@@ -15,7 +15,7 @@ class SocialUserService(
     fun registerIfAbsent(userInfo: OAuth2UserInfo): SocialUser {
         val provider = OAuth2Provider.valueOf(userInfo.provider)
         return if (!socialUserRepository.existsByProviderAndProviderId(provider, userInfo.providerId)) {
-            val socialUser = SocialUser.ofKakao(userInfo.email, userInfo.providerId, userInfo.nickname, )
+            val socialUser = SocialUser.ofKakao(userInfo.email, userInfo.providerId, userInfo.nickname)
             socialUserRepository.save(socialUser)
         } else {
             socialUserRepository.findByProviderAndProviderId(provider, userInfo.providerId)
@@ -29,8 +29,6 @@ class SocialUserService(
     fun findUser(provider: OAuth2Provider, providerId: String, email: String): SocialUser {
         return socialUserRepository.findByProviderAndProviderId(provider, providerId)
     }
-
-
 
 
 }
