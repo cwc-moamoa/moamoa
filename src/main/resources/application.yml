@@ -1,0 +1,74 @@
+server:
+  port: 8080
+spring:
+  jackson:
+    time-zone: UTC
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+  data:
+    redis:
+      port: 6379
+      host: ${SPRING_DATA_REDIS_HOST}
+  security:
+    oauth2:
+      client:
+        registration:
+          kakao:
+            client-id: ${SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_KAKAO_CLIENT-ID}
+            redirect-uri: ${SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_KAKAO_REDIRECT-URI}
+            authorization-grant-type: authorization_code
+            client-authentication-method: client_secret_post
+            client-name: kakao
+            scope:
+              - profile_nickname
+              - account_email
+        provider:
+          kakao:
+            authorization_uri: https://kauth.kakao.com/oauth/authorize
+            token_uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+            user_name_attribute: id
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: false
+        highlight_sql: true
+        use_sql_comments: true
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: debug
+        orm:
+          jdbc:
+            bind: trace
+      springframework:
+        security: debug
+
+iamport:
+  apiKey: ${SPRING_IAMPORT_APIKEY}
+  secretKey: ${SPRING_IAMPORT_SECRETKEY}
+
+auth:
+  jwt:
+    issuer: ${SPRING_AUTH_JWT_ISSUER}
+    secret: ${SPRING_AUTH_JWT_SECRET}
+    accessTokenExpirationHour: ${SPRING_AUTH_JWT_ACCESSTOKENEXPIRATIONHOUR}
+
+cloud:
+  aws:
+    credentials:
+      access-key: ${CLOUD_AWS_CREDENTIALS_ACCESSKEY}
+      secret-key: ${CLOUD_AWS_CREDENTIALS_SECRETKEY}
+    region: ap-northeast-2
+    s3:
+      bucket: honsbucket
+      dir: Image/
+      stack:
+        auto: false
