@@ -85,6 +85,10 @@ class ReviewServiceImpl(
         val review = createReviewRequest.toReview(product, socialUser, order)
 
         val savedReview = reviewRepository.save(review)
+        val reviewId = savedReview.id ?: throw IllegalStateException("리뷰 ID를 가져올 수 없습니다.")
+
+        order.reviewId = reviewId
+        orderRepository.save(order)
         return ReviewResponse.toReviewResponse(savedReview)
     }
 
@@ -162,9 +166,12 @@ class ReviewServiceImpl(
         reviewRepository.save(review)
     }
 
+    @Transactional
     override fun getReviewByOrderId(orderId: Long): ReviewResponse {
-//        val order = orderRepository.findByIdOrNull(orderId)
-//        val review = reviewRepository.
-        TODO()
+        val order = orderRepository.findByIdOrNull(orderId)
+        val reviewId = order!!.reviewId
+        val review = reviewRepository.findByIdOrNull(reviewId) ?: throw ModelNotFoundException("Review",reviewId)
+
+        return ReviewResponse.toReviewResponse(review)
     }
 }
