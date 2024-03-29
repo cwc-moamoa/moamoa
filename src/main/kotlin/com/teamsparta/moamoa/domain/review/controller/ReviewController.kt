@@ -19,17 +19,17 @@ import org.springframework.web.bind.annotation.*
 
 @Validated
 @RestController
+@CrossOrigin(origins = ["*"], allowedHeaders = ["*"])
 class ReviewController(
     private val reviewService: ReviewService,
 ) {
-    @PostMapping("/{productId}/reviews/{orderId}")
+    @PostMapping("/reviews/create/{orderId}")
     fun createReview(
-        @PathVariable productId: Long,
         @PathVariable orderId: Long,
-        @AuthenticationPrincipal user: UserPrincipal, // providerId를 받도록 된듯하다
+        @AuthenticationPrincipal user: UserPrincipal,
         @Valid @RequestBody createReviewRequest: CreateReviewRequest,
     ): ResponseEntity<List<ReviewResponse>> {
-        val result = reviewService.createReview(productId, user.id, createReviewRequest, orderId)
+        val result = reviewService.createReview(user.id, createReviewRequest, orderId)
         val results = listOf(result)
         return ResponseEntity
             .status(HttpStatus.CREATED)

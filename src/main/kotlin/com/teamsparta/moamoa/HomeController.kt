@@ -1,7 +1,5 @@
 package com.teamsparta.moamoa
 
-import com.teamsparta.moamoa.infra.security.UserPrincipal
-import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestParam
@@ -37,6 +35,13 @@ class HomeController {
     @GetMapping("/my-order-page")
     fun myOrderPage(): String {
         return "my-order-page"
+    }
+
+    @GetMapping("/my-order-page-detail")
+    fun myOrderPageDetail(
+        @RequestParam orderId: String,
+    ): String {
+        return "my-order-page-detail"
     }
 
 }

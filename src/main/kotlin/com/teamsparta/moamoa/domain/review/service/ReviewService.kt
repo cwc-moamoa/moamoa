@@ -8,8 +8,14 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 
 interface ReviewService {
+//    fun createReview(
+//        productId: Long,
+//        providerId: Long,
+//        createReviewRequest: CreateReviewRequest,
+//        orderId: Long,
+//    ): ReviewResponse
+
     fun createReview(
-        productId: Long,
         providerId: Long,
         createReviewRequest: CreateReviewRequest,
         orderId: Long,
@@ -34,4 +40,6 @@ interface ReviewService {
     )
 
     fun getReviewsByProductId(productId: Long): List<ReviewResponseByList>
+
+    fun getReviewByOrderId(orderId: Long): ReviewResponse
 }

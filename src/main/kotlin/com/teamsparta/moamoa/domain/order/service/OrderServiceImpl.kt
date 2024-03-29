@@ -376,7 +376,7 @@ class OrderServiceImpl(
                 status = order.status.toString(),
                 discount = order.discount,
                 quantity = order.quantity,
-                orderUid = order.orderUid!!
+                orderUid = order.orderUid!!,
             )
         }
     }
