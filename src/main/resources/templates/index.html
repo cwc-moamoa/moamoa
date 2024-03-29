@@ -496,7 +496,7 @@ $(document).ready(function () {
                     const productDiv = $('<div class="product"></div>');
                     productDiv.html(`
                         <div class="product-image">
-                            <a href="/product-detail?productId=${product.id}"><img src="${product.image}" alt="${product.name}"></a>
+                            <a href="/product-detail?productId=${product.id}"><img src="${product.imageUrl}" alt="${product.name}"></a>
                         </div>
                         <div class="product-info">
                             <h2>${product.title}</h2>
@@ -524,15 +524,57 @@ $(document).ready(function () {
                 <input type="search" name="search" id="search">
                 <div class="search_btn">검색</div>
             </div>
-            <div class="login_btn">
+            <div class="login_btn" id="loginBtn">
                 <a href="javascript:;">
                     <img src="https://www.epost.go.kr/images/btn_login_kakao.jpg" alt="kakao_btn">
                 </a>
             </div>
+            <div id="welcomeMessage" style="display: none;">
+                <p>환영합니다!</p>
+                <button id="my-page-button">마이페이지로 이동하기</button>
+            </div>
 
             <script>
 
+                document.addEventListener("DOMContentLoaded", function() {
+                    var loginButton = document.getElementById('loginBtn');
 
+                    // 쿠키에서 JWT 토큰을 가져오는 함수
+                    function extractJwtTokenFromCookies() {
+                        const cookies = document.cookie.split(';'); // 쿠키 문자열을 세미콜론을 기준으로 나눕니다.
+
+                        // 쿠키 배열을 반복하면서 JWT 토큰을 찾습니다.
+                        for (let i = 0; i < cookies.length; i++) {
+                            const cookie = cookies[i].trim(); // 공백을 제거합니다.
+                            if (cookie.startsWith('jwt_token=')) {
+                                // 'jwt_token=' 부분을 제외하고 추출하여 반환합니다.
+                                return cookie.substring('jwt_token='.length);
+                            }
+                        }
+
+                        // JWT 토큰이 없으면 null을 반환합니다.
+                        return null;
+                    }
+
+                    // 쿠키에서 JWT 토큰 가져오기
+                    var jwtToken = extractJwtTokenFromCookies();
+
+                    // JWT 토큰이 존재하는 경우
+                    if (jwtToken) {
+                        // 로그인 버튼을 숨깁니다.
+                        loginButton.style.display = 'none';
+                        welcomeMessage.style.display = 'block';
+                    } else {
+                        // JWT 토큰이 존재하지 않는 경우, 로그인 버튼을 표시합니다.
+                        loginButton.style.display = 'block';
+                    }
+                });
+
+                $(document).ready(function() {
+                    $('#my-page-button').click(function() {
+                        window.location.href = "/my-order-page";
+                    });
+                });
 
                 document.querySelector('.login_btn a').addEventListener('click', function() {
                     location.href = '/oauth2/login/kakao';
