@@ -10,13 +10,37 @@
             var productId = new URLSearchParams(window.location.search).get('productId');
             $('#productId').val(productId);
 
+            // 쿠키에서 JWT 토큰을 가져오는 함수
+            function extractJwtTokenFromCookies() {
+                const cookies = document.cookie.split(';'); // 쿠키 문자열을 세미콜론을 기준으로 나눕니다.
+
+                // 쿠키 배열을 반복하면서 JWT 토큰을 찾습니다.
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim(); // 공백을 제거합니다.
+                    if (cookie.startsWith('jwt_token=')) {
+                        // 'jwt_token=' 부분을 제외하고 추출하여 반환합니다.
+                        return cookie.substring('jwt_token='.length);
+                    }
+                }
+
+                // JWT 토큰이 없으면 null을 반환합니다.
+                return null;
+            }
+
+            // 현재 페이지의 쿠키에서 JWT 토큰을 추출합니다.
+            const jwtToken = extractJwtTokenFromCookies();
+
+            console.log(jwtToken);
+
+
             // 주문 생성 폼 제출 시
             $('#orderForm').submit(function(event) {
                 event.preventDefault(); // 폼 기본 동작 방지
 
+                console.log("JWT Token from Cookie:", extractJwtTokenFromCookies());
+
                 // 폼 데이터를 객체로 구성
                 var formData = {
-                    userId: $('#userId').val(),
                     productId: $('#productId').val(),
                     quantity: $('#quantity').val(),
                     address: $('#address').val(),
@@ -28,6 +52,9 @@
                     type: 'POST',
                     url: '/api/orders/group/create',
                     data: formData, // 객체 형태로 전송
+                    headers: {
+                        'Authorization': 'Bearer ' + extractJwtTokenFromCookies()
+                    },
                     success: function(response) {
                         alert('주문이 성공적으로 생성되었습니다!');
                         // 주문 생성 성공 시 결제 페이지로 이동
@@ -111,8 +138,6 @@
         .container .form input:focus{
             outline: none;
         }
-        .container .form .id_label{}/*아이디라벨*/
-        .container .form .text_box_id{}/*아아디 인풋*/
         .container .form .quantity_label{}/*수량 라벨*/
         .container .form .text_box_quantity{}/*수량 인풋*/
         .container .form .address_label{}/*주소 라벨*/
@@ -144,8 +169,6 @@
     <h1 class="order_title">공동 주문 정보 입력</h1>
     <form class="form" id="orderForm" method="post">
         <input type="hidden" id="productId" name="productId">
-        <label class="id_label" for="userId">ID :</label>
-        <input class="text_box_id" type="text" id="userId" name="userId"><br><br>
 
         <label class="quantity_label" for="quantity">수량 :</label>
         <input class="text_box_quantity" type="text" id="quantity" name="quantity"><br><br>

@@ -6,13 +6,13 @@ import org.springframework.security.oauth2.core.user.OAuth2User
 import java.lang.RuntimeException
 
 data class OAuth2UserInfo(
-    val id: String,
+    val providerId: String,
     val provider: String,
     val nickname: String,
     val email: String,
 ) : OAuth2User {
     override fun getName(): String {
-        return "$provider:$id"
+        return "$provider:$providerId"
     }
 
     override fun getAttributes(): MutableMap<String, Any> {
@@ -48,7 +48,7 @@ data class OAuth2UserInfo(
             val email = account["email"] ?: ""
 
             return OAuth2UserInfo(
-                id = (originUser.attributes[userNameAttributeName] as Long).toString(),
+                providerId = (originUser.attributes[userNameAttributeName] as Long).toString(),
                 provider = provider.uppercase(),
                 nickname = nickname as String,
                 email = email as String,

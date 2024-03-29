@@ -19,7 +19,7 @@ data class CreateReviewRequest(
     fun toReview(
         product: Product,
         socialUser: SocialUser,
-        order: OrdersEntity
+        order: OrdersEntity,
     ): Review {
         return Review(
             title = title,
@@ -29,7 +29,7 @@ data class CreateReviewRequest(
             likes = 0,
             rating = rating,
             socialUser = socialUser,
-            order = order
+            order = order,
         )
     }
 }

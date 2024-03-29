@@ -18,6 +18,7 @@ import com.teamsparta.moamoa.domain.product.model.Product
 import com.teamsparta.moamoa.domain.product.model.ProductStock
 import com.teamsparta.moamoa.domain.product.repository.ProductRepository
 import com.teamsparta.moamoa.domain.product.repository.ProductStockRepository
+import com.teamsparta.moamoa.domain.review.dto.ReviewResponseByList
 import com.teamsparta.moamoa.domain.seller.repository.SellerRepository
 import com.teamsparta.moamoa.domain.socialUser.model.SocialUser
 import com.teamsparta.moamoa.domain.socialUser.repository.SocialUserRepository
@@ -41,12 +42,11 @@ class OrderServiceImpl(
     private val groupPurchaseRepository: GroupPurchaseRepository,
     private val socialUserRepository: SocialUserRepository,
     private val groupPurchaseJoinUserRepository: GroupPurchaseJoinUserRepository,
-    private val redissonLockManager: RedissonLockManager
+    private val redissonLockManager: RedissonLockManager,
 ) : OrderService {
-
     @Transactional
-    override fun createOrderTest(
-        user : UserPrincipal,
+    override fun createOrder(
+        user: UserPrincipal,
         productId: Long,
         quantity: Int,
         address: String,
@@ -59,7 +59,7 @@ class OrderServiceImpl(
         }
 
         try {
-            val (findUser, findProduct, stockCheck) = orderCommonTest(user, productId, quantity)
+            val (findUser, findProduct, stockCheck) = orderCommon(user, productId, quantity)
 
             val totalPrice = findProduct.price * quantity
             val finalDiscount = 0.0
@@ -72,19 +72,56 @@ class OrderServiceImpl(
                 finalDiscount,
                 address,
                 quantity,
-                phoneNumber
+                phoneNumber,
             ).toResponse()
         } finally {
             redissonLockManager.releaseLock(lockKey)
         }
     }
 
-    private fun orderCommonTest(
-        user : UserPrincipal,
+    @Transactional
+    override fun createGroupOrder(
+        user: UserPrincipal,
         productId: Long,
         quantity: Int,
-    ): Triple<SocialUser, Product, ProductStock>  {
-        val findUser = socialUserRepository.findByProviderId(user.id.toString()).orElseThrow() ?: throw Exception("존재하지 않는 유저입니다")
+        address: String,
+        phoneNumber: String,
+    ): ResponseOrderDto {
+        val lockKey = "createOrderWithLock_$productId"
+        val lockAcquired = redissonLockManager.acquireLock(lockKey, 15000, 60000)
+        if (!lockAcquired) {
+            throw Exception("락을 획득할 수 없습니다. 잠시 후 다시 시도해주세요.")
+        }
+
+        try {
+            val (findUser, findProduct, stockCheck) = orderCommon(user, productId, quantity)
+            val finalDiscount = findProduct.discount
+
+            val groupPurchaseCheck =
+                groupPurchaseRepository.findByProductIdAndDeletedAtIsNull(productId) // 없으면 유저도 없는거니께
+            val groupPurchaseUserCheck = groupPurchaseCheck?.groupPurchaseUsers?.find { it.userId == findUser.id }
+
+            if (groupPurchaseUserCheck == null) {
+                val totalPrice = findProduct.price * quantity * (1 - findProduct.discount / 100.0)
+
+                return orderSave(
+                    findUser, findProduct, stockCheck, totalPrice, finalDiscount, address, quantity, phoneNumber
+                ).toResponse()
+            } else {
+                throw Exception("이미 공동 구매 신청중인 유저는 주문을 신청 할 수 없습니다.")
+            }
+        } finally {
+            redissonLockManager.releaseLock(lockKey)
+        }
+    }
+
+    private fun orderCommon(
+        user: UserPrincipal,
+        productId: Long,
+        quantity: Int,
+    ): Triple<SocialUser, Product, ProductStock> {
+        val findUser =
+            socialUserRepository.findByProviderId(user.id.toString()).orElseThrow() ?: throw Exception("존재하지 않는 유저입니다")
         val findProduct =
             productRepository.findByIdAndDeletedAtIsNull(productId).orElseThrow { Exception("존재하지 않는 상품입니다") }
         val stockCheck = productStockRepository.findByProduct(findProduct)
@@ -93,40 +130,40 @@ class OrderServiceImpl(
         return Triple(findUser, findProduct, stockCheck)
     }
 
-    @Transactional
-    override fun createOrder(
-        userId: Long,
-        productId: Long,
-        quantity: Int,
-        address: String,
-        phoneNumber: String,
-    ): ResponseOrderDto {
-        val lockKey = "createOrderWithLock_$productId"
-        val lockAcquired = redissonLockManager.acquireLock(lockKey, 15000, 60000)
-        if (!lockAcquired) {
-            throw Exception("락을 획득할 수 없습니다. 잠시 후 다시 시도해주세요.")
-        }
-
-        try {
-            val (findUser, findProduct, stockCheck) = orderCommon(userId, productId, quantity)
-
-            val totalPrice = findProduct.price * quantity
-            val finalDiscount = 0.0
-
-            return orderSave(
-                findUser,
-                findProduct,
-                stockCheck,
-                totalPrice,
-                finalDiscount,
-                address,
-                quantity,
-                phoneNumber
-            ).toResponse()
-        } finally {
-            redissonLockManager.releaseLock(lockKey)
-        }
-    }
+//    @Transactional
+//    override fun createOrder(
+//        userId: Long,
+//        productId: Long,
+//        quantity: Int,
+//        address: String,
+//        phoneNumber: String,
+//    ): ResponseOrderDto {
+//        val lockKey = "createOrderWithLock_$productId"
+//        val lockAcquired = redissonLockManager.acquireLock(lockKey, 15000, 60000)
+//        if (!lockAcquired) {
+//            throw Exception("락을 획득할 수 없습니다. 잠시 후 다시 시도해주세요.")
+//        }
+//
+//        try {
+//            val (findUser, findProduct, stockCheck) = orderCommon(userId, productId, quantity)
+//
+//            val totalPrice = findProduct.price * quantity
+//            val finalDiscount = 0.0
+//
+//            return orderSave(
+//                findUser,
+//                findProduct,
+//                stockCheck,
+//                totalPrice,
+//                finalDiscount,
+//                address,
+//                quantity,
+//                phoneNumber,
+//            ).toResponse()
+//        } finally {
+//            redissonLockManager.releaseLock(lockKey)
+//        }
+//    }
 
     @Transactional // 테스트용 락 없는 코드
     override fun createOrderNoLock(
@@ -136,45 +173,60 @@ class OrderServiceImpl(
         address: String,
         phoneNumber: String,
     ): ResponseOrderDto {
-            val (findUser, findProduct, stockCheck) = orderCommon(userId, productId, quantity)
+        val (findUser, findProduct, stockCheck) = orderCommonForTest(userId, productId, quantity)
 
-            val totalPrice = findProduct.price * quantity
-            val finalDiscount = 0.0
+        val totalPrice = findProduct.price * quantity
+        val finalDiscount = 0.0
 
-            return orderSave(
-                findUser,
-                findProduct,
-                stockCheck,
-                totalPrice,
-                finalDiscount,
-                address,
-                quantity,
-                phoneNumber
-            ).toResponse()
-        }
+        return orderSave(
+            findUser,
+            findProduct,
+            stockCheck,
+            totalPrice,
+            finalDiscount,
+            address,
+            quantity,
+            phoneNumber,
+        ).toResponse()
+    }
 
-    @Transactional
-    override fun createGroupOrder(
+    private fun orderCommonForTest(
         userId: Long,
         productId: Long,
         quantity: Int,
-        address: String,
-        phoneNumber: String,
-    ): ResponseOrderDto {
-        val (findUser, findProduct, stockCheck) = orderCommon(userId, productId, quantity)
-        val finalDiscount = findProduct.discount
+    ): Triple<SocialUser, Product, ProductStock> {
+        val findUser = socialUserRepository.findByIdOrNull(userId) ?: throw Exception("존재하지 않는 유저입니다")
+        val findProduct =
+            productRepository.findByIdAndDeletedAtIsNull(productId).orElseThrow { Exception("존재하지 않는 상품입니다") }
+        val stockCheck = productStockRepository.findByProduct(findProduct)
 
-        val groupPurchaseCheck = groupPurchaseRepository.findByProductIdAndDeletedAtIsNull(productId) // 없으면 유저도 없는거니께
-        val groupPurchaseUserCheck = groupPurchaseCheck?.groupPurchaseUsers?.find { it.userId == findUser.id }
-
-        if (groupPurchaseUserCheck == null) {
-            val totalPrice = findProduct.price * quantity * (1 - findProduct.discount / 100.0)
-
-            return orderSave(findUser, findProduct, stockCheck, totalPrice, finalDiscount, address, quantity, phoneNumber).toResponse()
-        } else {
-            throw Exception("이미 공동 구매 신청중인 유저는 주문을 신청 할 수 없습니다.")
-        }
+        if (stockCheck!!.stock <= quantity) throw Exception("재고가 모자랍니다. 판매자에게 문의해주세요")
+        return Triple(findUser, findProduct, stockCheck)
     }
+
+//    @Transactional
+//    override fun createGroupOrder(
+//        userId: Long,
+//        productId: Long,
+//        quantity: Int,
+//        address: String,
+//        phoneNumber: String,
+//    ): ResponseOrderDto {
+//        val (findUser, findProduct, stockCheck) = orderCommon(userId, productId, quantity)
+//        val finalDiscount = findProduct.discount
+//
+//        val groupPurchaseCheck = groupPurchaseRepository.findByProductIdAndDeletedAtIsNull(productId) // 없으면 유저도 없는거니께
+//        val groupPurchaseUserCheck = groupPurchaseCheck?.groupPurchaseUsers?.find { it.userId == findUser.id }
+//
+//        if (groupPurchaseUserCheck == null) {
+//            val totalPrice = findProduct.price * quantity * (1 - findProduct.discount / 100.0)
+//
+//            return orderSave(findUser, findProduct, stockCheck, totalPrice, finalDiscount, address, quantity, phoneNumber).toResponse()
+//        } else {
+//            throw Exception("이미 공동 구매 신청중인 유저는 주문을 신청 할 수 없습니다.")
+//        }
+//    }
+
 
     private fun orderSave(
         findUser: SocialUser,
@@ -188,46 +240,32 @@ class OrderServiceImpl(
     ): OrdersEntity {
         val payment = PaymentEntity(price = totalPrice, status = PaymentStatus.READY)
         paymentRepository.save(payment)
-        val order =
-            OrdersEntity(
-                productName = findProduct.title,
-                totalPrice = totalPrice,
-                address = address,
-                discount = finalDiscount,
-                product = findProduct,
-                quantity = quantity,
-                socialUser = findUser,
-                orderUid = UUID.randomUUID().toString(),
-                payment = payment,
-                phoneNumber = phoneNumber,
-                sellerId = findProduct.seller.id,
-            )
+        val order = OrdersEntity(
+            productName = findProduct.title,
+            totalPrice = totalPrice,
+            address = address,
+            discount = finalDiscount,
+            product = findProduct,
+            quantity = quantity,
+            socialUser = findUser,
+            orderUid = UUID.randomUUID().toString(),
+            payment = payment,
+            phoneNumber = phoneNumber,
+            sellerId = findProduct.seller.id,
+        )
         productStockRepository.save(stockCheck.discountForTest(quantity))
 //        stockCheck.discount(quantity)
         return orderRepository.save(order)
     }
 
-    private fun orderCommon(
-        userId: Long,
-        productId: Long,
-        quantity: Int,
-    ): Triple<SocialUser, Product, ProductStock>  {
-        val findUser = socialUserRepository.findByIdOrNull(userId) ?: throw Exception("존재하지 않는 유저입니다")
-        val findProduct =
-            productRepository.findByIdAndDeletedAtIsNull(productId).orElseThrow { Exception("존재하지 않는 상품입니다") }
-        val stockCheck = productStockRepository.findByProduct(findProduct)
-
-        if (stockCheck!!.stock <= quantity) throw Exception("재고가 모자랍니다. 판매자에게 문의해주세요")
-        return Triple(findUser, findProduct, stockCheck)
-    }
-
     @Transactional
     override fun updateOrder(
-        userId: Long,
+        user: UserPrincipal,
         orderId: Long,
         updateOrderDto: UpdateOrderDto,
     ): ResponseOrderDto {
-        val findUser = socialUserRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("user", userId)
+        val findUser =
+            socialUserRepository.findByProviderId(user.id.toString()).orElseThrow() ?: throw Exception("존재하지 않는 유저입니다")
         val findOrders = orderRepository.findByIdAndDeletedAtIsNull(orderId).orElseThrow { Exception("존재하지 않는 주문입니다") }
         // 논리삭제가 된 주문은 업데이트 할 필요가 없기 때문에 찾지 않도록 함
         if (findOrders.socialUser == findUser) {
@@ -240,18 +278,18 @@ class OrderServiceImpl(
 
     @Transactional
     override fun cancelOrder(
-        userId: Long,
+        user: UserPrincipal,
         orderId: Long,
     ): CancelResponseDto {
-        val findUser = socialUserRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("user", userId)
+        val findUser =
+            socialUserRepository.findByProviderId(user.id.toString()).orElseThrow() ?: throw Exception("존재하지 않는 유저입니다")
         val findOrder = orderRepository.findByIdAndDeletedAtIsNull(orderId).orElseThrow { Exception("존재하지 않는 주문입니다") }
         val stock = productStockRepository.findByProduct(findOrder.product)
 
         // 요서 부터는 공구친구들을 위한
-        val findGroupJoinUser =
-            groupPurchaseJoinUserRepository.findByOrderId(orderId) ?: throw ModelNotFoundException(
-                "groupJoinUser", orderId,
-            )
+        val findGroupJoinUser = groupPurchaseJoinUserRepository.findByOrderId(orderId) ?: throw ModelNotFoundException(
+            "groupJoinUser", orderId,
+        )
         val group = findGroupJoinUser.groupPurchase // 방
         val groupLimit = group.userLimit // 그룹방 유저 리밋
         val groupUserCount = group.userCount // 그룹방 유저카운트
@@ -297,7 +335,7 @@ class OrderServiceImpl(
         findGroupJoinUser: GroupPurchaseJoinUserEntity,
         payInfo: PaymentEntity,
         group: GroupPurchaseEntity,
-    )  {
+    ) {
         findOrder.deletedAt = LocalDateTime.now()
         findOrder.status = OrdersStatus.CANCELLED
         stock.stock += findOrder.quantity
@@ -306,11 +344,13 @@ class OrderServiceImpl(
         group.userCount -= 1
     } // 중복이 넘 많아서 함수로 묶고 다른부분만 따로 정리해줌
 
+    @Transactional
     override fun getOrder(
-        userId: Long,
+        user: UserPrincipal,
         orderId: Long,
     ): ResponseOrderDto {
-        val findUser = socialUserRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("user", userId)
+        val findUser =
+            socialUserRepository.findByProviderId(user.id.toString()).orElseThrow() ?: throw Exception("존재하지 않는 유저입니다")
         val findOrder = orderRepository.findByIdOrNull(orderId) ?: throw Exception("존재하지 않는 주문 입니다")
         // 취소된 주문도 조회는 가능해야 한다 생각해서, 논리삭제된것도 찾을수 있게 함
         return if (findOrder.socialUser.id == findUser.id) {
@@ -320,6 +360,26 @@ class OrderServiceImpl(
         }
     }
 
+    @Transactional
+    override fun getOrderList(user: UserPrincipal): List<ResponseOrderDto> {
+        val findUser =
+            socialUserRepository.findByProviderId(user.id.toString()).orElseThrow() ?: throw Exception("존재하지 않는 유저입니다")
+        val orders = orderRepository.findBySocialUserId(findUser.id!!)
+        return orders.map { order ->
+            ResponseOrderDto(
+                orderId = order.id!!,
+                productName = order.productName,
+                totalPrice = order.totalPrice,
+                address = order.address,
+                createdAt = order.createdAt,
+                updatedAt = order.updatedAt,
+                status = order.status.toString(),
+                discount = order.discount,
+                quantity = order.quantity,
+                orderUid = order.orderUid!!
+            )
+        }
+    }
 
     override fun getOrderPage(
         userId: Long,

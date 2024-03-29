@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>내 주문 페이지</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+    <script>
+        // 페이지가 로드될 때 주문 목록을 가져오는 함수를 호출합니다.
+        $(document).ready(function () {
+            getOrderList();
+        });
+
+        function extractJwtTokenFromCookies() {
+            const cookies = document.cookie.split(';'); // 쿠키 문자열을 세미콜론을 기준으로 나눕니다.
+
+            // 쿠키 배열을 반복하면서 JWT 토큰을 찾습니다.
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim(); // 공백을 제거합니다.
+                if (cookie.startsWith('jwt_token=')) {
+                    // 'jwt_token=' 부분을 제외하고 추출하여 반환합니다.
+                    return cookie.substring('jwt_token='.length);
+                }
+            }
+
+            // JWT 토큰이 없으면 null을 반환합니다.
+            return null;
+        }
+
+        // 현재 페이지의 쿠키에서 JWT 토큰을 추출합니다.
+        const jwtToken = extractJwtTokenFromCookies();
+
+        console.log(jwtToken);
+
+        // 주문 목록을 가져오는 함수
+        function getOrderList() {
+            $.ajax({
+                type: 'GET',
+                url: '/api/orders/getAllOrders',
+                headers: {
+                    'Authorization': 'Bearer ' + extractJwtTokenFromCookies()
+                },
+                success: function (response) {
+                    if (response.length === 0) {
+                        displayNoOrdersMessage();
+                    } else {
+                        displayOrderList(response);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('주문 목록을 가져오는 데 실패했습니다.');
+                }
+            });
+        }
+
+
+        // 주문 목록을 화면에 표시하는 함수
+        function displayOrderList(orderList) {
+            // 주문 목록을 표시할 요소 선택
+            var orderListContainer = $('#orderList');
+            orderListContainer.empty(); // 이전에 표시된 내용을 지웁니다.
+
+            // 주문 목록을 테이블로 표시
+            var tableHtml = '<table>';
+            tableHtml += '<tr><th>상품명</th><th>가격</th><th>상태</th></tr>';
+            orderList.forEach(function(order) {
+                tableHtml += '<tr>';
+                tableHtml += '<td>' + order.productName + '</td>';
+                tableHtml += '<td>' + order.totalPrice + '</td>';
+                tableHtml += '<td>' + order.status + '</td>';
+                tableHtml += '</tr>';
+            });
+            tableHtml += '</table>';
+
+            // 주문 테이블을 화면에 추가
+            orderListContainer.append(tableHtml);
+        }
+
+        function displayNoOrdersMessage() {
+            $('#orderList').html('<p>주문 목록이 없습니다.</p>');
+        }
+
+    </script>
+</head>
+<body>
+<div id="orderList">
+    <!-- 주문 목록이 여기에 추가됩니다. -->
+</div>
+</body>
+</html>

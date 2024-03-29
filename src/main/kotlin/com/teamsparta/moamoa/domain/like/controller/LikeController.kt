@@ -12,13 +12,12 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/likes")
 class LikeController(private val likeService: LikeService) {
-
     @Operation(summary = "상품에 '좋아요' 추가", description = "특정 상품에 대한 사용자의 '좋아요'를 추가합니다.")
     @PostMapping("/product/{productId}")
     fun addLikeToProduct(
         @Parameter(description = "상품 ID") @PathVariable productId: Long,
         @AuthenticationPrincipal user: UserPrincipal,
-    ): ResponseEntity<Void> {//void는 리스폰스 바디 가 없을때 씀
+    ): ResponseEntity<Void> { // void는 리스폰스 바디 가 없을때 씀
         likeService.addLikeToProduct(productId, user.id)
         return ResponseEntity.status(HttpStatus.CREATED).build()
     }
@@ -30,7 +29,6 @@ class LikeController(private val likeService: LikeService) {
 //    ) {
 //        likeService.addLikeToProduct(productId, socialUserId)
 //    }
-
 
     @Operation(summary = "상품에서 '좋아요' 제거", description = "특정 상품에 대한 사용자의 '좋아요'를 제거합니다.")
     @DeleteMapping("/product/{productId}")
