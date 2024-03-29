@@ -13,7 +13,7 @@ class RedissonConfig {
     private lateinit var redisHost: String
 
     @Value("\${spring.data.redis.port}")
-    private var redisPort: Int = 0
+    private var redisPort: Int = 6379
 
     private val redissonHostPrefix = "redis://"
 

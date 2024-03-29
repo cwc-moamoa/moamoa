@@ -15,10 +15,10 @@ import java.util.*
 class ImageServiceImpl(
     private val amazonS3Client: AmazonS3Client,
 ) : ImageService {
-    @Value("\${bucket}")
+    @Value("\${cloud.aws.s3.bucket}")
     lateinit var bucket: String
 
-    @Value("\${dir}")
+    @Value("\${cloud.aws.s3.dir}")
     lateinit var dir: String
 
     override fun imageUpload(multipartFile: MultipartFile): String {
