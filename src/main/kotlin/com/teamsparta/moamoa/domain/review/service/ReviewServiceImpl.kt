@@ -163,7 +163,8 @@ class ReviewServiceImpl(
     }
 
     override fun getReviewByOrderId(orderId: Long): ReviewResponse {
-        val order = orderRepository.findByIdOrNull(orderId)
-        val review = reviewRepository.
+//        val order = orderRepository.findByIdOrNull(orderId)
+//        val review = reviewRepository.
+        TODO()
     }
 }

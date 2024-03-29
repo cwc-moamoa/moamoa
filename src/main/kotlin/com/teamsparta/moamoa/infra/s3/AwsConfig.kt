@@ -10,16 +10,16 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.PropertySource
 
-@PropertySource("classpath:aws.yml") // yml 에서 설정해놓은 환경변수를 주입안해주니까 요따구로 에러가 나는거임 ㅗㅗ
+@PropertySource("classpath:application.yml") // yml 에서 설정해놓은 환경변수를 주입안해주니까 요따구로 에러가 나는거임 ㅗㅗ
 @Configuration
 class S3Config {
-    @Value("\${accessKey}")
+    @Value("\${cloud.aws.credentials.access-key}")
     private val accessKey: String? = null
 
-    @Value("\${secretKey}")
+    @Value("\${cloud.aws.credentials.secret-key}")
     private val secretKey: String? = null
 
-    @Value("\${region}")
+    @Value("\${cloud.aws.region}")
     private val region: String? = null
 
     @Bean
