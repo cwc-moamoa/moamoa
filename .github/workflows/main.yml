@@ -7,8 +7,8 @@ name: moamoa
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+  # pull_request:
+  #   branches: [ "main" ]
 
 
 # 워크 플로우가 깃 레포에 대한 권한을 읽기 만 가능하게 설정한다. 환경변수작성 및 빈깡통 yml 작성할수도있응게
