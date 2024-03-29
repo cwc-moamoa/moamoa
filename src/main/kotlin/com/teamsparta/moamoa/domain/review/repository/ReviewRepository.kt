@@ -21,5 +21,4 @@ interface ReviewRepository : JpaRepository<Review, Long> {
     fun findByProductIdAndDeletedAtIsNull(productId: Long): List<Review>
 
     fun findByOrderId(orderId: Long): Optional<Review>
-
 }

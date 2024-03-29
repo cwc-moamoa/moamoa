@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service
 class SocialUserService(
     private val socialUserRepository: SocialUserRepository,
 ) {
-
     // provider랑 providerId로 회원 검색하고, 없으면 회원가입
     fun registerIfAbsent(userInfo: OAuth2UserInfo): SocialUser {
         val provider = OAuth2Provider.valueOf(userInfo.provider)
@@ -22,13 +21,18 @@ class SocialUserService(
         }
     }
 
-    fun existUser(provider: OAuth2Provider, providerId: String): Boolean {
+    fun existUser(
+        provider: OAuth2Provider,
+        providerId: String,
+    ): Boolean {
         return socialUserRepository.existsByProviderAndProviderId(provider, providerId)
     }
 
-    fun findUser(provider: OAuth2Provider, providerId: String, email: String): SocialUser {
+    fun findUser(
+        provider: OAuth2Provider,
+        providerId: String,
+        email: String,
+    ): SocialUser {
         return socialUserRepository.findByProviderAndProviderId(provider, providerId)
     }
-
-
 }

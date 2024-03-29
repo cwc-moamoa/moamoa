@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice
 
 @RestControllerAdvice
 class GlobalExceptionHandler {
-
     private val logger: Logger = LoggerFactory.getLogger(GlobalExceptionHandler::class.java)
+
     @ExceptionHandler(IllegalStateException::class)
     fun handlerIllegalStateException(e: IllegalStateException): ResponseEntity<ErrorResponseDto> {
         logger.error("IllegalStateException 발생", e)

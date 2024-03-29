@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <title>상품 목록</title>
     <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
-
     <style>
         * {
             margin: 0;
@@ -357,8 +356,6 @@
 
 
     <script defer>
-
-
         $(document).ready(function () {
             const pageSize = 16; // 한 페이지에 표시할 상품 수
             let currentPage = 0; // 현재 페이지 번호
@@ -374,7 +371,7 @@
                     url     : `/products/pages?page=${page}&size=${pageSize}`,
                     method  : 'GET',
                     dataType: 'json',
-                    success : function (products) {
+                    success: function (products) {
                         // 총 페이지 수 업데이트
                         totalPages = products.totalPages;
 
@@ -384,7 +381,7 @@
                         // 페이지네이션 업데이트
                         updatePagination();
                     },
-                    error   : function (jqXHR, textStatus, errorThrown) {
+                    error: function (jqXHR, textStatus, errorThrown) {
                         console.error('상품 정보를 가져오는 데 실패했습니다.', textStatus, errorThrown);
                     }
                 });
@@ -469,6 +466,7 @@
 
 <body>
 <div class="header_outer">
+
     <header class="header">
         <a href="/" class="logo">MOAMOA</a>
 
@@ -481,16 +479,77 @@
 
 
         // 로그인 버튼
-        <div class="login_btn">
+        <div class="login_btn" id="loginBtn">
             <a href="javascript:;">
                 <img src="https://developers.kakao.com/tool/resource/static/img/button/login/full/ko/kakao_login_medium_wide.png" alt="kakao_btn"></a>
         </div>
 
-        // 로그인 함수
+        <div id="welcomeMessage" style="display: none;">
+            <p>환영합니다!</p>
+            <button id="my-page-button">마이페이지로 이동하기</button>
+        </div>
+  
+
+        
+                
+      
+        
+
         <script>
+
+          // 로그인 함수
+        
             document.querySelector('.login_btn a').addEventListener('click', function () {
                 location.href = '/oauth2/login/kakao';});
+        
+            document.addEventListener("DOMContentLoaded", function () {
+                var loginButton = document.getElementById('loginBtn');
+
+                // 쿠키에서 JWT 토큰을 가져오는 함수
+                function extractJwtTokenFromCookies() {
+                    const cookies = document.cookie.split(';'); // 쿠키 문자열을 세미콜론을 기준으로 나눕니다.
+
+                    // 쿠키 배열을 반복하면서 JWT 토큰을 찾습니다.
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim(); // 공백을 제거합니다.
+                        if (cookie.startsWith('jwt_token=')) {
+                            // 'jwt_token=' 부분을 제외하고 추출하여 반환합니다.
+                            return cookie.substring('jwt_token='.length);
+                        }
+                    }
+
+                    // JWT 토큰이 없으면 null을 반환합니다.
+                    return null;
+                }
+
+                // 쿠키에서 JWT 토큰 가져오기
+                var jwtToken = extractJwtTokenFromCookies();
+
+                // JWT 토큰이 존재하는 경우
+                if (jwtToken) {
+                    // 로그인 버튼을 숨깁니다.
+                    loginButton.style.display = 'none';
+                    welcomeMessage.style.display = 'block';
+                } else {
+                    // JWT 토큰이 존재하지 않는 경우, 로그인 버튼을 표시합니다.
+                    loginButton.style.display = 'block';
+                }
+            });
+
+            $(document).ready(function () {
+                $('#my-page-button').click(function () {
+                    window.location.href = "/my-order-page";
+                });
+            });
+
+            document.querySelector('.login_btn a').addEventListener('click', function () {
+                location.href = '/oauth2/login/kakao';
+
+            });
+
         </script>
+
+
 
     </header>
 </div>
@@ -508,7 +567,7 @@
         </ul>
     </div>
 </div>
-
+  
 <footer class="footer">
     <div class="footer_inner">
         <div class="footer_left">

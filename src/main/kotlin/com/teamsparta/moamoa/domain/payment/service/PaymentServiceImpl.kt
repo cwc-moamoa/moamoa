@@ -6,7 +6,6 @@ import com.siot.IamportRestClient.request.CancelData
 import com.siot.IamportRestClient.response.IamportResponse
 import com.siot.IamportRestClient.response.Payment
 import com.teamsparta.moamoa.domain.order.repository.OrderRepository
-import com.teamsparta.moamoa.domain.order.service.OrderService
 import com.teamsparta.moamoa.domain.payment.dto.PaymentCallbackRequest
 import com.teamsparta.moamoa.domain.payment.dto.RequestPayDto
 import com.teamsparta.moamoa.domain.payment.model.PaymentStatus
@@ -16,7 +15,6 @@ import com.teamsparta.moamoa.event.DiscountPaymentEvent
 import com.teamsparta.moamoa.infra.redis.RedisService
 import jakarta.transaction.Transactional
 import org.springframework.context.ApplicationEventPublisher
-import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.stereotype.Service
 import java.io.IOException
 import java.math.BigDecimal
@@ -29,7 +27,7 @@ class PaymentServiceImpl(
     private val iamportClient: IamportClient,
     private val productStockRepository: ProductStockRepository,
     private val applicationEventPublisher: ApplicationEventPublisher,
-    private val redisService: RedisService
+    private val redisService: RedisService,
 ) : PaymentService {
     @Transactional
     override fun findRequestDto(orderUid: String): RequestPayDto {
