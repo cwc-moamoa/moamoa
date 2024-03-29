@@ -5,7 +5,7 @@ import jakarta.validation.constraints.Max
 import jakarta.validation.constraints.Min
 import jakarta.validation.constraints.Size
 
-class UpdateReviewRequest(
+data class UpdateReviewRequest(
     @field:Size(min = 2, max = 10, message = "제목은 2자 이상 10자 이하 작성해주세요.")
     val title: String,
     @field:Size(min = 10, max = 300, message = "내용은 10자 이상 300자 이하 작성해주세요.")

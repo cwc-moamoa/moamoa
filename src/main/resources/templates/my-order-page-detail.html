@@ -64,20 +64,21 @@
             height: 100px;
         }
 
-        .filebox {
-            margin: 0 0 10px 0;
+        .review {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
         }
 
-        .filebox .upload-name {
-            display: inline-block;
-            height: 40px;
-            padding: 0 10px;
-            vertical-align: middle;
-            border: 1px solid #dddddd;
-            width: 78%;
-            color: #999999;
-            margin-bottom: 0;
+        .review img {
+            max-width: 100%;
+            height: auto;
         }
+
+        #reviews {
+            margin-top: 20px;
+        }
+
 
         .filebox label {
             display: inline-block;
@@ -107,6 +108,7 @@
         .rating_box select {
             width: 50px;
         }
+
         .order {
             border: 1px solid #ccc;
             padding: 10px;
@@ -129,6 +131,7 @@
 
             getOrderDetails(orderId)
             createReview(orderId)
+            getReview(orderId)
 
             function extractJwtTokenFromCookies() {
                 const cookies = document.cookie.split(';'); // 쿠키 문자열을 세미콜론을 기준으로 나눕니다.
@@ -239,6 +242,55 @@
                 container.append(orderDiv);
             }
 
+            function getReview(orderId) {
+                $.ajax({
+                    type: 'GET',
+                    url: '/review/get/' + orderId,
+                    success: function (response) {
+                        var review = response; // 단일 리뷰 객체
+                        var reviewsHtml = '<h2>해당 주문에 대한 상품 리뷰</h2>';
+
+                        if (review) {
+                            reviewsHtml += '<div class="review">';
+                            reviewsHtml += '<p><strong>작성자:</strong> ' + review.userName + '</p>';
+                            reviewsHtml += '<p><strong>제목:</strong> ' + review.title + '</p>';
+                            reviewsHtml += '<p><strong>평점:</strong> ' + review.rating + '</p>';
+                            reviewsHtml += '<p><strong>내용:</strong> ' + review.content + '</p>';
+                            reviewsHtml += '<p><strong>이미지:</strong> <img src="' + (review.imageUrl || 'https://via.placeholder.com/150') + '" alt="Review Image"></p>';
+                            reviewsHtml += '<p><strong>좋아요 수:</strong> ' + review.likes + '</p>';
+                            reviewsHtml += '</div>';
+
+                            // 리뷰가 있을 경우 수정 기능 활성화
+                            // enableReviewUpdate(response);
+                        } else {
+                            reviewsHtml += '<p>리뷰 정보가 없습니다.</p>';
+                            // 리뷰가 없을 경우 생성 기능 활성화
+                            // enableReviewCreation(orderId);
+                        }
+                        $('#reviews').html(reviewsHtml);
+                    },
+                    error: function (xhr, status, error) {
+                        if (xhr.status == 500) {
+                            $('#reviews').html('<p>리뷰 정보가 없습니다.</p>');
+                        } else {
+                            $('#reviews').html('<p>리뷰 정보를 불러오는 데 실패했습니다.</p>');
+                        }
+                    }
+                });
+            }
+
+            // function enableReviewCreation(orderId) {
+            //     // 생성할 때 필요한 DOM 요소를 표시하거나 로직을 수행합니다.
+            //     // 예를 들어, 입력 폼을 화면에 표시하거나 다른 처리를 수행합니다.
+            //     console.log('리뷰 생성 가능 - orderId:', orderId);
+            // }
+            //
+            // function enableReviewUpdate(review) {
+            //     // 수정할 때 필요한 DOM 요소를 표시하거나 로직을 수행합니다.
+            //     // 예를 들어, 기존 리뷰 내용을 입력 폼에 채워 넣거나 다른 처리를 수행합니다.
+            //     console.log('리뷰 수정 가능 - review:', review);
+            // }
+
         });
     </script>
 </head>
@@ -246,11 +298,14 @@
 <div id="orderContainer">
     <!-- 주문 정보가 여기에 동적으로 추가됩니다 -->
 </div>
+<div id="reviews">
+    <!-- 리뷰들이 여기에 동적으로 추가될 것입니다. -->
+</div>
 <div id="reviewForm" class="review_box">
     <h2>리뷰 작성</h2>
     <input class="review_title" type="text" id="reviewTitle" placeholder="리뷰 제목">
     <input class="review_content" type="text" id="reviewContent" placeholder="리뷰 내용을 작성해주세요...">
-<!--    <input type="hidden" id="productId" value="productId">-->
+    <!--    <input type="hidden" id="productId" value="productId">-->
     <input type="hidden" id="orderId" name="orderId">
     <div class="rating_box">
         <label for="rating">평점:</label>

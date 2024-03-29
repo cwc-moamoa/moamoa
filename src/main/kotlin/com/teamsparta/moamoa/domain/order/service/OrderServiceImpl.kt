@@ -252,6 +252,7 @@ class OrderServiceImpl(
             payment = payment,
             phoneNumber = phoneNumber,
             sellerId = findProduct.seller.id,
+            reviewId = null,
         )
         productStockRepository.save(stockCheck.discountForTest(quantity))
 //        stockCheck.discount(quantity)

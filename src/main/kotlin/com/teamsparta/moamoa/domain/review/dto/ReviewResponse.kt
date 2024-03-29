@@ -2,7 +2,7 @@ package com.teamsparta.moamoa.domain.review.dto
 
 import com.teamsparta.moamoa.domain.review.model.Review
 
-class ReviewResponse(
+data class ReviewResponse(
     var id: Long?,
     var title: String,
     var content: String,
