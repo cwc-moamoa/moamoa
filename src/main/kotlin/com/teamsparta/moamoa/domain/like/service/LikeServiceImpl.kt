@@ -19,7 +19,7 @@ class LikeServiceImpl(
     @Transactional
     override fun addLikeToProduct(
         productId: Long,
-        socialUserId: Long,
+        providerId: Long,
     ) {
         val product =
             productRepository.findById(productId)
@@ -30,8 +30,8 @@ class LikeServiceImpl(
         }
 
         val user =
-            socialUserRepository.findById(socialUserId)
-                .orElseThrow { throw ModelNotFoundException("User", socialUserId) }
+            socialUserRepository.findByProviderId(providerId.toString())
+                .orElseThrow { throw ModelNotFoundException("User", providerId) }
 
         val existingLike = likeRepository.findByProductAndSocialUser(product, user)
         if (existingLike != null) {
@@ -46,20 +46,17 @@ class LikeServiceImpl(
     @Transactional
     override fun removeLikeFromProduct(
         productId: Long,
-        socialUserId: Long,
+        providerId: Long,
     ) {
         val product =
             productRepository.findById(productId)
                 .orElseThrow { throw ModelNotFoundException("Product", productId) }
         val user =
-            socialUserRepository.findById(socialUserId)
-                .orElseThrow { throw ModelNotFoundException("User", socialUserId) }
+            socialUserRepository.findByProviderId(providerId.toString())
+                .orElseThrow { throw ModelNotFoundException("User", providerId) }
 
         val like = likeRepository.findByProductAndSocialUser(product, user)
         if (like != null) {
-            if (like.socialUser.id != socialUserId) {
-                throw IllegalArgumentException("권한이 없습니다")
-            }
             likeRepository.delete(like)
 
             if (product.likes > 0) {
@@ -74,7 +71,7 @@ class LikeServiceImpl(
     @Transactional
     override fun addLikeToReview(
         reviewId: Long,
-        socialUserId: Long,
+        providerId: Long,
     ) {
         val review =
             reviewRepository.findById(reviewId)
@@ -85,8 +82,8 @@ class LikeServiceImpl(
         }
 
         val user =
-            socialUserRepository.findById(socialUserId)
-                .orElseThrow { throw ModelNotFoundException("User", socialUserId) }
+            socialUserRepository.findByProviderId(providerId.toString())
+                .orElseThrow { throw ModelNotFoundException("User", providerId) }
 
         val existingLike = likeRepository.findByReviewAndSocialUser(review, user)
         if (existingLike != null) {
@@ -101,20 +98,17 @@ class LikeServiceImpl(
     @Transactional
     override fun removeLikeFromReview(
         reviewId: Long,
-        socialUserId: Long,
+        providerId: Long,
     ) {
         val review =
             reviewRepository.findById(reviewId)
                 .orElseThrow { throw ModelNotFoundException("Review", reviewId) }
         val user =
-            socialUserRepository.findById(socialUserId)
-                .orElseThrow { throw ModelNotFoundException("User", socialUserId) }
+            socialUserRepository.findByProviderId(providerId.toString())
+                .orElseThrow { throw ModelNotFoundException("User", providerId) }
 
         val like = likeRepository.findByReviewAndSocialUser(review, user)
         if (like != null) {
-            if (like.socialUser.id != socialUserId) {
-                throw IllegalArgumentException("권한이 없습니다")
-            }
             likeRepository.delete(like)
 
             if (review.likes > 0) {

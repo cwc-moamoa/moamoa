@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>내 주문 페이지</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <style>
+        #reviewForm {
+            margin-top: 20px;
+            border-top: 1px solid #ccc;
+            padding-top: 20px;
+        }
+
+        #reviewForm textarea {
+            width: calc(100% - 40px);
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            resize: vertical;
+        }
+
+        #reviewForm button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 18px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            text-decoration: none;
+            width: 100%;
+        }
+
+        #reviewForm button:hover {
+            background-color: #0056b3;
+        }
+
+        .review_box input {
+            display: block;
+            width: 100%;
+            margin-bottom: 5px;
+            border-radius: 4px;
+            border: solid #ccc 0.5px;
+
+        }
+
+        .review_box h2 {
+            margin-bottom: 10px;
+        }
+
+        .review_box input::placeholder {
+            text-align: center;
+            font-size: 20px;
+
+        }
+
+        .review_box .review_title {
+            height: 50px;
+        }
+
+        .review_box .review_content {
+            height: 100px;
+        }
+
+        .filebox {
+            margin: 0 0 10px 0;
+        }
+
+        .filebox .upload-name {
+            display: inline-block;
+            height: 40px;
+            padding: 0 10px;
+            vertical-align: middle;
+            border: 1px solid #dddddd;
+            width: 78%;
+            color: #999999;
+            margin-bottom: 0;
+        }
+
+        .filebox label {
+            display: inline-block;
+            padding: 10px 35px;
+            color: #fff;
+            vertical-align: middle;
+            background-color: #999999;
+            cursor: pointer;
+            height: 25px;
+            margin-left: 10px;
+            border-radius: 4px;
+        }
+
+        .filebox input[type="file"] {
+            position: absolute;
+            width: 0;
+            height: 0;
+            padding: 0;
+            overflow: hidden;
+            border: 0;
+        }
+
+        .rating_box {
+            height: 40px;
+        }
+
+        .rating_box select {
+            width: 50px;
+        }
+        .order {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+
+        .order-details {
+            margin-bottom: 10px;
+        }
+
+        .order-details p {
+            margin: 5px 0;
+        }
+    </style>
+    <script>
+        $(document).ready(function () {
+
+            var urlParams = new URLSearchParams(window.location.search);
+            var orderId = urlParams.get('orderId');
+
+            getOrderDetails(orderId)
+            createReview(orderId)
+
+            function extractJwtTokenFromCookies() {
+                const cookies = document.cookie.split(';'); // 쿠키 문자열을 세미콜론을 기준으로 나눕니다.
+
+                // 쿠키 배열을 반복하면서 JWT 토큰을 찾습니다.
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim(); // 공백을 제거합니다.
+                    if (cookie.startsWith('jwt_token=')) {
+                        // 'jwt_token=' 부분을 제외하고 추출하여 반환합니다.
+                        return cookie.substring('jwt_token='.length);
+                    }
+                }
+
+                // JWT 토큰이 없으면 null을 반환합니다.
+                return null;
+            }
+
+            // 현재 페이지의 쿠키에서 JWT 토큰을 추출합니다.
+            const jwtToken = extractJwtTokenFromCookies();
+
+            console.log(jwtToken);
+
+
+            function createReview(orderId) {
+                $('#submitReview').click(function () {
+                    // 폼에서 리뷰 정보 가져오기
+                    var reviewTitle = $('#reviewTitle').val();
+                    var reviewContent = $('#reviewContent').val();
+                    var rating = $('#rating').val();
+
+                    // 리뷰 정보를 JSON 형식으로 만듭니다.
+                    var reviewData = {
+                        title: reviewTitle,
+                        content: reviewContent,
+                        rating: rating,
+                    };
+
+                    // 서버로 AJAX 요청을 보냅니다.
+                    $.ajax({
+                        type: 'POST',
+                        url: '/reviews/create/' + orderId,
+                        contentType: 'application/json',
+                        data: JSON.stringify(reviewData),
+                        headers: {
+                            'Authorization': 'Bearer ' + extractJwtTokenFromCookies()
+                        },
+                        success: function (response) {
+                            // 리뷰가 성공적으로 생성되면 화면에 새로운 리뷰를 추가합니다.
+                            var newReviewHtml = '<div class="review">';
+                            newReviewHtml += '<p><strong>작성자:</strong> ' + response.userName + '</p>';
+                            newReviewHtml += '<p><strong>제목:</strong> ' + response.title + '</p>';
+                            newReviewHtml += '<p><strong>평점:</strong> ' + response.rating + '</p>';
+                            newReviewHtml += '<p><strong>내용:</strong> ' + response.content + '</p>';
+                            newReviewHtml += '</div>';
+                            $('#reviews').append(newReviewHtml);
+
+                            // 리뷰 작성 폼을 초기화합니다.
+                            $('#reviewTitle').val('');
+                            $('#reviewContent').val('');
+                            $('#rating').val('3');
+                            alert('리뷰가 작성 되었습니다.')
+                        },
+                        error: function (xhr, status, error) {
+                            // 오류가 발생하면 알림을 표시합니다.
+                            console.log("error")
+                            alert('리뷰를 생성하는 동안 오류가 발생했습니다.');
+                        }
+                    });
+                });
+            }
+
+            function getOrderDetails(orderId) {
+                $.ajax({
+                    type: 'GET',
+                    url: `/api/orders/getOne/${orderId}`,
+                    headers: {
+                        'Authorization': 'Bearer ' + extractJwtTokenFromCookies()
+                    },
+                    success: function (response) {
+                        // 성공적으로 응답을 받았을 때의 처리 로직을 여기에 작성합니다.
+                        console.log(response);
+                        displayOrderDetails(response);
+                    },
+                    error: function (xhr, status, error) {
+                        // 오류가 발생했을 때의 처리 로직을 여기에 작성합니다.
+                        console.error(error);
+                    }
+                });
+            }
+
+            function displayOrderDetails(order) {
+                const container = $('#orderContainer');
+                container.empty(); // 이전 주문 정보 제거
+
+                const orderDiv = $('<div class="order"></div>');
+                orderDiv.html(`
+        <div class="order-details">
+            <p>주문 ID: ${order.orderId}</p>
+            <p>상품명: ${order.productName}</p>
+            <p>가격: ${order.totalPrice}</p>
+            <p>주소: ${order.address}</p>
+            <p>생성일: ${order.createdAt}</p>
+            <p>상태: ${order.status}</p>
+            <p>할인율: ${order.discount}</p>
+            <p>수량: ${order.quantity}</p>
+        </div>
+    `);
+                container.append(orderDiv);
+            }
+
+        });
+    </script>
+</head>
+<body>
+<div id="orderContainer">
+    <!-- 주문 정보가 여기에 동적으로 추가됩니다 -->
+</div>
+<div id="reviewForm" class="review_box">
+    <h2>리뷰 작성</h2>
+    <input class="review_title" type="text" id="reviewTitle" placeholder="리뷰 제목">
+    <input class="review_content" type="text" id="reviewContent" placeholder="리뷰 내용을 작성해주세요...">
+<!--    <input type="hidden" id="productId" value="productId">-->
+    <input type="hidden" id="orderId" name="orderId">
+    <div class="rating_box">
+        <label for="rating">평점:</label>
+        <select id="rating">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+        </select>
+    </div>
+
+    <button id="submitReview">작성 완료</button>
+</div>
+</body>
+</html>

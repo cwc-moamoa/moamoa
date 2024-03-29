@@ -6,13 +6,13 @@ import com.siot.IamportRestClient.request.CancelData
 import com.siot.IamportRestClient.response.IamportResponse
 import com.siot.IamportRestClient.response.Payment
 import com.teamsparta.moamoa.domain.order.repository.OrderRepository
-import com.teamsparta.moamoa.domain.order.service.OrderService
 import com.teamsparta.moamoa.domain.payment.dto.PaymentCallbackRequest
 import com.teamsparta.moamoa.domain.payment.dto.RequestPayDto
 import com.teamsparta.moamoa.domain.payment.model.PaymentStatus
 import com.teamsparta.moamoa.domain.payment.repository.PaymentRepository
 import com.teamsparta.moamoa.domain.product.repository.ProductStockRepository
 import com.teamsparta.moamoa.event.DiscountPaymentEvent
+import com.teamsparta.moamoa.infra.redis.RedisService
 import jakarta.transaction.Transactional
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
@@ -25,9 +25,9 @@ class PaymentServiceImpl(
     private val orderRepository: OrderRepository,
     private val paymentRepository: PaymentRepository,
     private val iamportClient: IamportClient,
-    private val orderService: OrderService,
     private val productStockRepository: ProductStockRepository,
     private val applicationEventPublisher: ApplicationEventPublisher,
+    private val redisService: RedisService,
 ) : PaymentService {
     @Transactional
     override fun findRequestDto(orderUid: String): RequestPayDto {
@@ -101,7 +101,7 @@ class PaymentServiceImpl(
             paymentRepository.save(paymentChange)
 
             if (order.discount > 0.0) {
-                orderService.saveToRedis(
+                redisService.saveToRedis(
                     order.product.id.toString(),
                     order.socialUser.id.toString(),
                     order.id.toString(),

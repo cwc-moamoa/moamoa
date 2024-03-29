@@ -15,29 +15,25 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.validation.annotation.Validated
-import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @Validated
 @RestController
+@CrossOrigin(origins = ["*"], allowedHeaders = ["*"])
 class ReviewController(
     private val reviewService: ReviewService,
 ) {
-    @PostMapping("/{productId}")
+    @PostMapping("/reviews/create/{orderId}")
     fun createReview(
-        @PathVariable productId: Long,
-        @AuthenticationPrincipal socialUser: UserPrincipal,
+        @PathVariable orderId: Long,
+        @AuthenticationPrincipal user: UserPrincipal,
         @Valid @RequestBody createReviewRequest: CreateReviewRequest,
-    ): ResponseEntity<ReviewResponse> {
-        val result = reviewService.createReview(productId, socialUser, createReviewRequest)
+    ): ResponseEntity<List<ReviewResponse>> {
+        val result = reviewService.createReview(user.id, createReviewRequest, orderId)
+        val results = listOf(result)
         return ResponseEntity
             .status(HttpStatus.CREATED)
-            .body(result)
+            .body(results)
     }
 
     @GetMapping("/review/{reviewId}")
@@ -60,20 +56,20 @@ class ReviewController(
     @PutMapping("/{reviewId}")
     fun updateReview(
         @PathVariable reviewId: Long,
-        @AuthenticationPrincipal socialUser: UserPrincipal,
+        @AuthenticationPrincipal user: UserPrincipal,
         @Valid @RequestBody updateReviewRequest: UpdateReviewRequest,
     ): ResponseEntity<ReviewResponse> {
         return ResponseEntity
             .status(HttpStatus.OK)
-            .body(reviewService.updateReview(reviewId, socialUser, updateReviewRequest))
+            .body(reviewService.updateReview(reviewId, user.id, updateReviewRequest))
     }
 
     @DeleteMapping("/{reviewId}")
     fun deleteReview(
         @PathVariable reviewId: Long,
-        @AuthenticationPrincipal socialUser: UserPrincipal,
+        @AuthenticationPrincipal user: UserPrincipal,
     ): ResponseEntity<String> {
-        reviewService.deleteReview(reviewId, socialUser)
+        reviewService.deleteReview(reviewId, user.id)
         val deleteReviewSuccessMessage = "댓글이 성공적으로 삭제되었습니다!"
         return ResponseEntity
             .status(HttpStatus.OK)

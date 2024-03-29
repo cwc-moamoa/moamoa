@@ -1,5 +1,6 @@
 package com.teamsparta.moamoa.domain.review.model
 
+import com.teamsparta.moamoa.domain.order.model.OrdersEntity
 import com.teamsparta.moamoa.domain.product.model.Product
 import com.teamsparta.moamoa.domain.socialUser.model.SocialUser
 import com.teamsparta.moamoa.infra.BaseTimeEntity
@@ -25,4 +26,7 @@ class Review(
     var likes: Int = 0,
     @Column(name = "rating")
     var rating: Int,
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id", nullable = false)
+    val order: OrdersEntity,
 ) : BaseTimeEntity()

@@ -1,11 +1,15 @@
 package com.teamsparta.moamoa.domain.order.controller
-import com.teamsparta.moamoa.domain.order.dto.*
+import com.teamsparta.moamoa.domain.order.dto.CancelResponseDto
+import com.teamsparta.moamoa.domain.order.dto.ResponseOrderDto
+import com.teamsparta.moamoa.domain.order.dto.UpdateOrderDto
 import com.teamsparta.moamoa.domain.order.model.OrdersStatus
 import com.teamsparta.moamoa.domain.order.service.OrderService
-import jakarta.servlet.http.HttpServletRequest
+import com.teamsparta.moamoa.infra.security.UserPrincipal
 import org.springframework.data.domain.Page
 import org.springframework.http.HttpStatus
+import org.springframework.http.HttpStatusCode
 import org.springframework.http.ResponseEntity
+import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.GetMapping
@@ -24,65 +28,138 @@ import org.springframework.web.bind.annotation.RestController
 class OrderController(
     private val orderService: OrderService,
 ) {
-    @PostMapping("/create")
-    fun createOrder(request: HttpServletRequest): ResponseEntity<ResponseOrderDto> {
-        val userId = request.getParameter("userId").toLong() // 널포인트 익셉션뜸
-        val productId = request.getParameter("productId").toLong()
-        val quantity = request.getParameter("quantity").toInt()
-        val address = request.getParameter("address")
-        val phoneNumber = request.getParameter("phoneNumber")
-        val responseOrderDto = orderService.createOrder(userId, productId, quantity, address, phoneNumber)
-        return ResponseEntity.status(HttpStatus.CREATED).body(responseOrderDto)
-    }
-
     @PostMapping("/create/swagger")
     fun createOrderAtSwagger(
-        @RequestParam userId: Long,
+        @AuthenticationPrincipal user: UserPrincipal,
         @RequestParam productId: Long,
         @RequestParam quantity: Int,
         @RequestParam address: String,
         @RequestParam phoneNumber: String,
     ): ResponseEntity<ResponseOrderDto> {
-        val responseOrderDto = orderService.createOrder(userId, productId, quantity, address, phoneNumber)
+        val responseOrderDto = orderService.createOrder(user, productId, quantity, address, phoneNumber)
         return ResponseEntity
             .status(HttpStatus.CREATED)
             .body(responseOrderDto)
     }
 
-    @PutMapping("/{orderId}/{userId}")
+    @PostMapping("/create")
+    fun createOrder(
+        @AuthenticationPrincipal user: UserPrincipal,
+        @RequestParam productId: Long,
+        @RequestParam quantity: Int,
+        @RequestParam address: String,
+        @RequestParam phoneNumber: String,
+    ): ResponseEntity<ResponseOrderDto> {
+        val responseOrderDto = orderService.createOrder(user, productId, quantity, address, phoneNumber)
+        return ResponseEntity
+            .status(HttpStatus.CREATED)
+            .body(responseOrderDto)
+    }
+
+
+    @PostMapping("/group/create")
+    fun createGroupOrder(
+        @AuthenticationPrincipal user: UserPrincipal,
+        @RequestParam productId: Long,
+        @RequestParam quantity: Int,
+        @RequestParam address: String,
+        @RequestParam phoneNumber: String,
+    ): ResponseEntity<ResponseOrderDto> {
+        val responseOrderDto = orderService.createGroupOrder(user, productId, quantity, address, phoneNumber)
+        return ResponseEntity
+            .status(HttpStatus.CREATED)
+            .body(responseOrderDto)
+    }
+
+    @PostMapping("/group/create/swagger")
+    fun creatGroupOrderAtSwagger(
+        @AuthenticationPrincipal user: UserPrincipal,
+        @RequestParam productId: Long,
+        @RequestParam quantity: Int,
+        @RequestParam address: String,
+        @RequestParam phoneNumber: String,
+    ): ResponseEntity<ResponseOrderDto> {
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(orderService.createGroupOrder(user, productId, quantity, address, phoneNumber))
+    }
+//    @PostMapping("/create")
+//    fun createOrder(request: HttpServletRequest): ResponseEntity<ResponseOrderDto> {
+//        val userId = request.getParameter("userId").toLong()
+//        val productId = request.getParameter("productId").toLong()
+//        val quantity = request.getParameter("quantity").toInt()
+//        val address = request.getParameter("address")
+//        val phoneNumber = request.getParameter("phoneNumber")
+//        val responseOrderDto = orderService.createOrder(userId, productId, quantity, address, phoneNumber)
+//        return ResponseEntity.status(HttpStatus.CREATED).body(responseOrderDto)
+//    }
+
+//    @PostMapping("/create/swagger")
+//    fun createOrderAtSwagger(
+//        @RequestParam userId: Long,
+//        @RequestParam productId: Long,
+//        @RequestParam quantity: Int,
+//        @RequestParam address: String,
+//        @RequestParam phoneNumber: String,
+//    ): ResponseEntity<ResponseOrderDto> {
+//        val responseOrderDto = orderService.createOrder(userId, productId, quantity, address, phoneNumber)
+//        return ResponseEntity
+//            .status(HttpStatus.CREATED)
+//            .body(responseOrderDto)
+//    }
+
+    //    @PostMapping("/group/create")
+//    fun createGroupOrder(request: HttpServletRequest): ResponseEntity<ResponseOrderDto> {
+//        val userId = request.getParameter("userId").toLong()
+//        val productId = request.getParameter("productId").toLong()
+//        val quantity = request.getParameter("quantity").toInt()
+//        val address = request.getParameter("address")
+//        val phoneNumber = request.getParameter("phoneNumber")
+//        return ResponseEntity
+//            .status(HttpStatus.OK)
+//            .body(orderService.createGroupOrder(userId, productId, quantity, address, phoneNumber))
+//    }
+    @PutMapping("update/{orderId}")
     fun updateOrder(
+        @AuthenticationPrincipal user: UserPrincipal,
         @PathVariable orderId: Long,
-        @PathVariable userId: Long,
         @RequestBody updateOrderDto: UpdateOrderDto,
     ): ResponseEntity<ResponseOrderDto> {
         return ResponseEntity
             .status(HttpStatus.OK)
-            .body(orderService.updateOrder(userId, orderId, updateOrderDto))
+            .body(orderService.updateOrder(user, orderId, updateOrderDto))
     }
 
-    @PutMapping("/cancel/{orderId}/{userId}")
+    @PutMapping("/cancel/{orderId}")
     fun cancelOrder(
+        @AuthenticationPrincipal user: UserPrincipal,
         @PathVariable orderId: Long,
-        @PathVariable userId: Long,
     ): ResponseEntity<CancelResponseDto> {
         return ResponseEntity
             .status(HttpStatus.OK)
-            .body(orderService.cancelOrder(userId, orderId))
+            .body(orderService.cancelOrder(user, orderId))
     }
 
     // 주문 취소니까 수정으로 함 삭제면 삭제지!
 
-    @GetMapping("/{orderId}/{userId}")
+    @GetMapping("/getOne/{orderId}")
     fun getOrder(
+        @AuthenticationPrincipal user: UserPrincipal,
         @PathVariable orderId: Long,
-        @PathVariable userId: Long,
     ): ResponseEntity<ResponseOrderDto> {
         return ResponseEntity
             .status(HttpStatus.OK)
-            .body(orderService.getOrder(userId, orderId))
+            .body(orderService.getOrder(user, orderId))
     }
 
     // 주문 조회
+
+    @GetMapping("/getAllOrders")
+    fun getAllOrders(
+        @AuthenticationPrincipal user: UserPrincipal,
+    ): ResponseEntity<List<ResponseOrderDto>> {
+        return ResponseEntity.status(HttpStatus.OK).body(orderService.getOrderList(user))
+    }
 
     @GetMapping("/{userId}")
     fun getOrderPage(
@@ -131,15 +208,5 @@ class OrderController(
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(orderService.getOrderPageBySellerId(sellerId, page, size))
-    }
-
-    @PostMapping("/saveToRedis")
-    fun saveDataToRedis(
-        @RequestParam productId: String,
-        @RequestParam userId: String,
-        @RequestParam orderId: String,
-    ): ResponseEntity<Unit> {
-        orderService.saveToRedis(productId, userId, orderId) // 여기 순서 중요함!!
-        return ResponseEntity.status(HttpStatus.OK).build()
     }
 }

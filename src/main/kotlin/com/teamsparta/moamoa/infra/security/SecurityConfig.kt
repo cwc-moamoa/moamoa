@@ -31,6 +31,7 @@ class SecurityConfig(
             .headers { it.frameOptions { options -> options.sameOrigin() } }
             .authorizeHttpRequests {
                 it.requestMatchers(
+                    "/test",
                     "/sellers",
                     "/sellers/signup",
                     "/sellers/signin",

@@ -9,7 +9,6 @@ import com.teamsparta.moamoa.domain.review.dto.UpdateReviewRequest
 import com.teamsparta.moamoa.domain.review.repository.ReviewRepository
 import com.teamsparta.moamoa.domain.socialUser.repository.SocialUserRepository
 import com.teamsparta.moamoa.exception.ModelNotFoundException
-import com.teamsparta.moamoa.infra.security.UserPrincipal
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
@@ -24,31 +23,66 @@ class ReviewServiceImpl(
     private val socialUserRepository: SocialUserRepository,
     private val orderRepository: OrderRepository,
 ) : ReviewService {
-    //    private fun validateRating(rating: Int) {
-//        if (rating < 1 || rating > 5) {
-//            throw IllegalArgumentException("Rating must be between 1 and 5.")
+//    @Transactional
+//    override fun createReview(
+//        productId: Long,
+//        providerId: Long,
+//        createReviewRequest: CreateReviewRequest,
+//        orderId: Long,
+//    ): ReviewResponse {
+//        // 주문에 대한 리뷰가 이미 있는지 확인
+//        reviewRepository.findByOrderId(orderId).ifPresent {
+//            throw IllegalStateException("이미 이 주문에 대한 리뷰가 작성되었습니다.")
 //        }
+//        // 이메일대신 프로바이더아이디 인식하게 바꿈
+//        val socialUser =
+//            socialUserRepository.findByProviderId(providerId.toString())
+//                .orElseThrow { ModelNotFoundException("User not found", providerId) }
+//        // 제품이 있는지, 소프트딜리트인지 확인
+//        val product =
+//            productRepository.findByIdAndDeletedAtIsNull(productId)
+//                .orElseThrow { ModelNotFoundException("Product not found or deleted", productId) }
+//        // 아이디가 없으면
+//        val userId = socialUser.id ?: throw IllegalArgumentException("사용자 ID가 없습니다")
+//        // orderId와 userId로 주문을 했는지뿐만 아니라 productId도 받아서
+//        val order =
+//            orderRepository.findByIdAndSocialUserIdAndProductId(orderId, userId, productId)
+//                .orElseThrow { ModelNotFoundException("해당 상품에 대한 주문내역을 확인할 수 없습니다.", orderId) }
+//        // 이제 리뷰를 생성
+//        val review = createReviewRequest.toReview(product, socialUser, order)
+//
+//        val savedReview = reviewRepository.save(review)
+//        return ReviewResponse.toReviewResponse(savedReview)
 //    }
 
     @Transactional
     override fun createReview(
-        productId: Long,
-        socialUser: UserPrincipal,
+        providerId: Long,
         createReviewRequest: CreateReviewRequest,
+        orderId: Long,
     ): ReviewResponse {
-//        validateRating(createReviewRequest.rating)
-        val user =
-            socialUserRepository.findByEmail(socialUser.email)
-                .orElseThrow { ModelNotFoundException("User not found", socialUser.id) }
-
+        // 주문에 대한 리뷰가 이미 있는지 확인
+        reviewRepository.findByOrderId(orderId).ifPresent {
+            throw IllegalStateException("이미 이 주문에 대한 리뷰가 작성되었습니다.")
+        }
+        val findProductIdByOrder = orderRepository.findByIdOrNull(orderId)
+        val productId = findProductIdByOrder!!.product.id
+        // 이메일대신 프로바이더아이디 인식하게 바꿈
+        val socialUser =
+            socialUserRepository.findByProviderId(providerId.toString())
+                .orElseThrow { ModelNotFoundException("User not found", providerId) }
+        // 제품이 있는지, 소프트딜리트인지 확인
         val product =
-            productRepository.findByIdAndDeletedAtIsNull(productId)
+            productRepository.findByIdAndDeletedAtIsNull(productId!!)
                 .orElseThrow { ModelNotFoundException("Product not found or deleted", productId) }
-
-        orderRepository.findByProductIdAndSocialUserId(productId, user.id)
-            .orElseThrow { ModelNotFoundException("주문내역을 확인할 수 없습니다", productId) }
-
-        val review = createReviewRequest.toReview(product, user)
+        // 아이디가 없으면
+        val userId = socialUser.id ?: throw IllegalArgumentException("사용자 ID가 없습니다")
+        // orderId와 userId로 주문을 했는지뿐만 아니라 productId도 받아서
+        val order =
+            orderRepository.findByIdAndSocialUserIdAndProductId(orderId, userId, productId)
+                .orElseThrow { ModelNotFoundException("해당 상품에 대한 주문내역을 확인할 수 없습니다.", orderId) }
+        // 이제 리뷰를 생성
+        val review = createReviewRequest.toReview(product, socialUser, order)
 
         val savedReview = reviewRepository.save(review)
         return ReviewResponse.toReviewResponse(savedReview)
@@ -63,6 +97,7 @@ class ReviewServiceImpl(
         return ReviewResponse.toReviewResponse(review)
     }
 
+    @Transactional
     override fun getReviewsByProductId(productId: Long): List<ReviewResponseByList> {
         val reviews = reviewRepository.findByProductIdAndDeletedAtIsNull(productId)
         return ReviewResponseByList.toReviewResponseByList(reviews)
@@ -80,18 +115,20 @@ class ReviewServiceImpl(
     @Transactional
     override fun updateReview(
         reviewId: Long,
-        socialUser: UserPrincipal,
+        providerId: Long,
         request: UpdateReviewRequest,
     ): ReviewResponse {
         val review =
             reviewRepository.findByIdAndDeletedAtIsNull(reviewId)
                 ?: throw ModelNotFoundException("Review", reviewId)
 
+        val socialUser =
+            socialUserRepository.findByProviderId(providerId.toString())
+                .orElseThrow { ModelNotFoundException("User not found", providerId) }
+
         if (review.socialUser.email != socialUser.email) {
             throw IllegalAccessException("권한이 없습니다.")
         }
-
-//        validateRating(request.rating)
 
         request.toUpdateReview(review)
 
@@ -103,11 +140,15 @@ class ReviewServiceImpl(
     @Transactional
     override fun deleteReview(
         reviewId: Long,
-        socialUser: UserPrincipal,
+        providerId: Long,
     ) {
         val review =
             reviewRepository.findByIdOrNull(reviewId)
                 ?: throw ModelNotFoundException("Review", reviewId)
+
+        val socialUser =
+            socialUserRepository.findByProviderId(providerId.toString())
+                .orElseThrow { ModelNotFoundException("User not found", providerId) }
 
         if (review.socialUser.email != socialUser.email) {
             throw IllegalAccessException("권한이 없습니다.")
@@ -119,5 +160,10 @@ class ReviewServiceImpl(
 
         review.deletedAt = LocalDateTime.now()
         reviewRepository.save(review)
+    }
+
+    override fun getReviewByOrderId(orderId: Long): ReviewResponse {
+        val order = orderRepository.findByIdOrNull(orderId)
+        val review = reviewRepository.
     }
 }

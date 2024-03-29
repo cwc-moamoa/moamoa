@@ -126,98 +126,7 @@
             margin-top: 0;
         }
 
-        #reviewForm {
-            margin-top: 20px;
-            border-top: 1px solid #ccc;
-            padding-top: 20px;
-        }
 
-        #reviewForm textarea {
-            width: calc(100% - 40px);
-            margin-bottom: 10px;
-            padding: 10px;
-            border-radius: 8px;
-            border: 1px solid #ccc;
-            resize: vertical;
-        }
-
-        #reviewForm button {
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            padding: 10px 20px;
-            font-size: 18px;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            text-decoration: none;
-            width: 100%;
-        }
-
-        #reviewForm button:hover {
-            background-color: #0056b3;
-        }
-        .review_box input{
-            display: block;
-            width: 100%;
-            margin-bottom: 5px;
-            border-radius: 4px;
-            border: solid #ccc 0.5px;
-
-        }
-        .review_box h2{
-            margin-bottom: 10px;
-        }
-
-        .review_box input::placeholder{
-            text-align: center;
-            font-size: 20px;
-
-        }
-        .review_box .review_title{
-            height: 50px;
-        }
-        .review_box .review_content{
-            height: 100px ;
-        }
-        .filebox{
-            margin: 0 0 10px 0;
-        }
-        .filebox .upload-name {
-            display: inline-block;
-            height: 40px;
-            padding: 0 10px;
-            vertical-align: middle;
-            border: 1px solid #dddddd;
-            width: 78%;
-            color: #999999;
-            margin-bottom: 0;
-        }
-        .filebox label {
-            display: inline-block;
-            padding: 10px 35px;
-            color: #fff;
-            vertical-align: middle;
-            background-color: #999999;
-            cursor: pointer;
-            height: 25px;
-            margin-left: 10px;
-            border-radius: 4px;
-        }
-        .filebox input[type="file"] {
-            position: absolute;
-            width: 0;
-            height: 0;
-            padding: 0;
-            overflow: hidden;
-            border: 0;
-        }
-        .rating_box{
-            height: 40px;
-        }
-        .rating_box select{
-            width: 50px;
-        }
     </style>
     <script>
         $(document).ready(function() {
@@ -281,50 +190,6 @@
                 });
             }
 
-            $(document).ready(function() {
-                $('#submitReview').click(function() {
-                    // 폼에서 리뷰 정보 가져오기
-                    var reviewTitle = $('#reviewTitle').val();
-                    var reviewContent = $('#reviewContent').val();
-                    var rating = $('#rating').val();
-
-                    // 리뷰 정보를 JSON 형식으로 만듭니다.
-                    var reviewData = {
-                        title: reviewTitle,
-                        content: reviewContent,
-                        rating: rating
-                    };
-
-                    // 서버로 AJAX 요청을 보냅니다.
-                    $.ajax({
-                        type: 'POST',
-                        url: '/reviews/' + productId, // productId를 사용하여 리뷰를 생성하는 엔드포인트에 접근합니다.
-                        contentType: 'application/json',
-                        data: JSON.stringify(reviewData),
-                        success: function(response) {
-                            // 리뷰가 성공적으로 생성되면 화면에 새로운 리뷰를 추가합니다.
-                            var newReviewHtml = '<div class="review">';
-                            newReviewHtml += '<p><strong>작성자:</strong> ' + response.userName + '</p>';
-                            newReviewHtml += '<p><strong>제목:</strong> ' + response.title + '</p>';
-                            newReviewHtml += '<p><strong>평점:</strong> ' + response.rating + '</p>';
-                            newReviewHtml += '<p><strong>내용:</strong> ' + response.content + '</p>';
-                            newReviewHtml += '</div>';
-                            $('#reviews').append(newReviewHtml);
-
-                            // 리뷰 작성 폼을 초기화합니다.
-                            $('#reviewTitle').val('');
-                            $('#reviewContent').val('');
-                            $('#rating').val('3');
-                        },
-                        error: function(xhr, status, error) {
-                            // 오류가 발생하면 알림을 표시합니다.
-                            alert('리뷰를 생성하는 동안 오류가 발생했습니다.');
-                        }
-                    });
-                });
-            });
-
-
 
             $('#submitReview').click(function() {s
                 var reviewContent = $('#reviewContent').val();
@@ -336,8 +201,12 @@
             getReviews(productId);
 
             // 주문하기 버튼 클릭 시
-            $('.order-button').click(function() {
+            $('#order-button01').click(function() {
                 window.location.href = "/order?productId=" + productId;
+            });
+
+            $('#order-button02').click(function() {
+                window.location.href = "/groupOrder?productId=" + productId;
             });
         });
     </script>
@@ -353,35 +222,13 @@
             <!-- 여기에 상품 정보가 표시됩니다 -->
         </div>
         <div class="order_btn_box">
-            <a href="#" class="order-button order-button01">주문하기</a>
-            <a href="#" class="order-button order-button02">공동주문하기</a>
+            <a href="#" class="order-button" id="order-button01">주문하기</a>
+            <a href="#" class="order-button" id="order-button02">공동주문하기</a>
         </div>
 
     </div>
     <div class="reviews" id="reviews">
         <!-- 여기에 리뷰가 표시됩니다 -->
-    </div>
-    <div id="reviewForm" class="review_box">
-        <h2>리뷰 작성</h2>
-        <input class="review_title" type="text" id="reviewTitle" placeholder="리뷰 제목">
-        <input class="review_content" type="text" id="reviewContent" placeholder="리뷰 내용을 작성해주세요...">
-        <div class="filebox">
-            <input class="upload-name" value="첨부파일" placeholder="첨부파일">
-            <label for="file">파일찾기</label>
-            <input type="file" id="file">
-        </div>
-        <div class="rating_box">
-            <label for="rating">평점:</label>
-            <select id="rating">
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-            </select>
-        </div>
-
-        <button id="submitReview">작성 완료</button>
     </div>
 </div>
 

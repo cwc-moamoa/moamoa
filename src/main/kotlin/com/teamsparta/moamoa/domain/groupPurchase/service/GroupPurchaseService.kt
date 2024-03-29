@@ -23,7 +23,8 @@ class GroupPurchaseService(
         userId: String,
         orderId: String,
     ) {
-        val uniqueOrderId = redisTemplate.opsForHash<String, String>().get(orderId, "productId") ?: throw Exception("redis에 정보가 없습니다")
+        val uniqueOrderId =
+            redisTemplate.opsForHash<String, String>().get(orderId, "productId") ?: throw Exception("redis에 정보가 없습니다")
         val productId = uniqueOrderId.toLong()
         val groupPurchase = groupPurchaseRepository.findByProductIdAndDeletedAtIsNull(productId)
         val findProduct =
@@ -40,7 +41,8 @@ class GroupPurchaseService(
                     mutableListOf(),
                 )
 
-            val groupPurchaseJoinUser = GroupPurchaseJoinUserEntity(userId.toLong(), newGroupPurchase, uniqueOrderId.toLong())
+            val groupPurchaseJoinUser =
+                GroupPurchaseJoinUserEntity(userId.toLong(), newGroupPurchase, uniqueOrderId.toLong())
 
             newGroupPurchase.groupPurchaseUsers.add(groupPurchaseJoinUser)
             groupPurchaseRepository.save(newGroupPurchase)

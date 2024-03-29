@@ -13,23 +13,23 @@ class SocialUser(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "social_user_id")
     var id: Long? = null,
+    val email: String,
     @Enumerated(EnumType.STRING)
     val provider: OAuth2Provider,
     val providerId: String,
     val nickname: String,
-    val email: String?,
 ) {
     companion object {
         fun ofKakao(
-            id: String,
+            email: String,
+            providerId: String,
             nickname: String,
-            email: String?,
         ): SocialUser {
             return SocialUser(
-                provider = OAuth2Provider.KAKAO,
-                providerId = id,
-                nickname = nickname,
                 email = email,
+                provider = OAuth2Provider.KAKAO,
+                providerId = providerId,
+                nickname = nickname,
             )
         }
     }

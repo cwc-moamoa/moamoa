@@ -16,5 +16,5 @@ interface SocialUserRepository : CrudRepository<SocialUser, Long> {
         id: String,
     ): SocialUser
 
-    fun findByEmail(email: String): Optional<SocialUser>
+    fun findByProviderId(providerId: String): Optional<SocialUser>
 }

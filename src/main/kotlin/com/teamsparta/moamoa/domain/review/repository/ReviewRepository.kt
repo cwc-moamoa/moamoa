@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
+import java.util.*
 
 interface ReviewRepository : JpaRepository<Review, Long> {
     // Id를 조회할 때 DeletedAt이 null 인 경우 삭제된 리뷰는 조회되지않음
@@ -18,4 +19,6 @@ interface ReviewRepository : JpaRepository<Review, Long> {
     ): Page<Review>
 
     fun findByProductIdAndDeletedAtIsNull(productId: Long): List<Review>
+
+    fun findByOrderId(orderId: Long): Optional<Review>
 }

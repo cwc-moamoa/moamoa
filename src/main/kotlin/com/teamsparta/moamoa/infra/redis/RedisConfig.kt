@@ -22,7 +22,7 @@ class RedisConfig() {
     }
 
     @Bean
-    fun redisTemplate(): RedisTemplate<String, Any> {
+    fun redisConfigTemplate(): RedisTemplate<String, Any> {
         return RedisTemplate<String, Any>().apply {
             this.connectionFactory = redisConnectionFactory()
 

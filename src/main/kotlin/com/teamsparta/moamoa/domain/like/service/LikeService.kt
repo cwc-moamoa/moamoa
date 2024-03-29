@@ -3,21 +3,21 @@ package com.teamsparta.moamoa.domain.like.service
 interface LikeService {
     fun addLikeToProduct(
         productId: Long,
-        socialUserId: Long,
+        providerId: Long,
     )
 
     fun removeLikeFromProduct(
         productId: Long,
-        socialUserId: Long,
+        providerId: Long,
     )
 
     fun addLikeToReview(
         reviewId: Long,
-        socialUserId: Long,
+        providerId: Long,
     )
 
     fun removeLikeFromReview(
         reviewId: Long,
-        socialUserId: Long,
+        providerId: Long,
     )
 }

@@ -37,20 +37,20 @@
             $('#orderForm').submit(function(event) {
                 event.preventDefault(); // 폼 기본 동작 방지
 
+                console.log("JWT Token from Cookie:", extractJwtTokenFromCookies());
+
                 // 폼 데이터를 객체로 구성
                 var formData = {
                     productId: $('#productId').val(),
                     quantity: $('#quantity').val(),
                     address: $('#address').val(),
-                    phoneNumber: $('#phoneNumber').val(),
+                    phoneNumber: $('#phoneNumber').val()
                 };
-
-                console.log("JWT Token from Cookie:", extractJwtTokenFromCookies());
 
                 // 서버로 POST 요청 보내기
                 $.ajax({
                     type: 'POST',
-                    url: '/api/orders/create',
+                    url: '/api/orders/group/create',
                     data: formData, // 객체 형태로 전송
                     headers: {
                         'Authorization': 'Bearer ' + extractJwtTokenFromCookies()
@@ -67,6 +67,7 @@
                     }
                 });
             });
+
         });
 
     </script>
@@ -165,7 +166,7 @@
 </head>
 <body>
 <div class="container">
-    <h1 class="order_title">주문 정보 입력</h1>
+    <h1 class="order_title">공동 주문 정보 입력</h1>
     <form class="form" id="orderForm" method="post">
         <input type="hidden" id="productId" name="productId">
 
