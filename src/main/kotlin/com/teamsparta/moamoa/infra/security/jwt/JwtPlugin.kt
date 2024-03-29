@@ -46,7 +46,6 @@ class JwtPlugin(
     }
 
 
-
     private fun generateToken(
         subject: String,
         nickname: String,
