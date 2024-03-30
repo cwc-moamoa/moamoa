@@ -7,11 +7,12 @@
     <script src="https://cdn.iamport.kr/v1/iamport.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
+
         var IMP = window.IMP;
-        IMP.init("imp08838662"); //요거랑
+        IMP.init("imp08838662")
 
         // 결제 요청 함수
-        function requestPay() {
+        window.onload = function requestPay() {
 
             // 서버에서 받아온 주문 정보
             var orderUid = "[[${requestDto.orderUid}]]";
@@ -100,10 +101,10 @@
     </style>
 </head>
 
-<body>
-    <div class="btn_box">
-        <button class="pay_btn" onclick="requestPay()">결제하기</button>
-    </div>
-</body>
+<!--<body>-->
+<!--    <div class="btn_box">-->
+<!--        <button class="pay_btn" onclick="requestPay()">결제하기</button>-->
+<!--    </div>-->
+<!--</body>-->
 
 </html>

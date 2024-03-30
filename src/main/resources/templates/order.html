@@ -47,6 +47,9 @@
 
                 console.log("JWT Token from Cookie:", extractJwtTokenFromCookies());
 
+                // 주문 버튼 비활성화
+                $('#order_btn').prop('disabled', true);
+
                 // 서버로 POST 요청 보내기
                 $.ajax({
                     type: 'POST',
@@ -56,7 +59,7 @@
                         'Authorization': 'Bearer ' + extractJwtTokenFromCookies()
                     },
                     success: function(response) {
-                        alert('주문이 성공적으로 생성되었습니다!');
+                        // alert('주문이 성공적으로 생성되었습니다!');
                         // 주문 생성 성공 시 결제 페이지로 이동
                         var orderUid = response.orderUid;
                         window.location.href = "/payment/" + orderUid;
@@ -64,6 +67,10 @@
                     error: function(xhr, status, error) {
                         alert('주문 생성에 실패하였습니다.');
                         // 주문 생성 실패 시 처리할 로직 추가 가능
+                    },
+                    complete: function() {
+                        // 요청 완료 후 주문 버튼 다시 활성화
+                        $('#order_btn').prop('disabled', false);
                     }
                 });
             });
