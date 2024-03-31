@@ -445,11 +445,11 @@ class OrderServiceImpl(
     override fun trollOrderDelete(orderUId: String) {
         val order = orderRepository.findByOrderUidAndDeletedAtIsNull(orderUId) ?: throw Exception()
         val payment = paymentRepository.findByIdOrNull(order.payment.id)
-        val stock = productStockRepository.findById(order.product.id!!) .orElseThrow()
+        val stock = productStockRepository.findByIdOrNull(order.product.id!!)
 
         order.deletedAt = LocalDateTime.now()
         payment!!.deletedAt = LocalDateTime.now()
-        stock.stock += order.quantity
+        stock!!.stock += order.quantity
     }
 
     @Transactional
