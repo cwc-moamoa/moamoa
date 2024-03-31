@@ -44,7 +44,7 @@
 ---
 # DB modeling
 
-<img width="1152" alt="image" src="https://github.com/cwc-moamoa/moamoa/assets/149165093/4a070e99-ffe8-4be3-96c0-cdb31777cf68">
+<img width="1152" alt="image" src="https://github.com/cwc-moamoa/moamoa/assets/120659405/18f0343f-2184-45a4-af35-c0c9eb9b6858">
 
 
 ---
