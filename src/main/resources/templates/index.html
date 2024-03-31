@@ -50,7 +50,7 @@
             padding: 10px;
             text-align: right;
             position: relative;
-            height: 100px;
+            height: 150px;
             box-sizing: border-box;
             margin: 0 auto;
             width: 70%;
@@ -68,9 +68,9 @@
         header .login_btn {
             position: absolute;
             right: 25px;
-            top: 36%;
+            top: 30%;
             width: 270px;
-            height: 30px;
+            height: 45px;;
             border-radius: 4px;
             cursor: pointer;
             overflow: hidden;
@@ -85,7 +85,7 @@
             margin: 0 auto;
             overflow: hidden;
             padding-left: 25%;
-            padding-top: 30px;
+            padding-top: 45px;
         }
 
         .search_box input {
@@ -352,6 +352,36 @@
         .pagination li:last-child {
             margin-right: 0;
         }
+        .welcome{
+            display: none;
+            position: absolute;
+            right: 25px;
+            top: 27%;
+            width: 269px;
+            height: 60px;
+            border-radius: 4px;
+            /* cursor: pointer; */
+            overflow: hidden;
+            /* background-color: violet; */
+            text-align: center;
+        }
+        .welcome p{
+            margin-bottom: 5px;
+        }
+        .my_btn{
+            width: 100%;
+            height: 30px;
+            border: none;
+            border-radius: 4px;
+            background-color: #fff;
+            transition: 0.2s;
+            cursor: pointer;
+        }
+        .my_btn:hover{
+            background-color: #07C5F5;
+            color: #ffffff;
+            border: 1px solid #eeeeee;
+        }
     </style>
 
 
@@ -484,9 +514,9 @@
                      alt="kakao_btn"></a>
         </div>
 
-        <div id="welcomeMessage" style="display: none;">
+        <div id="welcomeMessage"   class="welcome">
             <p>환영합니다!</p>
-            <button id="my-page-button">마이페이지로 이동하기</button>
+            <button id="my-page-button" class="my_btn">마이페이지</button>
         </div>
 
 
