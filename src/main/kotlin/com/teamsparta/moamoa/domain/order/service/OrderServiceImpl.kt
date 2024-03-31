@@ -449,4 +449,12 @@ class OrderServiceImpl(
         order.deletedAt = LocalDateTime.now()
         payment!!.deletedAt = LocalDateTime.now()
     }
+
+    @Transactional
+    override fun getOrderByOrderUid(
+        orderUId: String,
+    ): ResponseOrderDto {
+        val order = orderRepository.findByOrderUidAndDeletedAtIsNull(orderUId) ?: throw Exception()
+        return order.toResponse()
+    }
 }

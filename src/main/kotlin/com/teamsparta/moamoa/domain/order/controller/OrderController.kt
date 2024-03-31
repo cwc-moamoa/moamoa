@@ -215,4 +215,13 @@ class OrderController(
         orderService.trollOrderDelete(orderUid)
         return ResponseEntity.status(HttpStatus.OK).body(Unit)
     }
+
+    @GetMapping("/getOneByOrderUId/{orderUId}")
+    fun getOrderByOrderUid(
+        @PathVariable orderUId: String
+    ): ResponseEntity<ResponseOrderDto> {
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(orderService.getOrderByOrderUid(orderUId))
+    }
 }

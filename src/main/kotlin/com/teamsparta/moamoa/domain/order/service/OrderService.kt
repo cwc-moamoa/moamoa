@@ -94,4 +94,8 @@ interface OrderService {
 
     fun trollOrderDelete(orderUId: String)
 
+    fun getOrderByOrderUid(
+                           orderUId: String,
+    ): ResponseOrderDto
+
 }

@@ -13,8 +13,27 @@
         var IMP = window.IMP;
         IMP.init("imp08838662")
 
+        $(document).ready(function() {
+            performAjaxRequest();
+        });
+
+        function performAjaxRequest() {
+            var orderUid = window.location.pathname.split('/').pop();
+
+            $.ajax({
+                type: 'GET',
+                url: '/api/orders/getOneByOrderUId/' + orderUid,
+                success: function(response) {
+                    requestPay();
+                },
+                error: function(xhr, status, error) {
+                    window.location.href = '/payment';
+                }
+            });
+        }
+
         // 결제 요청 함수
-        window.onload = function requestPay() {
+        function requestPay() {
 
             // 서버에서 받아온 주문 정보
             var orderUid = "[[${requestDto.orderUid}]]";
@@ -114,10 +133,6 @@
 
         // 새로고침 이벤트 감지
         window.onbeforeunload = function() {
-            if (document.readyState === "loading") {
-                // 페이지가 아직 로드 중인 경우 바로 다른 주소로 이동합니다.
-                location.href = '/';
-            }
             // 현재 주문의 UID를 가져옵니다.
             var orderUid = window.location.pathname.split('/').pop();
 
@@ -126,17 +141,8 @@
                 type: 'PUT',
                 url: '/api/orders/' + orderUid,
                 success: function(response) {
-                    console.log('주문이 성공적으로 업데이트되었습니다.');
-                    if (document.readyState === "loading") {
-                        // 페이지가 아직 로드 중인 경우 바로 다른 주소로 이동합니다.
-                        location.href = '/';
-                    }
                 },
                 error: function(xhr, status, error) {
-                    console.error('주문 업데이트 중 오류가 발생하였습니다:', error);
-                    if (document.readyState === "loading") {
-                        location.href = '/';
-                    }
                 },
 
             });
