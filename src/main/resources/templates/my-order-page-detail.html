@@ -156,7 +156,8 @@
 
 
             function createReview(orderId) {
-                $('#submitReview').click(function () {
+                // 리뷰 작성 버튼을 클릭할 때마다 실행되는 함수
+                $('#submitReview').one('click', function () {
                     // 폼에서 리뷰 정보 가져오기
                     var reviewTitle = $('#reviewTitle').val();
                     var reviewContent = $('#reviewContent').val();

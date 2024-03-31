@@ -18,19 +18,18 @@ import com.teamsparta.moamoa.domain.product.model.Product
 import com.teamsparta.moamoa.domain.product.model.ProductStock
 import com.teamsparta.moamoa.domain.product.repository.ProductRepository
 import com.teamsparta.moamoa.domain.product.repository.ProductStockRepository
-import com.teamsparta.moamoa.domain.review.dto.ReviewResponseByList
 import com.teamsparta.moamoa.domain.seller.repository.SellerRepository
 import com.teamsparta.moamoa.domain.socialUser.model.SocialUser
 import com.teamsparta.moamoa.domain.socialUser.repository.SocialUserRepository
 import com.teamsparta.moamoa.exception.ModelNotFoundException
 import com.teamsparta.moamoa.infra.redis.RedissonLockManager
 import com.teamsparta.moamoa.infra.security.UserPrincipal
+import java.time.LocalDateTime
+import java.util.*
 import org.springframework.data.domain.Page
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.time.LocalDateTime
-import java.util.*
 
 @Service
 class OrderServiceImpl(
@@ -267,9 +266,9 @@ class OrderServiceImpl(
     ): ResponseOrderDto {
         val findUser =
             socialUserRepository.findByProviderId(user.id.toString()).orElseThrow() ?: throw Exception("존재하지 않는 유저입니다")
-        val findOrders = orderRepository.findByIdAndDeletedAtIsNull(orderId).orElseThrow { Exception("존재하지 않는 주문입니다") }
+        val findOrders = orderRepository.findByIdAndDeletedAtIsNull(orderId)
         // 논리삭제가 된 주문은 업데이트 할 필요가 없기 때문에 찾지 않도록 함
-        if (findOrders.socialUser == findUser) {
+        if (findOrders!!.socialUser == findUser) {
             findOrders.address = updateOrderDto.address
             return orderRepository.save(findOrders).toResponse()
         } else {
@@ -284,8 +283,8 @@ class OrderServiceImpl(
     ): CancelResponseDto {
         val findUser =
             socialUserRepository.findByProviderId(user.id.toString()).orElseThrow() ?: throw Exception("존재하지 않는 유저입니다")
-        val findOrder = orderRepository.findByIdAndDeletedAtIsNull(orderId).orElseThrow { Exception("존재하지 않는 주문입니다") }
-        val stock = productStockRepository.findByProduct(findOrder.product)
+        val findOrder = orderRepository.findByIdAndDeletedAtIsNull(orderId)
+        val stock = productStockRepository.findByProduct(findOrder!!.product)
 
         // 요서 부터는 공구친구들을 위한
         val findGroupJoinUser = groupPurchaseJoinUserRepository.findByOrderId(orderId) ?: throw ModelNotFoundException(
@@ -352,7 +351,7 @@ class OrderServiceImpl(
     ): ResponseOrderDto {
         val findUser =
             socialUserRepository.findByProviderId(user.id.toString()).orElseThrow() ?: throw Exception("존재하지 않는 유저입니다")
-        val findOrder = orderRepository.findByIdOrNull(orderId) ?: throw Exception("존재하지 않는 주문 입니다")
+        val findOrder = orderRepository.findByIdAndDeletedAtIsNull(orderId) ?: throw Exception("존재하지 않는 주문 입니다")
         // 취소된 주문도 조회는 가능해야 한다 생각해서, 논리삭제된것도 찾을수 있게 함
         return if (findOrder.socialUser.id == findUser.id) {
             findOrder.toResponse()
@@ -365,7 +364,7 @@ class OrderServiceImpl(
     override fun getOrderList(user: UserPrincipal): List<ResponseOrderDto> {
         val findUser =
             socialUserRepository.findByProviderId(user.id.toString()).orElseThrow() ?: throw Exception("존재하지 않는 유저입니다")
-        val orders = orderRepository.findBySocialUserId(findUser.id!!)
+        val orders = orderRepository.findBySocialUserIdAndDeletedAtIsNull(findUser.id!!)
         return orders.map { order ->
             ResponseOrderDto(
                 orderId = order.id!!,
@@ -403,17 +402,17 @@ class OrderServiceImpl(
         if (findProductList.isEmpty()) {
             throw ModelNotFoundException("product", sellerId)
         }
-        val findOrder = orderRepository.findByIdAndDeletedAtIsNull(orderId).orElseThrow { Exception("존재하지 않는 주문입니다") }
+        val findOrder = orderRepository.findByIdAndDeletedAtIsNull(orderId)
         // 이건 상태를 변경하는거고, 취소된 주문은 이미 상태가 cancelled 이기 때문에, 상태변경을 지원하지 않음.
         val findResult =
-            findProductList.find { it.id == findOrder.product.id } ?: throw Exception("판매자가 파는 상품의 주문이 아닙니다")
+            findProductList.find { it.id == findOrder!!.product.id } ?: throw Exception("판매자가 파는 상품의 주문이 아닙니다")
         val stock = productStockRepository.findByProduct(findResult)
         if (status == OrdersStatus.CANCELLED) {
-            findOrder.status = status
+            findOrder!!.status = status
             stock!!.stock += findOrder.quantity
             productStockRepository.save(stock!!)
         } else {
-            findOrder.status = status
+            findOrder!!.status = status
         }
         return orderRepository.save(findOrder).toResponse()
     }
@@ -441,4 +440,21 @@ class OrderServiceImpl(
     ): Page<ResponseOrderDto> {
         return orderRepository.getOrderPageBySellerId(sellerId, page, size).map { it.toResponse() }
     } // 이 로직은 취소된것도 알수있어야 한다 생각하여 논리삭제된것도 예외없이 다 검색함
+
+    @Transactional
+    override fun trollOrderDelete(orderUId: String) {
+        val order = orderRepository.findByOrderUidAndDeletedAtIsNull(orderUId) ?: throw Exception()
+        val payment = paymentRepository.findByIdOrNull(order.payment.id)
+
+        order.deletedAt = LocalDateTime.now()
+        payment!!.deletedAt = LocalDateTime.now()
+    }
+
+    @Transactional
+    override fun getOrderByOrderUid(
+        orderUId: String,
+    ): ResponseOrderDto {
+        val order = orderRepository.findByOrderUidAndDeletedAtIsNull(orderUId) ?: throw Exception()
+        return order.toResponse()
+    }
 }

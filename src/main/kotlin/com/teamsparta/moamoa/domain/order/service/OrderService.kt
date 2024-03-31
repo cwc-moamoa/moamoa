@@ -91,4 +91,11 @@ interface OrderService {
         page: Int,
         size: Int,
     ): Page<ResponseOrderDto>
+
+    fun trollOrderDelete(orderUId: String)
+
+    fun getOrderByOrderUid(
+                           orderUId: String,
+    ): ResponseOrderDto
+
 }
