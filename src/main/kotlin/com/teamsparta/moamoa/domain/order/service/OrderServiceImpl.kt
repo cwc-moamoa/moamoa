@@ -440,4 +440,13 @@ class OrderServiceImpl(
     ): Page<ResponseOrderDto> {
         return orderRepository.getOrderPageBySellerId(sellerId, page, size).map { it.toResponse() }
     } // 이 로직은 취소된것도 알수있어야 한다 생각하여 논리삭제된것도 예외없이 다 검색함
+
+    @Transactional
+    override fun trollOrderDelete(orderUId: String) {
+        val order = orderRepository.findByOrderUidAndDeletedAtIsNull(orderUId) ?: throw Exception()
+        val payment = paymentRepository.findByIdOrNull(order.payment.id)
+
+        order.deletedAt = LocalDateTime.now()
+        payment!!.deletedAt = LocalDateTime.now()
+    }
 }

@@ -119,7 +119,7 @@ class OrderController(
 //            .status(HttpStatus.OK)
 //            .body(orderService.createGroupOrder(userId, productId, quantity, address, phoneNumber))
 //    }
-    @PutMapping("update/{orderId}")
+    @PutMapping("/update/{orderId}")
     fun updateOrder(
         @AuthenticationPrincipal user: UserPrincipal,
         @PathVariable orderId: Long,
@@ -208,5 +208,11 @@ class OrderController(
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(orderService.getOrderPageBySellerId(sellerId, page, size))
+    }
+
+    @PutMapping("{orderUid}")
+    fun deleteOrderAndPayment(@PathVariable orderUid: String): ResponseEntity<Unit> {
+        orderService.trollOrderDelete(orderUid)
+        return ResponseEntity.status(HttpStatus.OK).body(Unit)
     }
 }

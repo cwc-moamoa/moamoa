@@ -17,9 +17,13 @@ class PaymentController(private val paymentService: PaymentService) {
         @PathVariable orderUid: String,
         model: Model,
     ): String {
-        val requestDto = paymentService.findRequestDto(orderUid)
-        model.addAttribute("requestDto", requestDto)
-        return "payment"
+        try {
+            val requestDto = paymentService.findRequestDto(orderUid)
+            model.addAttribute("requestDto", requestDto)
+            return "payment"
+        } catch (e: IllegalArgumentException) {
+            return "redirect:/"
+        }
     }
 
     @ResponseBody

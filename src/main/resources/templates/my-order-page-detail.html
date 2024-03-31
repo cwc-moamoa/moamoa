@@ -204,54 +204,6 @@
                 });
             }
 
-            // function createReview(orderId) {
-            //     $('#submitReview').click(function () {
-            //         // 폼에서 리뷰 정보 가져오기
-            //         var reviewTitle = $('#reviewTitle').val();
-            //         var reviewContent = $('#reviewContent').val();
-            //         var rating = $('#rating').val();
-            //
-            //         // 리뷰 정보를 JSON 형식으로 만듭니다.
-            //         var reviewData = {
-            //             title: reviewTitle,
-            //             content: reviewContent,
-            //             rating: rating,
-            //         };
-            //
-            //         // 서버로 AJAX 요청을 보냅니다.
-            //         $.ajax({
-            //             type: 'POST',
-            //             url: '/reviews/create/' + orderId,
-            //             contentType: 'application/json',
-            //             data: JSON.stringify(reviewData),
-            //             headers: {
-            //                 'Authorization': 'Bearer ' + extractJwtTokenFromCookies()
-            //             },
-            //             success: function (response) {
-            //                 // 리뷰가 성공적으로 생성되면 화면에 새로운 리뷰를 추가합니다.
-            //                 var newReviewHtml = '<div class="review">';
-            //                 newReviewHtml += '<p><strong>작성자:</strong> ' + response.userName + '</p>';
-            //                 newReviewHtml += '<p><strong>제목:</strong> ' + response.title + '</p>';
-            //                 newReviewHtml += '<p><strong>평점:</strong> ' + response.rating + '</p>';
-            //                 newReviewHtml += '<p><strong>내용:</strong> ' + response.content + '</p>';
-            //                 newReviewHtml += '</div>';
-            //                 $('#reviews').append(newReviewHtml);
-            //
-            //                 // 리뷰 작성 폼을 초기화합니다.
-            //                 $('#reviewTitle').val('');
-            //                 $('#reviewContent').val('');
-            //                 $('#rating').val('3');
-            //                 alert('리뷰가 작성 되었습니다.')
-            //             },
-            //             error: function (xhr, status, error) {
-            //                 // 오류가 발생하면 알림을 표시합니다.
-            //                 console.log("error")
-            //                 alert('리뷰를 생성하는 동안 오류가 발생했습니다.');
-            //             }
-            //         });
-            //     });
-            // }
-
             function getOrderDetails(orderId) {
                 $.ajax({
                     type: 'GET',

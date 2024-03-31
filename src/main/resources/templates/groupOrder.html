@@ -2,6 +2,8 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>주문 정보 입력</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
@@ -172,6 +174,14 @@
     </style>
 </head>
 <body>
+<script type="text/javascript">
+    // 앞으로 가기 버튼 비활성화
+    history.pushState(null, null, location.href);
+    window.onpopstate = function(event) {
+        alert('비정상적인 접근입니다.');
+        window.location.href = '/';
+    };
+</script>
 <div class="container">
     <h1 class="order_title">공동 주문 정보 입력</h1>
     <form class="form" id="orderForm" method="post">
