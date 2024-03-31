@@ -189,6 +189,41 @@ class OrderServiceImpl(
         ).toResponse()
     }
 
+    @Transactional // 테스트용 락 있는 코드
+    override fun createOrderWithLock(
+        userId: Long,
+        productId: Long,
+        quantity: Int,
+        address: String,
+        phoneNumber: String,
+    ): ResponseOrderDto {
+        val lockKey = "createOrderWithLock_$productId"
+        val lockAcquired = redissonLockManager.acquireLock(lockKey, 15000, 60000)
+        if (!lockAcquired) {
+            throw Exception("락을 획득할 수 없습니다. 잠시 후 다시 시도해주세요.")
+        }
+
+        try {
+            val (findUser, findProduct, stockCheck) = orderCommonForTest(userId, productId, quantity)
+
+            val totalPrice = findProduct.price * quantity
+            val finalDiscount = 0.0
+
+            return orderSave(
+                findUser,
+                findProduct,
+                stockCheck,
+                totalPrice,
+                finalDiscount,
+                address,
+                quantity,
+                phoneNumber,
+            ).toResponse()
+        } finally {
+            redissonLockManager.releaseLock(lockKey)
+        }
+    }
+
     private fun orderCommonForTest(
         userId: Long,
         productId: Long,
