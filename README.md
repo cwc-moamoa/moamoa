@@ -119,12 +119,12 @@
 
 ---
 # Built With
- [김선병](https://github.com/Karox1234) - 팀장, 공동구매, 결제, 프론트
+ [김선병](https://github.com/Karox1234) - 팀장, 주문, 결제 시스템, 동시성 제어, 프론트
 
- [김보성](https://github.com/96KimBoseong)  - 부팀장, 일반구매, 배포, 프론트
+ [김보성](https://github.com/96KimBoseong)  - 부팀장, 주문, CI/CD, 프론트
 
- [강민지](https://github.com/mingdorri) - 팀원, 리뷰, 멀티미디어 업로드
+ [강민지](https://github.com/mingdorri) - 팀원, 리뷰, 멀티미디어 업로드, PPT 제작
 
- [이 율](https://github.com/dyorcat) - 팀원, 회원가입, 소셜로그인, jwt, 프론트
+ [이 율](https://github.com/dyorcat) - 팀원, 회원가입, 소셜로그인, 에러처리, 프론트
 
  [홍성욱](https://github.com/suh75321) - 팀원, 상품, 좋아요, 검색
