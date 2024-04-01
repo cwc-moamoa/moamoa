@@ -10,8 +10,7 @@
 
 ---
 # Service Architecture
-![image](https://github.com/cwc-moamoa/moamoa/assets/149165093/0e39496a-c3c4-4dc1-888e-97ea052f7796)
-
+![image](https://github.com/cwc-moamoa/moamoa/assets/149165093/efc3a023-6b81-4f8d-933d-3ed4d22bf4e3)
 
 
 
@@ -46,8 +45,7 @@
 ---
 # DB modeling
 
-
-![image](https://github.com/cwc-moamoa/moamoa/assets/149165093/331e4c9b-fded-4962-a81a-ff5863780fb2)
+<img width="1152" alt="image" src="https://github.com/cwc-moamoa/moamoa/assets/120659405/18f0343f-2184-45a4-af35-c0c9eb9b6858">
 
 
 ---
