@@ -366,8 +366,7 @@
         .welcome p{
             margin-bottom: 5px;
         }
-        .my_btn{
-            width: 100%;
+        .welcome_btn{
             height: 30px;
             border: none;
             border-radius: 4px;
@@ -375,10 +374,21 @@
             transition: 0.2s;
             cursor: pointer;
         }
-        .my_btn:hover{
+        .welcome_btn:hover{
             background-color: #07C5F5;
             color: #ffffff;
             border: 1px solid #eeeeee;
+        }
+        .btn_flex{
+            display: flex;
+            justify-content: space-evenly;
+
+        }
+        .btn_flex button{
+            width: 35%;
+        }
+        .logout_btn{
+
         }
     </style>
 
@@ -489,6 +499,7 @@
             });
         }
     </script>
+
     <link rel="icon" href="data:;base64,iVBORw0KGgo=">
 </head>
 
@@ -514,59 +525,15 @@
 
         <div id="welcomeMessage"   class="welcome">
             <p>환영합니다!</p>
-            <button id="my-page-button" class="my_btn">마이페이지</button>
+            <div class="btn_flex">
+                <button id="logoutBtn" class="logout_btn welcome_btn">로그아웃</button>
+            <button id="my-page-button" class="my_btn welcome_btn">마이페이지</button>
+            </div>
+            
         </div>
 
 
-        <script>
-
-            // 로그인 함수
-
-            document.querySelector('.login_btn a').addEventListener('click', function () {
-                location.href = '/oauth2/login/kakao';
-            });
-
-            document.addEventListener("DOMContentLoaded", function () {
-                var loginButton = document.getElementById('loginBtn');
-
-                // 쿠키에서 JWT 토큰을 가져오는 함수
-                function extractJwtTokenFromCookies() {
-                    const cookies = document.cookie.split(';'); // 쿠키 문자열을 세미콜론을 기준으로 나눕니다.
-
-                    // 쿠키 배열을 반복하면서 JWT 토큰을 찾습니다.
-                    for (let i = 0; i < cookies.length; i++) {
-                        const cookie = cookies[i].trim(); // 공백을 제거합니다.
-                        if (cookie.startsWith('jwt_token=')) {
-                            // 'jwt_token=' 부분을 제외하고 추출하여 반환합니다.
-                            return cookie.substring('jwt_token='.length);
-                        }
-                    }
-
-                    // JWT 토큰이 없으면 null을 반환합니다.
-                    return null;
-                }
-
-                // 쿠키에서 JWT 토큰 가져오기
-                var jwtToken = extractJwtTokenFromCookies();
-
-                // JWT 토큰이 존재하는 경우
-                if (jwtToken) {
-                    // 로그인 버튼을 숨깁니다.
-                    loginButton.style.display = 'none';
-                    welcomeMessage.style.display = 'block';
-                } else {
-                    // JWT 토큰이 존재하지 않는 경우, 로그인 버튼을 표시합니다.
-                    loginButton.style.display = 'block';
-                }
-            });
-
-            $(document).ready(function () {
-                $('#my-page-button').click(function () {
-                    window.location.href = "/my-order-page";
-                });
-            });
-
-        </script>
+       
 
 
     </header>
@@ -623,7 +590,66 @@
         </div>
     </div>
 </footer>
+<script defer>
 
+    // 로그인 함수
+
+    document.querySelector('.login_btn a').addEventListener('click', function () {
+        location.href = '/oauth2/login/kakao';
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        var loginButton = document.getElementById('loginBtn');
+
+        // 쿠키에서 JWT 토큰을 가져오는 함수
+        function extractJwtTokenFromCookies() {
+            const cookies = document.cookie.split(';'); // 쿠키 문자열을 세미콜론을 기준으로 나눕니다.
+
+            // 쿠키 배열을 반복하면서 JWT 토큰을 찾습니다.
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim(); // 공백을 제거합니다.
+                if (cookie.startsWith('jwt_token=')) {
+                    // 'jwt_token=' 부분을 제외하고 추출하여 반환합니다.
+                    return cookie.substring('jwt_token='.length);
+                }
+            }
+
+            // JWT 토큰이 없으면 null을 반환합니다.
+            return null;
+        }
+
+        // 쿠키에서 JWT 토큰 가져오기
+        var jwtToken = extractJwtTokenFromCookies();
+
+        // JWT 토큰이 존재하는 경우
+        if (jwtToken) {
+            // 로그인 버튼을 숨깁니다.
+            loginButton.style.display = 'none';
+            welcomeMessage.style.display = 'block';
+        } else {
+            // JWT 토큰이 존재하지 않는 경우, 로그인 버튼을 표시합니다.
+            loginButton.style.display = 'block';
+        }
+    });
+    // 로그아웃 버튼을 눌렀을 때 실행되는 함수
+    function logout() {
+        // 쿠키 삭제
+        document.cookie = 'jwt_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+        // 로그인 버튼을 보이도록 설정
+        document.getElementById('loginBtn').style.display = 'block';
+        // 환영 메시지 숨기기
+        document.getElementById('welcomeMessage').style.display = 'none';
+    }
+    // 로그아웃 버튼에 이벤트 리스너 추가
+    document.getElementById('logoutBtn').addEventListener('click', logout);
+
+    $(document).ready(function () {
+        $('#my-page-button').click(function () {
+            window.location.href = "/my-order-page";
+        });
+    });
+
+</script>
 </body>
 
 
