@@ -17,6 +17,7 @@ class HomeController {
     ): String {
         return "order"
     }
+
     @GetMapping("/groupOrder")
     fun goToGroupOrderPage(
         @RequestParam productId: String,

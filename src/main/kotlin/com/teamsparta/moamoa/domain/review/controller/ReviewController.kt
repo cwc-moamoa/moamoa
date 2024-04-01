@@ -36,7 +36,6 @@ class ReviewController(
             .body(results)
     }
 
-
     @GetMapping("/review/{reviewId}")
     fun getReviewById(
         @PathVariable reviewId: Long,
@@ -53,6 +52,7 @@ class ReviewController(
         val reviews = reviewService.getPaginatedReviewList(productId, pageable)
         return ResponseEntity.ok(reviews)
     }
+
     @PutMapping("/{reviewId}")
     fun updateReview(
         @PathVariable reviewId: Long,
@@ -63,7 +63,6 @@ class ReviewController(
             .status(HttpStatus.OK)
             .body(reviewService.updateReview(reviewId, user.id, updateReviewRequest))
     }
-
 
     @DeleteMapping("/{reviewId}")
     fun deleteReview(
@@ -76,7 +75,6 @@ class ReviewController(
             .status(HttpStatus.OK)
             .body(deleteReviewSuccessMessage)
     }
-
 
     // 프론트 연결용 컨트롤러
     @GetMapping("/products/{productId}/reviews")

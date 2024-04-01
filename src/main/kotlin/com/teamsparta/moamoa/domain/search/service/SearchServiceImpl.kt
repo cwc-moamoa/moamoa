@@ -58,8 +58,8 @@ class SearchServiceImpl(
     override fun searchProducts(
         keyword: String,
         pageable: Pageable,
-    ): Page<ProductSearchResponse> {
-        saveSearchHistory(keyword) // 검색하면 히스토리에 저장된다는 뜻
+    ): Page<ProductSearchResponse> {// Page<Product>를 dto로
+        saveSearchHistory(keyword)
 
         val productPage = searchProductRepository.findByTitleContaining(keyword, pageable)
 

@@ -7,7 +7,7 @@ import org.springframework.data.domain.Page
 
 interface OrderService {
     fun createOrderTest(
-        user : UserPrincipal,
+        user: UserPrincipal,
         productId: Long,
         quantity: Int,
         address: String,
@@ -22,7 +22,7 @@ interface OrderService {
         phoneNumber: String,
     ): ResponseOrderDto
 
-    //테스트용 락 없는 코드
+    // 테스트용 락 없는 코드
     fun createOrderNoLock(
         userId: Long,
         productId: Long,
@@ -84,5 +84,4 @@ interface OrderService {
         page: Int,
         size: Int,
     ): Page<ResponseOrderDto>
-
 }

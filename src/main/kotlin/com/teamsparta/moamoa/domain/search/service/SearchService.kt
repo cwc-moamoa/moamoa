@@ -7,7 +7,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 
 interface SearchService {
-    fun searchProductsByLikes(pageable: Pageable): List<ProductSearchResponse>
+    fun searchProductsByLikes(pageable: Pageable): List<ProductSearchResponse> //List<Product>를 dto로
 
     fun searchReviewsByLikes(pageable: Pageable): List<ReviewSearchResponse>
 
