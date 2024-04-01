@@ -131,22 +131,22 @@
             });
         });
 
-        // 새로고침 이벤트 감지
-        window.onbeforeunload = function() {
-            // 현재 주문의 UID를 가져옵니다.
-            var orderUid = window.location.pathname.split('/').pop();
-
-            // AJAX를 이용하여 주문을 업데이트합니다.
-            $.ajax({
-                type: 'PUT',
-                url: '/api/orders/' + orderUid,
-                success: function(response) {
-                },
-                error: function(xhr, status, error) {
-                },
-
-            });
-        };
+        // // 새로고침 이벤트 감지
+        // window.onbeforeunload = function() {
+        //     // 현재 주문의 UID를 가져옵니다.
+        //     var orderUid = window.location.pathname.split('/').pop();
+        //
+        //     // AJAX를 이용하여 주문을 업데이트합니다.
+        //     $.ajax({
+        //         type: 'PUT',
+        //         url: '/api/orders/' + orderUid,
+        //         success: function(response) {
+        //         },
+        //         error: function(xhr, status, error) {
+        //         },
+        //
+        //     });
+        // };
 
         // 페이지를 떠날 때 Ajax 통신을 이용하여 서버의 컨트롤러 호출
         window.addEventListener('unload', () => {
