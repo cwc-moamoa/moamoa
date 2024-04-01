@@ -145,7 +145,7 @@
                             '<p>가격: ' + response.price + '</p>' +
                             '<p>내용: ' + response.content + '</p>' +
                             '<p>할인: ' + response.discount + "%" + '</p>' +
-                            '<p>평균 평점: ' + response.ratingAverage + '</p>' +
+                            '<p>평균 평점: ' + response.ratingAverage.toFixed(1) + '</p>' +
                             '<p>좋아요 수: ' + response.likes + '</p>');
                         $('#productImage').html('<img src="' + response.imageUrl + '" alt="Product Image">');
                     },
