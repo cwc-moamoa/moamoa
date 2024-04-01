@@ -91,4 +91,19 @@ interface OrderService {
         page: Int,
         size: Int,
     ): Page<ResponseOrderDto>
+
+    fun trollOrderDelete(orderUId: String)
+
+    fun getOrderByOrderUid(
+                           orderUId: String,
+    ): ResponseOrderDto
+
+    fun createOrderWithLock(
+        userId: Long,
+        productId: Long,
+        quantity: Int,
+        address: String,
+        phoneNumber: String,
+    ): ResponseOrderDto
+
 }

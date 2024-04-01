@@ -3,16 +3,37 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>결제 페이지</title>
     <script src="https://cdn.iamport.kr/v1/iamport.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
+
         var IMP = window.IMP;
-        IMP.init("imp08838662"); //요거랑
+        IMP.init("imp08838662")
+
+        $(document).ready(function() {
+            performAjaxRequest();
+        });
+
+        function performAjaxRequest() {
+            var orderUid = window.location.pathname.split('/').pop();
+
+            $.ajax({
+                type: 'GET',
+                url: '/api/orders/getOneByOrderUId/' + orderUid,
+                success: function(response) {
+                    requestPay();
+                },
+                error: function(xhr, status, error) {
+                    window.location.href = '/payment';
+                }
+            });
+        }
 
         // 결제 요청 함수
         function requestPay() {
-
             // 서버에서 받아온 주문 정보
             var orderUid = "[[${requestDto.orderUid}]]";
             var itemName = "[[${requestDto.itemName}]]";
@@ -22,15 +43,15 @@
             var buyerPhone = "[[${requestDto.buyerPhone}]]";
 
             IMP.request_pay({
-                    pg : "nice_v2.iamport00m",//요고
-                    pay_method : "card",
+                    pg: "nice_v2.iamport00m",//요고
+                    pay_method: "card",
                     merchant_uid: orderUid, // 주문 번호
-                    name : itemName, // 상품 이름
-                    amount : paymentPrice, // 상품 가격
-                    buyer_name : buyerName, // 구매자 이름
-                    buyer_tel : buyerPhone, // 전화번호
-                    buyer_addr : buyerAddress, // 구매자 주소
-                    buyer_postcode : "123-456", // 임의의 값
+                    name: itemName, // 상품 이름
+                    amount: paymentPrice, // 상품 가격
+                    buyer_name: buyerName, // 구매자 이름
+                    buyer_tel: buyerPhone, // 전화번호
+                    buyer_addr: buyerAddress, // 구매자 주소
+                    buyer_postcode: "123-456", // 임의의 값
                 },
                 rsp => { // callback
                     console.log(rsp);
@@ -40,8 +61,8 @@
                         console.log(msg)
                     } else {
                         let data = {};
-                        data.imp_uid= rsp.imp_uid;
-                        data.merchant_uid= rsp.merchant_uid;
+                        data.imp_uid = rsp.imp_uid;
+                        data.merchant_uid = rsp.merchant_uid;
                         console.log(data)
                         $.ajax({
                             headers: {"Content-Type": "application/json"},
@@ -51,11 +72,11 @@
                                 "payment_uid": rsp.imp_uid,      // 결제 고유번호
                                 "order_uid": rsp.merchant_uid,
                             })
-                        }).done(function(response) {
+                        }).done(function (response) {
                             console.log(response.data);
                             alert("주문에 성공했습니다.")
                             window.location.href = "/success-payment"
-                        }).fail(function(xhr, status, error) {
+                        }).fail(function (xhr, status, error) {
                             console.error(xhr.response);
                             alert("주문에 실패하셨습니다.")
                             window.location.href = "/fail-payment"
@@ -63,6 +84,86 @@
                     }
                 });
         }
+
+        // 브라우저 닫기 이벤트 감지
+        window.addEventListener('beforeunload', function(event) {
+            // 경고 메시지 설정
+            const confirmationMessage = '이 페이지를 떠나시겠습니까? 변경사항이 저장되지 않을 수 있습니다.';
+            // 이벤트 객체의 returnValue를 설정하여 브라우저가 경고 메시지를 표시할 수 있도록 함
+            event.returnValue = confirmationMessage;
+            // Chrome에서는 이벤트 핸들러 내에서 문자열을 반환하여도 경고 메시지를 표시할 수 있음
+            return confirmationMessage;
+        });
+
+        $(window).on('beforeunload', function(event) {
+            // 새로고침을 클릭했을 때만 인덱스 페이지로 이동하도록 함
+            if (event.originalEvent && event.originalEvent.currentTarget.performance.navigation.type === 1) {
+                window.location.href = '/';
+            }
+            // 그 외의 경우에는 경고 메시지 표시
+            else {
+                const confirmationMessage = '이 페이지를 떠나시겠습니까? 변경사항이 저장되지 않을 수 있습니다.';
+                event.returnValue = confirmationMessage;
+                return confirmationMessage;
+            }
+        });
+
+        // 뒤로가기 버튼 클릭 이벤트 감지
+        window.addEventListener('popstate', function(event) {
+            // 경고 메시지 표시
+            alert('이 페이지를 떠나시겠습니까? 변경사항이 저장되지 않을 수 있습니다.');
+
+            // 현재 주문의 UID를 가져옵니다.
+            var orderUid = window.location.pathname.split('/').pop();
+
+            // AJAX를 이용하여 주문을 업데이트합니다.
+            $.ajax({
+                type: 'PUT',
+                url: '/api/orders/' + orderUid,
+                success: function(response) {
+                    console.log('주문이 성공적으로 업데이트되었습니다.');
+                    window.location.href = '/';
+                },
+                error: function(xhr, status, error) {
+                    console.error('주문 업데이트 중 오류가 발생하였습니다:', error);
+                }
+            });
+        });
+
+        // // 새로고침 이벤트 감지
+        // window.onbeforeunload = function() {
+        //     // 현재 주문의 UID를 가져옵니다.
+        //     var orderUid = window.location.pathname.split('/').pop();
+        //
+        //     // AJAX를 이용하여 주문을 업데이트합니다.
+        //     $.ajax({
+        //         type: 'PUT',
+        //         url: '/api/orders/' + orderUid,
+        //         success: function(response) {
+        //         },
+        //         error: function(xhr, status, error) {
+        //         },
+        //
+        //     });
+        // };
+
+        // 페이지를 떠날 때 Ajax 통신을 이용하여 서버의 컨트롤러 호출
+        window.addEventListener('unload', () => {
+            var orderUid = window.location.pathname.split('/').pop();
+            $('#orderUid').val(orderUid);
+
+            // AJAX를 이용하여 주문을 업데이트합니다.
+            $.ajax({
+                type: 'PUT',
+                url: '/api/orders/' + orderUid,
+                success: function(response) {
+                    console.log('주문이 성공적으로 업데이트되었습니다.');
+                },
+                error: function(xhr, status, error) {
+                    console.error('주문 업데이트 중 오류가 발생하였습니다:', error);
+                }
+            });
+        });
     </script>
     <style>
         .btn_box {
@@ -99,11 +200,15 @@
         }
     </style>
 </head>
-
 <body>
-    <div class="btn_box">
-        <button class="pay_btn" onclick="requestPay()">결제하기</button>
-    </div>
+<form>
+</form>
+
 </body>
+<!--<body>-->
+<!--    <div class="btn_box">-->
+<!--        <button class="pay_btn" onclick="requestPay()">결제하기</button>-->
+<!--    </div>-->
+<!--</body>-->
 
 </html>

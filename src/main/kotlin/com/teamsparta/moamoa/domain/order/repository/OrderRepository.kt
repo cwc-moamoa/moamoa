@@ -10,16 +10,16 @@ import java.util.*
 interface OrderRepository : JpaRepository<OrdersEntity, Long>, CustomOrderRepository {
     @Query(
         "select o from OrdersEntity o" +
-            " left join fetch o.payment p" +
-            " left join fetch o.socialUser m" +
-            " where o.orderUid = :orderUid",
+                " left join fetch o.payment p" +
+                " left join fetch o.socialUser m" +
+                " where o.orderUid = :orderUid and o.deletedAt IS NULL",
     )
     fun findOrderAndPaymentAndSocialUser(orderUid: String): Optional<OrdersEntity>
 
     @Query(
         "select o from OrdersEntity o" +
-            " left join fetch o.payment p" +
-            " where o.orderUid = :orderUid",
+                " left join fetch o.payment p" +
+                " where o.orderUid = :orderUid and o.deletedAt IS NULL",
     )
     fun findOrderAndPayment(orderUid: String): Optional<OrdersEntity>
 
@@ -28,7 +28,7 @@ interface OrderRepository : JpaRepository<OrdersEntity, Long>, CustomOrderReposi
         socialUserId: Long?,
     ): Optional<OrdersEntity>
 
-    fun findByIdAndDeletedAtIsNull(orderId: Long): Optional<OrdersEntity>
+    fun findByIdAndDeletedAtIsNull(orderId: Long): OrdersEntity?
 
     fun findBySellerIdAndDeletedAtIsNull(sellerId: Long): List<OrdersEntity>
 
@@ -39,5 +39,7 @@ interface OrderRepository : JpaRepository<OrdersEntity, Long>, CustomOrderReposi
         productId: Long,
     ): Optional<OrdersEntity>
 
-    fun findBySocialUserId(userId: Long): List<OrdersEntity>
+    fun findBySocialUserIdAndDeletedAtIsNull(userId: Long): List<OrdersEntity>
+
+    fun findByOrderUidAndDeletedAtIsNull(orderUid: String): OrdersEntity?
 }

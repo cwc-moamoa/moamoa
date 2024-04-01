@@ -168,9 +168,9 @@ class ReviewServiceImpl(
 
     @Transactional
     override fun getReviewByOrderId(orderId: Long): ReviewResponse {
-        val order = orderRepository.findByIdOrNull(orderId)
-        val reviewId = order!!.reviewId
-        val review = reviewRepository.findByIdOrNull(reviewId) ?: throw ModelNotFoundException("Review",reviewId)
+        val order = orderRepository.findByIdAndDeletedAtIsNull(orderId)
+        val reviewId = order!!.reviewId ?: throw ModelNotFoundException("Order에 해당하는 리뷰가 없습니다",orderId)
+        val review = reviewRepository.findByIdAndDeletedAtIsNull(reviewId) ?: throw ModelNotFoundException("Review",reviewId)
 
         return ReviewResponse.toReviewResponse(review)
     }
