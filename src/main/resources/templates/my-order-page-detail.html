@@ -170,6 +170,9 @@
                         rating: rating,
                     };
 
+                    // 버튼 비활성화
+                    $('#submitReview').prop('disabled', true);
+
                     // 서버로 AJAX 요청을 보냅니다.
                     $.ajax({
                         type: 'POST',
@@ -199,6 +202,10 @@
                             // 오류가 발생하면 알림을 표시합니다.
                             console.log("error")
                             alert('리뷰를 생성하는 동안 오류가 발생했습니다.');
+                        },
+                        complete: function () {
+                            // AJAX 요청이 완료되면 버튼을 다시 활성화합니다.
+                            $('#submitReview').prop('disabled', false);
                         }
                     });
                 });
