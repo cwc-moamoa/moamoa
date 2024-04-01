@@ -61,7 +61,7 @@ class SearchServiceImpl(
     ): Page<ProductSearchResponse> {
         saveSearchHistory(keyword) // 검색하면 히스토리에 저장된다는 뜻
 
-        val productPage = searchProductRepository.findByTitleContaining(keyword, pageable)
+        val productPage = searchProductRepository.findByTitleContainingAndDeletedAtIsNull(keyword, pageable)
 
         return productPage.map { product ->
             ProductSearchResponse(

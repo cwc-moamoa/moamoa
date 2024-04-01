@@ -67,7 +67,7 @@
 //                        )
 //                    socialUserRepository.save(user)
 //
-//                    orderService.createOrder(
+//                    orderService.createOrderWithLock(
 //                        userId = user.id!!,
 //                        productId = 2,
 //                        quantity = 1,

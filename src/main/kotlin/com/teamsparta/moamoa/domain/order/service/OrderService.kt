@@ -98,4 +98,12 @@ interface OrderService {
                            orderUId: String,
     ): ResponseOrderDto
 
+    fun createOrderWithLock(
+        userId: Long,
+        productId: Long,
+        quantity: Int,
+        address: String,
+        phoneNumber: String,
+    ): ResponseOrderDto
+
 }
