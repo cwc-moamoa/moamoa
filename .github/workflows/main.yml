@@ -4,9 +4,9 @@ name: moamoa
 
 # 워크 플로우가 언제 실행 될지를 정한다.
 #메인에 push 또느 pr이 될 때
-#on:
-#  push:
-#    branches: [ "main" ]
+on:
+  push:
+    branches: [ "main" ]
   # pull_request:
   #   branches: [ "main" ]
 
