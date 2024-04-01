@@ -1,28 +1,34 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <title>상품 상세정보</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <style>
-        *{
+
+        * {
             margin: 0;
             padding: 0;
 
         }
+
         li {
             list-style: none;
         }
+
         a {
             display: block;
             text-decoration: none;
             color: #000;
         }
+
         img {
             display: block;
             width: 100%;
             object-fit: cover;
         }
+
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -82,10 +88,12 @@
             margin: 0;
             padding: 5px 0;
         }
-        .order_btn_box{
+
+        .order_btn_box {
             display: flex;
             justify-content: space-evenly;
         }
+
         .order-button {
             background-color: #007bff;
             color: #fff;
@@ -103,7 +111,8 @@
             margin-bottom: 10px;
 
         }
-        .order-button01{
+
+        .order-button01 {
             margin-right: 3%;
         }
 
@@ -126,10 +135,252 @@
             margin-top: 0;
         }
 
+        /* header -----------------------------------------------------------------------------*/
+        .header_outer {
+            width: 100%;
+            background-color: #333333;
+        }
 
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            text-align: right;
+            position: relative;
+            height: 150px;
+            box-sizing: border-box;
+            margin: 0 auto;
+            width: 70%;
+        }
+
+        header .logo {
+            position: absolute;
+            left: 60px;
+            top: 22%;
+            color: #fff;
+            padding: 11px;
+            font-size: 35px;
+        }
+
+        header .login_btn {
+            position: absolute;
+            right: 25px;
+            top: 30%;
+            width: 270px;
+            height: 45px;
+            ;
+            border-radius: 4px;
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        header .login_btn img {
+            width: 100%;
+        }
+
+        .search_box {
+            width: 50%;
+            margin: 0 auto;
+            overflow: hidden;
+            padding-left: 25%;
+            padding-top: 45px;
+        }
+
+        .search_box input {
+            display: block;
+            float: left;
+            width: 50%;
+            border-radius: 4px;
+            margin-right: 10px;
+            padding: 5px;
+            border: none;
+        }
+
+        .search_box input:focus {
+            outline: none;
+        }
+
+        .search_box .search_btn {
+            display: block;
+            float: left;
+            background-color: #eee;
+            color: #000;
+            padding: 2px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .search_box .search_btn:hover {
+            font-weight: bold;
+            color: #eee;
+            background-color: darkgray;
+        }
+
+        .login-form input[type="text"],
+        .login-form input[type="password"],
+        .login-form input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+
+        .login-form input[type="submit"] {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        .login-form input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        .welcome {
+            display: none;
+            position: absolute;
+            right: 25px;
+            top: 27%;
+            width: 269px;
+            height: 60px;
+            border-radius: 4px;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .welcome p {
+            margin-bottom: 5px;
+        }
+
+        .welcome_btn {
+            height: 30px;
+            border: none;
+            border-radius: 4px;
+            background-color: #fff;
+            transition: 0.2s;
+            cursor: pointer;
+        }
+
+        .welcome_btn:hover {
+            background-color: #07C5F5;
+            color: #ffffff;
+            border: 1px solid #eeeeee;
+        }
+
+        .btn_flex {
+            display: flex;
+            justify-content: space-evenly;
+
+        }
+
+        .btn_flex button {
+            width: 35%;
+        }
+
+        /* footer -------------------------------------------------------------------------------*/
+        .footer {
+            width: 100%;
+            height: 300px;
+            margin: 0 auto;
+            background-color: #333;
+            color: #fff;
+            padding: 25px;
+            box-sizing: border-box;
+            overflow: hidden;
+            font-size: 12px;
+            /* position: fixed; */
+            bottom: 0;
+        }
+
+        .footer .footer_inner {
+            height: 200px;
+            margin: 0 auto;
+            border: 0.3px solid #ddd;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .footer .footer_inner .footer_left {
+            padding-left: 115px;
+        }
+
+        .footer .footer_inner .footer_left .footer_menu {
+            margin-bottom: 30px;
+        }
+
+        .footer .footer_inner .footer_left .footer_menu ul {
+            display: flex;
+            margin-top: 35px;
+        }
+
+        .footer .footer_inner .footer_left .footer_menu ul li {
+            margin-right: 30px;
+            cursor: pointer;
+        }
+
+        .footer .footer_inner .footer_left .info p {
+            margin-bottom: 10px;
+        }
+
+        .footer .footer_inner .footer_left .info span {
+            margin-left: 30px;
+        }
+
+        .footer .footer_inner .footer_left .info p:nth-child(2) span:last-child {
+            text-decoration: underline;
+        }
+
+        .footer .footer_inner .footer_left .info p:nth-child(4) {
+            margin-bottom: 40px;
+        }
+
+        .footer .footer_inner .footer_left .info p:last-child span {
+            text-decoration: underline;
+        }
+
+        .footer .footer_inner .footer_right {
+            margin-right: 250px;
+        }
+
+        .footer .footer_inner .footer_right .logo_box {
+            margin-top: 30px;
+            width: 140px;
+            height: 70px;
+            font-size: 12px;
+            margin-bottom: 70px;
+        }
+
+        .footer .footer_inner .footer_right .logo_box p {
+            border: 1px solid #fff;
+            text-align: center;
+            box-sizing: border-box;
+        }
+
+        .footer .footer_inner .footer_right .logo_box p:last-child {
+            border-top: none;
+            white-space: nowrap;
+            box-sizing: border-box;
+            font-size: 10px;
+            overflow: hidden;
+        }
+
+        .footer .footer_inner .footer_right .sns_icon {
+            display: flex;
+            overflow: hidden;
+        }
+
+        .footer .footer_inner .footer_right .sns_icon div {
+            width: 40px;
+            height: 40px;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
     </style>
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             // URL에서 상품 ID 가져오기
             var urlParams = new URLSearchParams(window.location.search);
             var productId = urlParams.get('productId');
@@ -139,17 +390,18 @@
                 $.ajax({
                     type: 'GET',
                     url: '/products/' + productId,
-                    success: function(response) {
+                    success: function (response) {
                         // 상품 정보를 표시하는 부분 업데이트
                         $('#productInfo').html('<p>상품명: ' + response.title + '</p>' +
                             '<p>가격: ' + response.price + '</p>' +
                             '<p>내용: ' + response.content + '</p>' +
                             '<p>할인: ' + response.discount + "%" + '</p>' +
-                            '<p>평균 평점: ' + response.ratingAverage + '</p>' +
+                            '<p>평균 평점: ' + response.ratingAverage.toFixed(1) + '</p>' +
                             '<p>좋아요 수: ' + response.likes + '</p>');
-                        $('#productImage').html('<img src="' + response.imageUrl + '" alt="Product Image">');
+                        $('#productImage').html('<img src="' + response.imageUrl +
+                            '" alt="Product Image">');
                     },
-                    error: function(xhr, status, error) {
+                    error: function (xhr, status, error) {
                         if (xhr.status == 404) {
                             alert('상품을 찾을 수 없습니다.');
                         } else {
@@ -165,22 +417,27 @@
                 $.ajax({
                     type: 'GET',
                     url: '/products/' + productId + '/reviews',
-                    success: function(response) {
+                    success: function (response) {
                         // 리뷰 정보를 표시
                         var reviewsHtml = '<h2>상품 리뷰</h2>';
-                        $.each(response, function(index, review) {
+                        $.each(response, function (index, review) {
                             reviewsHtml += '<div class="review">';
-                            reviewsHtml += '<p><strong>작성자:</strong> ' + review.userName + '</p>';
-                            reviewsHtml += '<p><strong>제목:</strong> ' + review.title + '</p>';
-                            reviewsHtml += '<p><strong>평점:</strong> ' + review.rating + '</p>';
-                            reviewsHtml += '<p><strong>내용:</strong> ' + review.content + '</p>';
+                            reviewsHtml += '<p><strong>작성자:</strong> ' + review.userName +
+                                '</p>';
+                            reviewsHtml += '<p><strong>제목:</strong> ' + review.title +
+                                '</p>';
+                            reviewsHtml += '<p><strong>평점:</strong> ' + review.rating +
+                                '</p>';
+                            reviewsHtml += '<p><strong>내용:</strong> ' + review.content +
+                                '</p>';
                             // reviewsHtml += '<p><strong>이미지:</strong> <img src="' + (review.imageUrl || 'https://via.placeholder.com/150') + '" alt="Review Image"></p>';
-                            reviewsHtml += '<p><strong>좋아요 수:</strong> ' + review.likes + '</p>';
+                            reviewsHtml += '<p><strong>좋아요 수:</strong> ' + review.likes +
+                                '</p>';
                             reviewsHtml += '</div>';
                         });
                         $('#reviews').html(reviewsHtml);
                     },
-                    error: function(xhr, status, error) {
+                    error: function (xhr, status, error) {
                         if (xhr.status == 404) {
                             $('#reviews').html('<p>리뷰 정보가 없습니다.</p>');
                         } else {
@@ -191,7 +448,8 @@
             }
 
 
-            $('#submitReview').click(function() {s
+            $('#submitReview').click(function () {
+                s
                 var reviewContent = $('#reviewContent').val();
             });
 
@@ -201,36 +459,161 @@
             getReviews(productId);
 
             // 주문하기 버튼 클릭 시
-            $('#order-button01').click(function() {
+            $('#order-button01').click(function () {
                 window.location.href = "/order?productId=" + productId;
             });
 
-            $('#order-button02').click(function() {
+            $('#order-button02').click(function () {
                 window.location.href = "/groupOrder?productId=" + productId;
             });
         });
     </script>
 </head>
+
 <body>
-<div class="container">
-    <h1>상품 상세정보</h1>
-    <div class="product-detail" id="productDetail">
-        <div class="product-image" id="productImage">
-            <!-- 여기에 상품 이미지가 표시됩니다 -->
-        </div>
-        <div class="product-info" id="productInfo">
-            <!-- 여기에 상품 정보가 표시됩니다 -->
-        </div>
-        <div class="order_btn_box">
-            <a href="#" class="order-button" id="order-button01">주문하기</a>
-            <a href="#" class="order-button" id="order-button02">공동주문하기</a>
-        </div>
+    <div class="header_outer">
 
-    </div>
-    <div class="reviews" id="reviews">
-        <!-- 여기에 리뷰가 표시됩니다 -->
-    </div>
-</div>
+        <header class="header">
+            <a href="/" class="logo">MOAMOA</a>
 
+            <!--        검색창-->
+            <div class="search_box">
+                <input type="search" name="search" id="searchInput">
+                <div class="search_btn" onclick="searchProducts()">검색</div>
+            </div>
+            <div id="searchResults"></div>
+
+            <!--        로그인 버튼-->
+            <div class="login_btn" id="loginBtn">
+                <a href="javascript:;">
+                    <img src="https://developers.kakao.com/tool/resource/static/img/button/login/full/ko/kakao_login_medium_wide.png"
+                        alt="kakao_btn"></a>
+            </div>
+
+            <div id="welcomeMessage" class="welcome">
+                <p>환영합니다!</p>
+                <div class="btn_flex">
+                    <button id="logoutBtn" class="logout_btn welcome_btn">로그아웃</button>
+                    <button id="my-page-button" class="my_btn welcome_btn">마이페이지</button>
+                </div>
+
+            </div>
+        </header>
+    </div>
+    <div class="container">
+        <h1>상품 상세정보</h1>
+        <div class="product-detail" id="productDetail">
+            <div class="product-image" id="productImage">
+                <!-- 여기에 상품 이미지가 표시됩니다 -->
+            </div>
+            <div class="product-info" id="productInfo">
+                <!-- 여기에 상품 정보가 표시됩니다 -->
+            </div>
+            <div class="order_btn_box">
+                <a href="#" class="order-button" id="order-button01">주문하기</a>
+                <a href="#" class="order-button" id="order-button02">공동주문하기</a>
+            </div>
+
+        </div>
+        <div class="reviews" id="reviews">
+            <!-- 여기에 리뷰가 표시됩니다 -->
+        </div>
+    </div>
+    <footer class="footer">
+        <div class="footer_inner">
+            <div class="footer_left">
+                <div class="footer_menu">
+                    <ul>
+                        <li>고객서비스</li>
+                        <li>회사소개</li>
+                        <li>소셜 네트워크</li>
+                        <li>이용약관</li>
+                        <li>개인정보처리방침</li>
+                    </ul>
+                </div>
+                <div class="info">
+                    <p>모아모아(주) 대표: kim, sun-byuong(jake), 부산광역시 남구 유엔평화로 29번길 117 동원rose 205호</p>
+                    <p>
+                        사업자등록번호: 000-00-0000 &nbsp;
+                        <span> 통신판매업신고번호: 부산성심당-3849호 </span>
+                        <span>사업자정보조회</span>
+                    </p>
+                    <p>고객관리지원팀: (054)000-0000 &nbsp; <span> njunju77@nate.com </span></p>
+                    <p>호스팅서비스 사업자: (주)에스케이테레콤</p>
+                    <p>(c) MOAMOA 2024 <span>대한민국</span></p>
+                </div>
+            </div>
+            <div class="footer_right">
+                <div class="logo_box">
+                    <p>
+                        MoA
+                        <br />
+                        MOA
+                    </p>
+                    <p>myeok jul-ki and nakgopsae </p>
+                </div>
+
+            </div>
+        </div>
+    </footer>
+    <script defer>
+        // 로그인 함수
+
+        document.querySelector('.login_btn a').addEventListener('click', function () {
+            location.href = '/oauth2/login/kakao';
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            var loginButton = document.getElementById('loginBtn');
+
+            // 쿠키에서 JWT 토큰을 가져오는 함수
+            function extractJwtTokenFromCookies() {
+                const cookies = document.cookie.split(';'); // 쿠키 문자열을 세미콜론을 기준으로 나눕니다.
+
+                // 쿠키 배열을 반복하면서 JWT 토큰을 찾습니다.
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim(); // 공백을 제거합니다.
+                    if (cookie.startsWith('jwt_token=')) {
+                        // 'jwt_token=' 부분을 제외하고 추출하여 반환합니다.
+                        return cookie.substring('jwt_token='.length);
+                    }
+                }
+
+                // JWT 토큰이 없으면 null을 반환합니다.
+                return null;
+            }
+
+            // 쿠키에서 JWT 토큰 가져오기
+            var jwtToken = extractJwtTokenFromCookies();
+
+            // JWT 토큰이 존재하는 경우
+            if (jwtToken) {
+                // 로그인 버튼을 숨깁니다.
+                loginButton.style.display = 'none';
+                welcomeMessage.style.display = 'block';
+            } else {
+                // JWT 토큰이 존재하지 않는 경우, 로그인 버튼을 표시합니다.
+                loginButton.style.display = 'block';
+            }
+        });
+        // 로그아웃 버튼을 눌렀을 때 실행되는 함수
+        function logout() {
+            // 쿠키 삭제
+            document.cookie = 'jwt_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+            // 로그인 버튼을 보이도록 설정
+            document.getElementById('loginBtn').style.display = 'block';
+            // 환영 메시지 숨기기
+            document.getElementById('welcomeMessage').style.display = 'none';
+        }
+        // 로그아웃 버튼에 이벤트 리스너 추가
+        document.getElementById('logoutBtn').addEventListener('click', logout);
+
+        $(document).ready(function () {
+            $('#my-page-button').click(function () {
+                window.location.href = "/my-order-page";
+            });
+        });
+    </script>
 </body>
+
 </html>
