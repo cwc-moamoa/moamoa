@@ -21,6 +21,7 @@
             margin: 0;
             padding: 0;
             background-color: #f4f4f4;
+            position: relative;
         }
 
         li {
@@ -70,7 +71,8 @@
             right: 25px;
             top: 30%;
             width: 270px;
-            height: 45px;;
+            height: 45px;
+            ;
             border-radius: 4px;
             cursor: pointer;
             overflow: hidden;
@@ -144,6 +146,7 @@
             width: 1000px;
             height: 1600px;
             margin: 0 auto;
+            margin-bottom: 1px;
         }
 
         .container {
@@ -232,6 +235,8 @@
             box-sizing: border-box;
             overflow: hidden;
             font-size: 12px;
+            /*position: fixed;*/
+            bottom: 0;
         }
 
         .footer .footer_inner {
@@ -352,7 +357,8 @@
         .pagination li:last-child {
             margin-right: 0;
         }
-        .welcome{
+
+        .welcome {
             display: none;
             position: absolute;
             right: 25px;
@@ -363,10 +369,12 @@
             overflow: hidden;
             text-align: center;
         }
-        .welcome p{
+
+        .welcome p {
             margin-bottom: 5px;
         }
-        .welcome_btn{
+
+        .welcome_btn {
             height: 30px;
             border: none;
             border-radius: 4px;
@@ -374,22 +382,24 @@
             transition: 0.2s;
             cursor: pointer;
         }
-        .welcome_btn:hover{
+
+        .welcome_btn:hover {
             background-color: #07C5F5;
             color: #ffffff;
             border: 1px solid #eeeeee;
         }
-        .btn_flex{
+
+        .btn_flex {
             display: flex;
             justify-content: space-evenly;
 
         }
-        .btn_flex button{
+
+        .btn_flex button {
             width: 35%;
         }
-        .logout_btn{
 
-        }
+        .logout_btn {}
     </style>
 
 
@@ -433,7 +443,8 @@
                 // 페이지네이션 버튼 생성
                 for (let i = 0; i < totalPages; i++) {
                     const pageNumber = i;
-                    const pageButton = $(`<li class="page-item"><a class="page-link" href="#">${i + 1}</a></li>`);
+                    const pageButton = $(
+                        `<li class="page-item"><a class="page-link" href="#">${i + 1}</a></li>`);
                     pageButton.on('click', function () {
                         updateProductList(pageNumber);
                     });
@@ -504,154 +515,146 @@
 </head>
 
 <body>
-<div class="header_outer">
+    <div class="header_outer">
 
-    <header class="header">
-        <a href="/" class="logo">MOAMOA</a>
+        <header class="header">
+            <a href="/" class="logo">MOAMOA</a>
 
-        <!--        검색창-->
-        <div class="search_box">
-            <input type="search" name="search" id="searchInput">
-            <div class="search_btn" onclick="searchProducts()">검색</div>
-        </div>
-        <div id="searchResults"></div>
-
-        <!--        로그인 버튼-->
-        <div class="login_btn" id="loginBtn">
-            <a href="javascript:;">
-                <img src="https://developers.kakao.com/tool/resource/static/img/button/login/full/ko/kakao_login_medium_wide.png"
-                     alt="kakao_btn"></a>
-        </div>
-
-        <div id="welcomeMessage"   class="welcome">
-            <p>환영합니다!</p>
-            <div class="btn_flex">
-                <button id="logoutBtn" class="logout_btn welcome_btn">로그아웃</button>
-            <button id="my-page-button" class="my_btn welcome_btn">마이페이지</button>
+            <!--        검색창-->
+            <div class="search_box">
+                <input type="search" name="search" id="searchInput">
+                <div class="search_btn" onclick="searchProducts()">검색</div>
             </div>
-            
-        </div>
+            <div id="searchResults"></div>
 
+            <!--        로그인 버튼-->
+            <div class="login_btn" id="loginBtn">
+                <a href="javascript:;">
+                    <img src="https://developers.kakao.com/tool/resource/static/img/button/login/full/ko/kakao_login_medium_wide.png"
+                        alt="kakao_btn"></a>
+            </div>
 
-       
+            <div id="welcomeMessage" class="welcome">
+                <p>환영합니다!</p>
+                <div class="btn_flex">
+                    <button id="logoutBtn" class="logout_btn welcome_btn">로그아웃</button>
+                    <button id="my-page-button" class="my_btn welcome_btn">마이페이지</button>
+                </div>
 
-
-    </header>
-</div>
-<div class="container_outer">
-    <div class="container">
-        <h1>상품 목록</h1>
-        <div class="float_box" id="productContainer">
-        </div>
-        <ul class="pagination" id="pagination">
-            <li class="num01">1</li>
-            <li class="num02">2</li>
-            <li class="num03">3</li>
-            <li class="num04">4</li>
-            <li class="num05">5</li>
-        </ul>
+            </div>
+        </header>
     </div>
-</div>
-
-<footer class="footer">
-    <div class="footer_inner">
-        <div class="footer_left">
-            <div class="footer_menu">
-                <ul>
-                    <li>고객서비스</li>
-                    <li>회사소개</li>
-                    <li>소셜 네트워크</li>
-                    <li>이용약관</li>
-                    <li>개인정보처리방침</li>
-                </ul>
+    <div class="container_outer">
+        <div class="container">
+            <h1>상품 목록</h1>
+            <div class="float_box" id="productContainer">
             </div>
-            <div class="info">
-                <p>모아모아(주) 대표: kim, sun-byuong(jake), 부산광역시 남구 유엔평화로 29번길 117 동원rose 205호</p>
-                <p>
-                    사업자등록번호: 000-00-0000 &nbsp;
-                    <span> 통신판매업신고번호: 부산성심당-3849호 </span>
-                    <span>사업자정보조회</span>
-                </p>
-                <p>고객관리지원팀: (054)000-0000 &nbsp; <span> njunju77@nate.com </span></p>
-                <p>호스팅서비스 사업자: (주)에스케이테레콤</p>
-                <p>(c) MOAMOA 2024 <span>대한민국</span></p>
-            </div>
-        </div>
-        <div class="footer_right">
-            <div class="logo_box">
-                <p>
-                    MoA
-                    <br/>
-                    MOA
-                </p>
-                <p>myeok jul-ki and nakgopsae </p>
-            </div>
-
+            <ul class="pagination" id="pagination">
+                <li class="num01">1</li>
+                <li class="num02">2</li>
+                <li class="num03">3</li>
+                <li class="num04">4</li>
+                <li class="num05">5</li>
+            </ul>
         </div>
     </div>
-</footer>
-<script defer>
 
-    // 로그인 함수
+    <footer class="footer">
+        <div class="footer_inner">
+            <div class="footer_left">
+                <div class="footer_menu">
+                    <ul>
+                        <li>고객서비스</li>
+                        <li>회사소개</li>
+                        <li>소셜 네트워크</li>
+                        <li>이용약관</li>
+                        <li>개인정보처리방침</li>
+                    </ul>
+                </div>
+                <div class="info">
+                    <p>모아모아(주) 대표: kim, sun-byuong(jake), 부산광역시 남구 유엔평화로 29번길 117 동원rose 205호</p>
+                    <p>
+                        사업자등록번호: 000-00-0000 &nbsp;
+                        <span> 통신판매업신고번호: 부산성심당-3849호 </span>
+                        <span>사업자정보조회</span>
+                    </p>
+                    <p>고객관리지원팀: (054)000-0000 &nbsp; <span> njunju77@nate.com </span></p>
+                    <p>호스팅서비스 사업자: (주)에스케이테레콤</p>
+                    <p>(c) MOAMOA 2024 <span>대한민국</span></p>
+                </div>
+            </div>
+            <div class="footer_right">
+                <div class="logo_box">
+                    <p>
+                        MoA
+                        <br />
+                        MOA
+                    </p>
+                    <p>myeok jul-ki and nakgopsae </p>
+                </div>
 
-    document.querySelector('.login_btn a').addEventListener('click', function () {
-        location.href = '/oauth2/login/kakao';
-    });
+            </div>
+        </div>
+    </footer>
+    <script defer>
+        // 로그인 함수
 
-    document.addEventListener("DOMContentLoaded", function () {
-        var loginButton = document.getElementById('loginBtn');
+        document.querySelector('.login_btn a').addEventListener('click', function () {
+            location.href = '/oauth2/login/kakao';
+        });
 
-        // 쿠키에서 JWT 토큰을 가져오는 함수
-        function extractJwtTokenFromCookies() {
-            const cookies = document.cookie.split(';'); // 쿠키 문자열을 세미콜론을 기준으로 나눕니다.
+        document.addEventListener("DOMContentLoaded", function () {
+            var loginButton = document.getElementById('loginBtn');
 
-            // 쿠키 배열을 반복하면서 JWT 토큰을 찾습니다.
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim(); // 공백을 제거합니다.
-                if (cookie.startsWith('jwt_token=')) {
-                    // 'jwt_token=' 부분을 제외하고 추출하여 반환합니다.
-                    return cookie.substring('jwt_token='.length);
+            // 쿠키에서 JWT 토큰을 가져오는 함수
+            function extractJwtTokenFromCookies() {
+                const cookies = document.cookie.split(';'); // 쿠키 문자열을 세미콜론을 기준으로 나눕니다.
+
+                // 쿠키 배열을 반복하면서 JWT 토큰을 찾습니다.
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim(); // 공백을 제거합니다.
+                    if (cookie.startsWith('jwt_token=')) {
+                        // 'jwt_token=' 부분을 제외하고 추출하여 반환합니다.
+                        return cookie.substring('jwt_token='.length);
+                    }
                 }
+
+                // JWT 토큰이 없으면 null을 반환합니다.
+                return null;
             }
 
-            // JWT 토큰이 없으면 null을 반환합니다.
-            return null;
-        }
+            // 쿠키에서 JWT 토큰 가져오기
+            var jwtToken = extractJwtTokenFromCookies();
 
-        // 쿠키에서 JWT 토큰 가져오기
-        var jwtToken = extractJwtTokenFromCookies();
-
-        // JWT 토큰이 존재하는 경우
-        if (jwtToken) {
-            // 로그인 버튼을 숨깁니다.
-            loginButton.style.display = 'none';
-            welcomeMessage.style.display = 'block';
-        } else {
-            // JWT 토큰이 존재하지 않는 경우, 로그인 버튼을 표시합니다.
-            loginButton.style.display = 'block';
-        }
-    });
-    // 로그아웃 버튼을 눌렀을 때 실행되는 함수
-    function logout() {
-        // 쿠키 삭제
-        document.cookie = 'jwt_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-        // 로그인 버튼을 보이도록 설정
-        document.getElementById('loginBtn').style.display = 'block';
-        // 환영 메시지 숨기기
-        document.getElementById('welcomeMessage').style.display = 'none';
-    }
-    // 로그아웃 버튼에 이벤트 리스너 추가
-    document.getElementById('logoutBtn').addEventListener('click', logout);
-
-    $(document).ready(function () {
-        $('#my-page-button').click(function () {
-            window.location.href = "/my-order-page";
+            // JWT 토큰이 존재하는 경우
+            if (jwtToken) {
+                // 로그인 버튼을 숨깁니다.
+                loginButton.style.display = 'none';
+                welcomeMessage.style.display = 'block';
+            } else {
+                // JWT 토큰이 존재하지 않는 경우, 로그인 버튼을 표시합니다.
+                loginButton.style.display = 'block';
+            }
         });
-    });
+        // 로그아웃 버튼을 눌렀을 때 실행되는 함수
+        function logout() {
+            // 쿠키 삭제
+            document.cookie = 'jwt_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+            // 로그인 버튼을 보이도록 설정
+            document.getElementById('loginBtn').style.display = 'block';
+            // 환영 메시지 숨기기
+            document.getElementById('welcomeMessage').style.display = 'none';
+        }
+        // 로그아웃 버튼에 이벤트 리스너 추가
+        document.getElementById('logoutBtn').addEventListener('click', logout);
 
-</script>
+        $(document).ready(function () {
+            $('#my-page-button').click(function () {
+                window.location.href = "/my-order-page";
+            });
+        });
+    </script>
 </body>
 
 
 </html>
-
