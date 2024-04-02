@@ -38,6 +38,7 @@
             width: 100%;
             object-fit: cover;
         }
+
         #reviewForm {
             margin-top: 20px;
             border-top: 1px solid #ccc;
@@ -69,9 +70,11 @@
         #reviewForm button:hover {
             background-color: #0056b3;
         }
-        .review_box{
+
+        .review_box {
             margin-bottom: 1px;
         }
+
         .review_box input {
             display: block;
             width: 100%;
@@ -157,6 +160,7 @@
         .order-details p {
             margin: 5px 0;
         }
+
         /* header -----------------------------------------------------------------------------*/
         .header_outer {
             width: 100%;
@@ -258,7 +262,8 @@
         .login-form input[type="submit"]:hover {
             background-color: #0056b3;
         }
-        .welcome{
+
+        .welcome {
             display: none;
             position: absolute;
             right: 25px;
@@ -269,10 +274,12 @@
             overflow: hidden;
             text-align: center;
         }
-        .welcome p{
+
+        .welcome p {
             margin-bottom: 5px;
         }
-        .welcome_btn{
+
+        .welcome_btn {
             height: 30px;
             border: none;
             border-radius: 4px;
@@ -280,21 +287,25 @@
             transition: 0.2s;
             cursor: pointer;
         }
-        .welcome_btn:hover{
+
+        .welcome_btn:hover {
             background-color: #07C5F5;
             color: #ffffff;
             border: 1px solid #eeeeee;
         }
-        .btn_flex{
+
+        .btn_flex {
             display: flex;
             justify-content: space-evenly;
 
         }
-        .btn_flex button{
+
+        .btn_flex button {
             width: 35%;
         }
-      /* footer -------------------------------------------------------------------------------*/
-      .footer {
+
+        /* footer -------------------------------------------------------------------------------*/
+        .footer {
             width: 100%;
             height: 300px;
             margin: 0 auto;
@@ -392,11 +403,12 @@
             box-sizing: border-box;
             overflow: hidden;
         }
-        .container_outer{
+
+        .container_outer {
             width: 1000px;
             margin: 20px auto;
             /* margin-bottom: 1px; */
-            
+
         }
 
     </style>
@@ -442,9 +454,9 @@
 
                     // 리뷰 정보를 JSON 형식으로 만듭니다.
                     var reviewData = {
-                        title: reviewTitle,
+                        title  : reviewTitle,
                         content: reviewContent,
-                        rating: rating,
+                        rating : rating,
                     };
 
                     // 버튼 비활성화
@@ -452,14 +464,14 @@
 
                     // 서버로 AJAX 요청을 보냅니다.
                     $.ajax({
-                        type: 'POST',
-                        url: '/reviews/create/' + orderId,
+                        type       : 'POST',
+                        url        : '/reviews/create/' + orderId,
                         contentType: 'application/json',
-                        data: JSON.stringify(reviewData),
-                        headers: {
+                        data       : JSON.stringify(reviewData),
+                        headers    : {
                             'Authorization': 'Bearer ' + extractJwtTokenFromCookies()
                         },
-                        success: function (response) {
+                        success    : function (response) {
                             // 리뷰가 성공적으로 생성되면 화면에 새로운 리뷰를 추가합니다.
                             var newReviewHtml = '<div class="review">';
                             newReviewHtml += '<p><strong>작성자:</strong> ' + response.userName + '</p>';
@@ -476,14 +488,14 @@
                             alert('리뷰가 작성 되었습니다.')
                             getReview(orderId);
                         },
-                        error: function (xhr, status, error) {
+                        error      : function (xhr, status, error) {
                             // 오류가 발생하면 입력 필드 하단에 에러 메시지를 표시합니다.
                             $('#reviewTitleError').text('제목은 2글자 이상 10글자 이하여야 합니다.');
                             $('#reviewContentError').text('내용은 10글자 이상 300글자 이하여야 합니다.');
                             alert('리뷰를 생성하는 동안 오류가 발생했습니다.');
                             $('#submitReview').prop('disabled', false);
                         },
-                        complete: function () {
+                        complete   : function () {
                             // AJAX 요청이 완료되면 버튼을 다시 활성화합니다.
                             $('#submitReview').prop('disabled', false);
                         }
@@ -493,8 +505,8 @@
 
             function getOrderDetails(orderId) {
                 $.ajax({
-                    type: 'GET',
-                    url: `/api/orders/getOne/${orderId}`,
+                    type   : 'GET',
+                    url    : `/api/orders/getOne/${orderId}`,
                     headers: {
                         'Authorization': 'Bearer ' + extractJwtTokenFromCookies()
                     },
@@ -503,7 +515,7 @@
                         console.log(response);
                         displayOrderDetails(response);
                     },
-                    error: function (xhr, status, error) {
+                    error  : function (xhr, status, error) {
                         // 오류가 발생했을 때의 처리 로직을 여기에 작성합니다.
                         console.error(error);
                     }
@@ -516,24 +528,67 @@
 
                 const orderDiv = $('<div class="order"></div>');
                 orderDiv.html(`
-        <div class="order-details">
-            <p>주문 ID: ${order.orderId}</p>
-            <p>상품명: ${order.productName}</p>
-            <p>가격: ${order.totalPrice}</p>
-            <p>주소: ${order.address}</p>
-            <p>생성일: ${order.createdAt}</p>
-            <p>상태: ${order.status}</p>
-            <p>할인율: ${order.discount}</p>
-            <p>수량: ${order.quantity}</p>
+    <div class="order-details">
+        <p>주문 ID: ${order.orderId}</p>
+        <p>상품명: ${order.productName}</p>
+        <p>가격: ${order.totalPrice}</p>
+        <p id="address">주소: ${order.address}</p>
+        <button id="editAddressBtn">배송지 수정하기</button>
+        <!-- 배송지 수정 폼 -->
+        <div id="addressForm" style="display: none;">
+            <input type="text" id="newAddressInput" placeholder="새로운 배송지 입력">
+            <button id="submitAddressBtn">수정 완료</button>
         </div>
-    `);
+        <p>생성일: ${order.createdAt}</p>
+        <p>상태: ${order.status}</p>
+        <p>할인율: ${order.discount}</p>
+        <p>수량: ${order.quantity}</p>
+    </div>
+`);
                 container.append(orderDiv);
+                $('#editAddressBtn').click(function () {
+                    // 주소 정보 숨기고 수정 폼 보이기
+                    $('#address').hide();
+                    $('#addressForm').show();
+                });
+
+                // 주소 수정 완료 버튼 클릭 시
+                $('#submitAddressBtn').click(function () {
+                    // 새로운 주소 가져오기
+                    var newAddress = $('#newAddressInput').val();
+
+                    var updateAddressResponse = {
+                        address: newAddress,
+                    }
+                    // AJAX를 통해 서버로 주소 업데이트 요청
+                    $.ajax({
+                        type       : 'PUT',
+                        url        : '/api/orders/update/' + order.orderId,
+                        contentType: 'application/json',
+                        data       : JSON.stringify(updateAddressResponse),
+                        headers    : {
+                            'Authorization': 'Bearer ' + jwtToken
+                        },
+                        success    : function (response) {
+                            // 주소 업데이트 성공 시 화면에 새로운 주소 출력
+                            $('#address').text('주소: ' + newAddress);
+                            // 입력 폼 숨기고 주소 정보 보이기
+                            $('#addressForm').hide();
+                            $('#address').show();
+                            alert('주소가 성공적으로 변경되었습니다.');
+                        },
+                        error      : function (xhr, status, error) {
+                            console.error(xhr.responseText); // 서버에서의 오류 메시지를 콘솔에 출력합니다.
+                            alert('주소를 변경하는 동안 오류가 발생했습니다.');
+                        }
+                    });
+                });
             }
 
             function getReview(orderId) {
                 $.ajax({
-                    type: 'GET',
-                    url: '/review/get/' + orderId,
+                    type   : 'GET',
+                    url    : '/review/get/' + orderId,
                     success: function (response) {
                         var review = response; // 단일 리뷰 객체
                         var reviewsHtml = '<h2>해당 주문에 대한 상품 리뷰</h2>';
@@ -557,7 +612,7 @@
                         }
                         $('#reviews').html(reviewsHtml);
                     },
-                    error: function (xhr, status, error) {
+                    error  : function (xhr, status, error) {
                         if (xhr.status == 500) {
                             $('#reviews').html('<p>리뷰 정보가 없습니다.</p>');
                         } else {
@@ -566,85 +621,74 @@
                     }
                 });
             }
-
-            // function enableReviewCreation(orderId) {
-            //     // 생성할 때 필요한 DOM 요소를 표시하거나 로직을 수행합니다.
-            //     // 예를 들어, 입력 폼을 화면에 표시하거나 다른 처리를 수행합니다.
-            //     console.log('리뷰 생성 가능 - orderId:', orderId);
-            // }
-            //
-            // function enableReviewUpdate(review) {
-            //     // 수정할 때 필요한 DOM 요소를 표시하거나 로직을 수행합니다.
-            //     // 예를 들어, 기존 리뷰 내용을 입력 폼에 채워 넣거나 다른 처리를 수행합니다.
-            //     console.log('리뷰 수정 가능 - review:', review);
-            // }
-
         });
     </script>
 </head>
 <body>
-    <div class="header_outer">
+<div class="header_outer">
 
-        <header class="header">
-            <a href="/" class="logo">MOAMOA</a>
-    
-            <!--        검색창-->
-            <div class="search_box">
-                <input type="search" name="search" id="searchInput">
-                <div class="search_btn" onclick="searchProducts()">검색</div>
-            </div>
-            <div id="searchResults"></div>
-    
-            <!--        로그인 버튼-->
-            <div class="login_btn" id="loginBtn">
-                <a href="javascript:;">
-                    <img src="https://developers.kakao.com/tool/resource/static/img/button/login/full/ko/kakao_login_medium_wide.png"
-                         alt="kakao_btn"></a>
-            </div>
-    
-            <div id="welcomeMessage"   class="welcome">
-                <p>환영합니다!</p>
-                <div class="btn_flex">
-                    <button id="logoutBtn" class="logout_btn welcome_btn">로그아웃</button>
+    <header class="header">
+        <a href="/" class="logo">MOAMOA</a>
+
+        <!--        검색창-->
+        <div class="search_box">
+            <input type="search" name="search" id="searchInput">
+            <div class="search_btn" onclick="searchProducts()">검색</div>
+        </div>
+        <div id="searchResults"></div>
+
+        <!--        로그인 버튼-->
+        <div class="login_btn" id="loginBtn">
+            <a href="javascript:;">
+                <img src="https://developers.kakao.com/tool/resource/static/img/button/login/full/ko/kakao_login_medium_wide.png"
+                     alt="kakao_btn"></a>
+        </div>
+
+        <div id="welcomeMessage" class="welcome">
+            <p>환영합니다!</p>
+            <div class="btn_flex">
+                <button id="logoutBtn" class="logout_btn welcome_btn">로그아웃</button>
                 <button id="my-page-button" class="my_btn welcome_btn">마이페이지</button>
-                </div>
-                
-            </div>
-        </header>
-    </div>
-    <div class="container_outer">
-        <div id="orderContainer">
-            <!-- 주문 정보가 여기에 동적으로 추가됩니다 -->
-        </div>
-        <div id="reviews">
-            <!-- 리뷰들이 여기에 동적으로 추가될 것입니다. -->
-        </div>
-        <div id="reviewForm" class="review_box">
-            <h2>리뷰 작성</h2>
-            <h4>한번의 주문에 한개의 리뷰만 작성 가능합니다</h4>
-            <h5>제목은 2글자이상 10글자 이하여야 합니다</h5>
-            <h5>내용은 10글자 이상 300글자 이하여야 합니다</h5>
-            <input class="review_title" type="text" id="reviewTitle" placeholder="리뷰 제목">
-            <span id="reviewTitleError" style="color: red;"></span> <!-- 제목 입력 오류 메시지 표시 -->
-            <input class="review_content" type="text" id="reviewContent" placeholder="리뷰 내용을 작성해주세요...">
-            <span id="reviewContentError" style="color: red;"></span> <!-- 내용 입력 오류 메시지 표시 -->
-            <!-- <input type="hidden" id="productId" value="productId"> -->
-            <input type="hidden" id="orderId" name="orderId">
-            <div class="rating_box">
-                <label for="rating">평점:</label>
-                <select id="rating">
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                </select>
             </div>
 
-            <button id="submitReview">작성 완료</button>
         </div>
+    </header>
+</div>
+<div class="container_outer">
+    <div id="orderContainer">
+        <!-- 주문 정보가 여기에 동적으로 추가됩니다 -->
 
     </div>
+
+    <div id="reviews">
+        <!-- 리뷰들이 여기에 동적으로 추가될 것입니다. -->
+    </div>
+    <div id="reviewForm" class="review_box">
+        <h2>리뷰 작성</h2>
+        <h4>한번의 주문에 한개의 리뷰만 작성 가능합니다</h4>
+        <h5>제목은 2글자이상 10글자 이하여야 합니다</h5>
+        <h5>내용은 10글자 이상 300글자 이하여야 합니다</h5>
+        <input class="review_title" type="text" id="reviewTitle" placeholder="리뷰 제목">
+        <span id="reviewTitleError" style="color: red;"></span> <!-- 제목 입력 오류 메시지 표시 -->
+        <input class="review_content" type="text" id="reviewContent" placeholder="리뷰 내용을 작성해주세요...">
+        <span id="reviewContentError" style="color: red;"></span> <!-- 내용 입력 오류 메시지 표시 -->
+        <!-- <input type="hidden" id="productId" value="productId"> -->
+        <input type="hidden" id="orderId" name="orderId">
+        <div class="rating_box">
+            <label for="rating">평점:</label>
+            <select id="rating">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+            </select>
+        </div>
+
+        <button id="submitReview">작성 완료</button>
+    </div>
+
+</div>
 
 <footer class="footer">
     <div class="footer_inner">
@@ -724,6 +768,7 @@
             loginButton.style.display = 'block';
         }
     });
+
     // 로그아웃 버튼을 눌렀을 때 실행되는 함수
     function logout() {
         // 쿠키 삭제
@@ -733,6 +778,7 @@
         // 환영 메시지 숨기기
         document.getElementById('welcomeMessage').style.display = 'none';
     }
+
     // 로그아웃 버튼에 이벤트 리스너 추가
     document.getElementById('logoutBtn').addEventListener('click', logout);
 
