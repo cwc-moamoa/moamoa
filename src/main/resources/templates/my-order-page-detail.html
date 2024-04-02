@@ -516,18 +516,60 @@
 
                 const orderDiv = $('<div class="order"></div>');
                 orderDiv.html(`
-        <div class="order-details">
-            <p>주문 ID: ${order.orderId}</p>
-            <p>상품명: ${order.productName}</p>
-            <p>가격: ${order.totalPrice}</p>
-            <p>주소: ${order.address}</p>
-            <p>생성일: ${order.createdAt}</p>
-            <p>상태: ${order.status}</p>
-            <p>할인율: ${order.discount}</p>
-            <p>수량: ${order.quantity}</p>
+    <div class="order-details">
+        <p>주문 ID: ${order.orderId}</p>
+        <p>상품명: ${order.productName}</p>
+        <p>가격: ${order.totalPrice}</p>
+        <p id="address">주소: ${order.address}</p>
+        <button id="editAddressBtn">배송지 수정하기</button>
+        <!-- 배송지 수정 폼 -->
+        <div id="addressForm" style="display: none;">
+            <input type="text" id="newAddressInput" placeholder="새로운 배송지 입력">
+            <button id="submitAddressBtn">수정 완료</button>
         </div>
-    `);
+        <p>생성일: ${order.createdAt}</p>
+        <p>상태: ${order.status}</p>
+        <p>할인율: ${order.discount}</p>
+        <p>수량: ${order.quantity}</p>
+    </div>
+`);
                 container.append(orderDiv);
+                $(document).ready(function () {
+                    // 배송지 수정하기 버튼 클릭 시
+                    $('#editAddressBtn').click(function () {
+                        // 주소 정보 숨기고 수정 폼 보이기
+                        $('#address').hide();
+                        $('#addressForm').show();
+                    });
+
+                    // 주소 수정 완료 버튼 클릭 시
+                    $('#submitAddressBtn').click(function () {
+                        // 새로운 주소 가져오기
+                        var newAddress = $('#newAddressInput').val();
+                        // AJAX를 통해 서버로 주소 업데이트 요청
+                        $.ajax({
+                            type: 'PUT',
+                            url: '/api/orders/update/'+ order.orderId,
+                            contentType: 'application/json',
+                            data: JSON.stringify({ newAddress: newAddress }),
+                            headers: {
+                                'Authorization': 'Bearer ' + jwtToken
+                            },
+                            success: function (response) {
+                                // 주소 업데이트 성공 시 화면에 새로운 주소 출력
+                                $('#address').text('주소: ' + newAddress);
+                                // 입력 폼 숨기고 주소 정보 보이기
+                                $('#addressForm').hide();
+                                $('#address').show();
+                                alert('주소가 성공적으로 변경되었습니다.');
+                            },
+                            error: function (xhr, status, error) {
+                                console.error(xhr.error().responseText); // 서버에서의 오류 메시지를 콘솔에 출력합니다.
+                                alert('주소를 변경하는 동안 오류가 발생했습니다.');
+                            }
+                        });
+                    });
+                });
             }
 
             function getReview(orderId) {
@@ -566,19 +608,6 @@
                     }
                 });
             }
-
-            // function enableReviewCreation(orderId) {
-            //     // 생성할 때 필요한 DOM 요소를 표시하거나 로직을 수행합니다.
-            //     // 예를 들어, 입력 폼을 화면에 표시하거나 다른 처리를 수행합니다.
-            //     console.log('리뷰 생성 가능 - orderId:', orderId);
-            // }
-            //
-            // function enableReviewUpdate(review) {
-            //     // 수정할 때 필요한 DOM 요소를 표시하거나 로직을 수행합니다.
-            //     // 예를 들어, 기존 리뷰 내용을 입력 폼에 채워 넣거나 다른 처리를 수행합니다.
-            //     console.log('리뷰 수정 가능 - review:', review);
-            // }
-
         });
     </script>
 </head>
@@ -615,7 +644,9 @@
     <div class="container_outer">
         <div id="orderContainer">
             <!-- 주문 정보가 여기에 동적으로 추가됩니다 -->
+
         </div>
+
         <div id="reviews">
             <!-- 리뷰들이 여기에 동적으로 추가될 것입니다. -->
         </div>
