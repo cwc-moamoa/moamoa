@@ -8,10 +8,7 @@ import org.springframework.data.domain.Page
 interface OrderService {
     fun createOrder(
         user: UserPrincipal,
-        productId: Long,
-        quantity: Int,
-        address: String,
-        phoneNumber: String,
+        createOrderDto: CreateOrderDto
     ): ResponseOrderDto
 
 //    fun createOrder(
@@ -33,10 +30,7 @@ interface OrderService {
 
     fun createGroupOrder(
         user: UserPrincipal,
-        productId: Long,
-        quantity: Int,
-        address: String,
-        phoneNumber: String,
+       createOrderDto: CreateOrderDto
     ): ResponseOrderDto
 
     // 주문 생성
