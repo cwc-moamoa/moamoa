@@ -68,6 +68,7 @@
                     },
                     error: function (xhr, status, error) {
                         alert('주문 생성에 실패하였습니다.');
+                        alert('입력값을 확인하세요')
                         // 주문 생성 실패 시 처리할 로직 추가 가능
                     },
                     complete: function () {
@@ -420,6 +421,9 @@
             box-sizing: border-box;
             overflow: hidden;
         }
+        .order_sub_title{
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 
@@ -463,17 +467,20 @@
     </div>
     <div class="container">
         <h1 class="order_title">주문 정보 입력</h1>
+        <h3 class="order_sub_title">주문은 로그인한 유저만 가능합니다 !</h3>
         <form class="form" id="orderForm" method="post">
             <input type="hidden" id="productId" name="productId">
 
             <label class="quantity_label" for="quantity">수량 :</label>
-            <input class="text_box_quantity" type="text" id="quantity" name="quantity"><br><br>
+            <input class="text_box_quantity" type="text" id="quantity" name="quantity" placeholder=" 1 - 99 사이로 입력해주세요">
+
+            <br><br>
 
             <label class="address_label" for="address">주소 :</label>
-            <input class="text_box_address" type="text" id="address" name="address"><br><br>
+            <input class="text_box_address" type="text" id="address" name="address" placeholder=" 올바른 주소를 입력해주세요"><br><br>
 
             <label class="phoneNum_label" for="phoneNumber">폰번호 :</label>
-            <input class="text_box_phoneNum" type="text" id="phoneNumber" name="phoneNumber"><br><br>
+            <input class="text_box_phoneNum" type="text" id="phoneNumber" name="phoneNumber" placeholder=" -을 제외한 전화번호"><br><br>
 
             <input id="order_btn" class="order_btn" type="submit" value="주문 생성">
         </form>
