@@ -5,6 +5,7 @@ import com.teamsparta.moamoa.domain.groupPurchase.model.GroupPurchaseJoinUserEnt
 import com.teamsparta.moamoa.domain.groupPurchase.repository.GroupPurchaseJoinUserRepository
 import com.teamsparta.moamoa.domain.groupPurchase.repository.GroupPurchaseRepository
 import com.teamsparta.moamoa.domain.order.dto.CancelResponseDto
+import com.teamsparta.moamoa.domain.order.dto.CreateOrderDto
 import com.teamsparta.moamoa.domain.order.dto.ResponseOrderDto
 import com.teamsparta.moamoa.domain.order.dto.UpdateOrderDto
 import com.teamsparta.moamoa.domain.order.model.OrdersEntity
@@ -46,21 +47,18 @@ class OrderServiceImpl(
     @Transactional
     override fun createOrder(
         user: UserPrincipal,
-        productId: Long,
-        quantity: Int,
-        address: String,
-        phoneNumber: String,
+        createOrderDto: CreateOrderDto
     ): ResponseOrderDto {
-        val lockKey = "createOrderWithLock_$productId"
+        val lockKey = "createOrderWithLock_$createOrderDto.productId"
         val lockAcquired = redissonLockManager.acquireLock(lockKey, 15000, 60000)
         if (!lockAcquired) {
             throw Exception("락을 획득할 수 없습니다. 잠시 후 다시 시도해주세요.")
         }
 
         try {
-            val (findUser, findProduct, stockCheck) = orderCommon(user, productId, quantity)
+            val (findUser, findProduct, stockCheck) = orderCommon(user, createOrderDto.productId, createOrderDto.quantity)
 
-            val totalPrice = findProduct.price * quantity
+            val totalPrice = findProduct.price * createOrderDto.quantity
             val finalDiscount = 0.0
 
             return orderSave(
@@ -69,9 +67,9 @@ class OrderServiceImpl(
                 stockCheck,
                 totalPrice,
                 finalDiscount,
-                address,
-                quantity,
-                phoneNumber,
+                createOrderDto.address,
+                createOrderDto.quantity,
+                createOrderDto.phoneNumber,
             ).toResponse()
         } finally {
             redissonLockManager.releaseLock(lockKey)
@@ -81,30 +79,27 @@ class OrderServiceImpl(
     @Transactional
     override fun createGroupOrder(
         user: UserPrincipal,
-        productId: Long,
-        quantity: Int,
-        address: String,
-        phoneNumber: String,
+        createOrderDto: CreateOrderDto
     ): ResponseOrderDto {
-        val lockKey = "createOrderWithLock_$productId"
+        val lockKey = "createOrderWithLock_$createOrderDto.productId"
         val lockAcquired = redissonLockManager.acquireLock(lockKey, 15000, 60000)
         if (!lockAcquired) {
             throw Exception("락을 획득할 수 없습니다. 잠시 후 다시 시도해주세요.")
         }
 
         try {
-            val (findUser, findProduct, stockCheck) = orderCommon(user, productId, quantity)
+            val (findUser, findProduct, stockCheck) = orderCommon(user, createOrderDto.productId, createOrderDto.quantity)
             val finalDiscount = findProduct.discount
 
             val groupPurchaseCheck =
-                groupPurchaseRepository.findByProductIdAndDeletedAtIsNull(productId) // 없으면 유저도 없는거니께
+                groupPurchaseRepository.findByProductIdAndDeletedAtIsNull(createOrderDto.productId) // 없으면 유저도 없는거니께
             val groupPurchaseUserCheck = groupPurchaseCheck?.groupPurchaseUsers?.find { it.userId == findUser.id }
 
             if (groupPurchaseUserCheck == null) {
-                val totalPrice = findProduct.price * quantity * (1 - findProduct.discount / 100.0)
+                val totalPrice = findProduct.price * createOrderDto.quantity * (1 - findProduct.discount / 100.0)
 
                 return orderSave(
-                    findUser, findProduct, stockCheck, totalPrice, finalDiscount, address, quantity, phoneNumber
+                    findUser, findProduct, stockCheck, totalPrice, finalDiscount, createOrderDto.address, createOrderDto.quantity, createOrderDto.phoneNumber
                 ).toResponse()
             } else {
                 throw Exception("이미 공동 구매 신청중인 유저는 주문을 신청 할 수 없습니다.")
