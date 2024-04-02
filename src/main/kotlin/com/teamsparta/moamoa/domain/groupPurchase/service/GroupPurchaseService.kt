@@ -42,7 +42,7 @@ class GroupPurchaseService(
                 )
 
             val groupPurchaseJoinUser =
-                GroupPurchaseJoinUserEntity(userId.toLong(), newGroupPurchase, uniqueOrderId.toLong())
+                GroupPurchaseJoinUserEntity(userId.toLong(), newGroupPurchase, orderId.toLong())
 
             newGroupPurchase.groupPurchaseUsers.add(groupPurchaseJoinUser)
             groupPurchaseRepository.save(newGroupPurchase)

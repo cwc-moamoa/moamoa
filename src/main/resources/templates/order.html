@@ -55,7 +55,8 @@
                 $.ajax({
                     type: 'POST',
                     url: '/api/orders/create',
-                    data: formData, // 객체 형태로 전송
+                    data: JSON.stringify(formData), // 객체 형태로 전송
+                    contentType: 'application/json',
                     headers: {
                         'Authorization': 'Bearer ' + extractJwtTokenFromCookies()
                     },
