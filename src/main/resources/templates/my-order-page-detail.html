@@ -434,7 +434,7 @@
 
             function createReview(orderId) {
                 // 리뷰 작성 버튼을 클릭할 때마다 실행되는 함수
-                $('#submitReview').one('click', function () {
+                $('#submitReview').on('click', function () {
                     // 폼에서 리뷰 정보 가져오기
                     var reviewTitle = $('#reviewTitle').val();
                     var reviewContent = $('#reviewContent').val();
@@ -474,11 +474,14 @@
                             $('#reviewContent').val('');
                             $('#rating').val('3');
                             alert('리뷰가 작성 되었습니다.')
+                            getReview(orderId);
                         },
                         error: function (xhr, status, error) {
-                            // 오류가 발생하면 알림을 표시합니다.
-                            console.log("error")
+                            // 오류가 발생하면 입력 필드 하단에 에러 메시지를 표시합니다.
+                            $('#reviewTitleError').text('제목은 2글자 이상 10글자 이하여야 합니다.');
+                            $('#reviewContentError').text('내용은 10글자 이상 300글자 이하여야 합니다.');
                             alert('리뷰를 생성하는 동안 오류가 발생했습니다.');
+                            $('#submitReview').prop('disabled', false);
                         },
                         complete: function () {
                             // AJAX 요청이 완료되면 버튼을 다시 활성화합니다.
@@ -541,7 +544,7 @@
                             reviewsHtml += '<p><strong>제목:</strong> ' + review.title + '</p>';
                             reviewsHtml += '<p><strong>평점:</strong> ' + review.rating + '</p>';
                             reviewsHtml += '<p><strong>내용:</strong> ' + review.content + '</p>';
-                            reviewsHtml += '<p><strong>이미지:</strong> <img src="' + (review.imageUrl || 'https://via.placeholder.com/150') + '" alt="Review Image"></p>';
+                            // reviewsHtml += '<p><strong>이미지:</strong> <img src="' + (review.imageUrl || 'https://via.placeholder.com/150') + '" alt="Review Image"></p>';
                             reviewsHtml += '<p><strong>좋아요 수:</strong> ' + review.likes + '</p>';
                             reviewsHtml += '</div>';
 
@@ -618,9 +621,14 @@
         </div>
         <div id="reviewForm" class="review_box">
             <h2>리뷰 작성</h2>
+            <h4>한번의 주문에 한개의 리뷰만 작성 가능합니다</h4>
+            <h5>제목은 2글자이상 10글자 이하여야 합니다</h5>
+            <h5>내용은 10글자 이상 300글자 이하여야 합니다</h5>
             <input class="review_title" type="text" id="reviewTitle" placeholder="리뷰 제목">
+            <span id="reviewTitleError" style="color: red;"></span> <!-- 제목 입력 오류 메시지 표시 -->
             <input class="review_content" type="text" id="reviewContent" placeholder="리뷰 내용을 작성해주세요...">
-            <!--    <input type="hidden" id="productId" value="productId">-->
+            <span id="reviewContentError" style="color: red;"></span> <!-- 내용 입력 오류 메시지 표시 -->
+            <!-- <input type="hidden" id="productId" value="productId"> -->
             <input type="hidden" id="orderId" name="orderId">
             <div class="rating_box">
                 <label for="rating">평점:</label>
@@ -632,9 +640,10 @@
                     <option value="5">5</option>
                 </select>
             </div>
-        
+
             <button id="submitReview">작성 완료</button>
         </div>
+
     </div>
 
 <footer class="footer">
