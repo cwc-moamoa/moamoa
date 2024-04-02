@@ -1,10 +1,12 @@
 package com.teamsparta.moamoa.domain.order.controller
 import com.teamsparta.moamoa.domain.order.dto.CancelResponseDto
+import com.teamsparta.moamoa.domain.order.dto.CreateOrderDto
 import com.teamsparta.moamoa.domain.order.dto.ResponseOrderDto
 import com.teamsparta.moamoa.domain.order.dto.UpdateOrderDto
 import com.teamsparta.moamoa.domain.order.model.OrdersStatus
 import com.teamsparta.moamoa.domain.order.service.OrderService
 import com.teamsparta.moamoa.infra.security.UserPrincipal
+import jakarta.validation.Valid
 import org.springframework.data.domain.Page
 import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatusCode
@@ -31,12 +33,9 @@ class OrderController(
     @PostMapping("/create/swagger")
     fun createOrderAtSwagger(
         @AuthenticationPrincipal user: UserPrincipal,
-        @RequestParam productId: Long,
-        @RequestParam quantity: Int,
-        @RequestParam address: String,
-        @RequestParam phoneNumber: String,
+        @RequestBody @Valid createOrderDto: CreateOrderDto
     ): ResponseEntity<ResponseOrderDto> {
-        val responseOrderDto = orderService.createOrder(user, productId, quantity, address, phoneNumber)
+        val responseOrderDto = orderService.createOrder(user,createOrderDto)
         return ResponseEntity
             .status(HttpStatus.CREATED)
             .body(responseOrderDto)
@@ -45,12 +44,9 @@ class OrderController(
     @PostMapping("/create")
     fun createOrder(
         @AuthenticationPrincipal user: UserPrincipal,
-        @RequestParam productId: Long,
-        @RequestParam quantity: Int,
-        @RequestParam address: String,
-        @RequestParam phoneNumber: String,
+        @RequestBody @Valid createOrderDto: CreateOrderDto
     ): ResponseEntity<ResponseOrderDto> {
-        val responseOrderDto = orderService.createOrder(user, productId, quantity, address, phoneNumber)
+        val responseOrderDto = orderService.createOrder(user, createOrderDto)
         return ResponseEntity
             .status(HttpStatus.CREATED)
             .body(responseOrderDto)
@@ -60,12 +56,9 @@ class OrderController(
     @PostMapping("/group/create")
     fun createGroupOrder(
         @AuthenticationPrincipal user: UserPrincipal,
-        @RequestParam productId: Long,
-        @RequestParam quantity: Int,
-        @RequestParam address: String,
-        @RequestParam phoneNumber: String,
+        @RequestBody @Valid createOrderDto: CreateOrderDto
     ): ResponseEntity<ResponseOrderDto> {
-        val responseOrderDto = orderService.createGroupOrder(user, productId, quantity, address, phoneNumber)
+        val responseOrderDto = orderService.createGroupOrder(user,createOrderDto)
         return ResponseEntity
             .status(HttpStatus.CREATED)
             .body(responseOrderDto)
@@ -74,14 +67,12 @@ class OrderController(
     @PostMapping("/group/create/swagger")
     fun creatGroupOrderAtSwagger(
         @AuthenticationPrincipal user: UserPrincipal,
-        @RequestParam productId: Long,
-        @RequestParam quantity: Int,
-        @RequestParam address: String,
-        @RequestParam phoneNumber: String,
+        @RequestBody @Valid createOrderDto: CreateOrderDto
     ): ResponseEntity<ResponseOrderDto> {
+        val responseOrderDto = orderService.createGroupOrder(user,createOrderDto)
         return ResponseEntity
-            .status(HttpStatus.OK)
-            .body(orderService.createGroupOrder(user, productId, quantity, address, phoneNumber))
+            .status(HttpStatus.CREATED)
+            .body(responseOrderDto)
     }
 //    @PostMapping("/create")
 //    fun createOrder(request: HttpServletRequest): ResponseEntity<ResponseOrderDto> {
