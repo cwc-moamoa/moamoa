@@ -2,10 +2,12 @@ package com.teamsparta.moamoa.domain.order.dto
 
 import jakarta.validation.constraints.Max
 import jakarta.validation.constraints.Min
+import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Pattern
 
 data class CreateOrderDto(
     val productId:Long,
+    @field:NotNull
     val address: String,
     @field:Min( value = 1, message = "1이상 주문 가능")
     @field:Max( value = 99, message = "99개 이상 주문 불가")
