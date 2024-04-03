@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <title>주문 정보 입력</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
     <script>
         $(document).ready(function () {
             // URL에서 상품 ID 가져오기
@@ -42,9 +43,16 @@
                 var formData = {
                     productId: $('#productId').val(),
                     quantity: $('#quantity').val(),
-                    address: $('#address').val(),
+                    address: $('#address').val() + ' ' + $('#address_detail').val(),
                     phoneNumber: $('#phoneNumber').val(),
                 };
+                console.log(formData.address.value)
+                // if (addressInput.value === "" && addressInput.value == "") {
+                //     alert("주소를 입력하시오")
+                // }
+
+
+                //개추 ㅋㅋ
 
                 console.log("JWT Token from Cookie:", extractJwtTokenFromCookies());
 
@@ -64,11 +72,12 @@
                         // alert('주문이 성공적으로 생성되었습니다!');
                         // 주문 생성 성공 시 결제 페이지로 이동
                         var orderUid = response.orderUid;
-                        window.location.href = "/payment/" + orderUid;
+                         window.location.href = "/payment/" + orderUid;
                     },
                     error: function (xhr, status, error) {
                         alert('주문 생성에 실패하였습니다.');
                         alert('입력값을 확인하세요')
+                        
                         // 주문 생성 실패 시 처리할 로직 추가 가능
                     },
                     complete: function () {
@@ -421,21 +430,43 @@
             box-sizing: border-box;
             overflow: hidden;
         }
-        .order_sub_title{
+
+        .order_sub_title {
             margin-bottom: 10px;
+        }
+
+        .find_daum_add {
+            border: 1px solid #ccc;
+            margin: 10px auto;
+            width: 150px;
+            height: 30px;
+            margin-left: 120px;
+            background-color: #fff;
+            border-radius: 4px;
+            padding: 5px 0;
+            cursor: pointer;
+            transition: 0.3s;
+            box-sizing: border-box;
+        }
+
+        .find_daum_add:hover {
+            background-color: coral;
+            border: none;
+            box-sizing: border-box;
+            font-weight: bold;
         }
     </style>
 </head>
 
 <body>
-    <script type="text/javascript">
-        // 앞으로 가기 버튼 비활성화
-        history.pushState(null, null, location.href);
-        window.onpopstate = function (event) {
-            alert('비정상적인 접근입니다.');
-            window.location.href = '/';
-        };
-    </script>
+<!--    <script type="text/javascript">-->
+<!--        // 앞으로 가기 버튼 비활성화-->
+<!--        history.pushState(null, null, location.href);-->
+<!--        window.onpopstate = function (event) {-->
+<!--            alert('비정상적인 접근입니다.');-->
+<!--            window.location.href = '/';-->
+<!--        };-->
+<!--    </script>-->
     <div class="header_outer">
 
         <header class="header">
@@ -477,10 +508,20 @@
             <br><br>
 
             <label class="address_label" for="address">주소 :</label>
-            <input class="text_box_address" type="text" id="address" name="address" placeholder=" 올바른 주소를 입력해주세요"><br><br>
+            <input class="text_box_address" type="text" id="address" name="address" placeholder="주소찾기버튼으로 입력해주세요"
+                disabled>
+            <br>
+            <label for="address_detail">상세주소</label>
+            <input class="text_box_address_detail" type="text" id="address_detail" name="address_detail"
+                placeholder=" 상세주소를 입력하세요">
+            <div class="find_daum_add">
+                주소찾기
+            </div>
+            <!-- <br><br> -->
 
             <label class="phoneNum_label" for="phoneNumber">폰번호 :</label>
-            <input class="text_box_phoneNum" type="text" id="phoneNumber" name="phoneNumber" placeholder=" -을 제외한 전화번호"><br><br>
+            <input class="text_box_phoneNum" type="text" id="phoneNumber" name="phoneNumber"
+                placeholder=" -을 제외한 전화번호"><br><br>
 
             <input id="order_btn" class="order_btn" type="submit" value="주문 생성">
         </form>
@@ -524,6 +565,27 @@
         </div>
     </footer>
     <script defer>
+        const findBtnDaum = document.querySelector(".find_daum_add")
+        const addressInput = document.querySelector(".text_box_address")
+        const addressDetail = document.querySelector(".text_box_address_detail")
+        const phoneNum = document.querySelector(".text_box_phoneNum")
+
+
+        findBtnDaum.addEventListener("click", function () {
+            findAddress();
+        })
+
+        function findAddress() {
+            new daum.Postcode({
+                oncomplete: function (data) {
+                    // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분입니다.
+                    // 예제를 참고하여 다양한 활용법을 확인해 보세요.
+                    addressInput.setAttribute("value", data.address);
+
+                }
+            }).open();
+        }
+
         // 로그인 함수
 
         document.querySelector('.login_btn a').addEventListener('click', function () {
