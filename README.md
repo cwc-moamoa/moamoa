@@ -168,7 +168,7 @@
 # Built With
  [김선병](https://github.com/Karox1234) - 팀장, 주문, 결제 시스템, 동시성 제어, 프론트
 
- [김보성](https://github.com/96KimBoseong)  - 부팀장, 주문, CI/CD, 프론트
+ [김보성](https://github.com/96KimBoseong)  - 부팀장, 주문, CI/CD, 프론트 ,주소API
 
  [강민지](https://github.com/mingdorri) - 팀원, 리뷰, 멀티미디어 업로드, PPT 제작
 

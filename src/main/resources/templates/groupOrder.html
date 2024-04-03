@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>주문 정보 입력</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             // URL에서 상품 ID 가져오기
             var productId = new URLSearchParams(window.location.search).get('productId');
             $('#productId').val(productId);
@@ -36,7 +38,7 @@
 
 
             // 주문 생성 폼 제출 시
-            $('#orderForm').submit(function(event) {
+            $('#orderForm').submit(function (event) {
                 event.preventDefault(); // 폼 기본 동작 방지
 
                 console.log("JWT Token from Cookie:", extractJwtTokenFromCookies());
@@ -45,7 +47,7 @@
                 var formData = {
                     productId: $('#productId').val(),
                     quantity: $('#quantity').val(),
-                    address: $('#address').val(),
+                    address: $('#address').val() + ' ' + $('#address_detail').val(),
                     phoneNumber: $('#phoneNumber').val()
                 };
 
@@ -57,21 +59,21 @@
                     type: 'POST',
                     url: '/api/orders/group/create',
                     data: JSON.stringify(formData),
-                    contentType:'application/json', // 객체 형태로 전송
+                    contentType: 'application/json', // 객체 형태로 전송
                     headers: {
                         'Authorization': 'Bearer ' + extractJwtTokenFromCookies()
                     },
-                    success: function(response) {
+                    success: function (response) {
                         alert('주문이 성공적으로 생성되었습니다!');
                         // 주문 생성 성공 시 결제 페이지로 이동
                         var orderUid = response.orderUid;
                         window.location.href = "/payment/" + orderUid;
                     },
-                    error: function(xhr, status, error) {
+                    error: function (xhr, status, error) {
                         alert('주문 생성에 실패하였습니다.');
                         // 주문 생성 실패 시 처리할 로직 추가 가능
                     },
-                    complete: function() {
+                    complete: function () {
                         // 요청 완료 후 주문 버튼 다시 활성화
                         $('#order_btn').prop('disabled', false);
                     }
@@ -79,7 +81,6 @@
             });
 
         });
-
     </script>
     <style>
         * {
@@ -113,18 +114,23 @@
             width: 100%;
             object-fit: cover;
         }
-        .container{
-            width:600px;
+
+        .container {
+            width: 600px;
             margin: 0 auto;
             height: 700px;
             text-align: center;
             margin-bottom: 1px;
-        }/*메인콘테이너*/
-        .container .order_title{
+        }
+
+        /*메인콘테이너*/
+        .container .order_title {
             /* margin-bottom: 30px; */
             margin: 30px 0;
-        }/*메인타이틀*/
-        .container .form{
+        }
+
+        /*메인타이틀*/
+        .container .form {
             /* border: 0.5px solid #000; */
             border-radius: 6px;
             padding: 30px;
@@ -132,42 +138,50 @@
             margin: 0 auto;
             height: 240px;
             background-color: #fcf9ee;
-        } /*폼박스*/
-        .container .form label{
+        }
+
+        /*폼박스*/
+        .container .form label {
             display: inline-block;
             width: 80px;
             font-size: 20px;
             font-weight: bold;
         }
-        .container .form input{
+
+        .container .form input {
             /* border: none; */
             border-radius: 4px;
             display: inline-block;
             height: 20px;
             /* font-size: 20px; */
         }
-        .container .form input:focus{
+
+        .container .form input:focus {
             outline: none;
         }
+
         /*폰넘버 박스*/
-        .container .form .order_btn{
+        .container .form .order_btn {
             border: none;
             background-color: #222;
             padding: 10px 30px;
-            color:#eee;
+            color: #eee;
             font-weight: bold;
             font-size: 20px;
             border-radius: 4px;
-            cursor:pointer;
+            cursor: pointer;
             box-sizing: border-box;
             height: 50px;
-        }/*주소완료 버튼*/
-        .container .form .order_btn:hover{
+        }
+
+        /*주소완료 버튼*/
+        .container .form .order_btn:hover {
             border: 0.5px solid #333;
             background-color: #fff;
             color: #000;
             box-sizing: border-box;
         }
+
         /* header -----------------------------------------------------------------------------*/
         .header_outer {
             width: 100%;
@@ -200,7 +214,8 @@
             right: 25px;
             top: 30%;
             width: 270px;
-            height: 45px;;
+            height: 45px;
+            ;
             border-radius: 4px;
             cursor: pointer;
             overflow: hidden;
@@ -269,7 +284,8 @@
         .login-form input[type="submit"]:hover {
             background-color: #0056b3;
         }
-        .welcome{
+
+        .welcome {
             display: none;
             position: absolute;
             right: 25px;
@@ -280,10 +296,12 @@
             overflow: hidden;
             text-align: center;
         }
-        .welcome p{
+
+        .welcome p {
             margin-bottom: 5px;
         }
-        .welcome_btn{
+
+        .welcome_btn {
             height: 30px;
             border: none;
             border-radius: 4px;
@@ -291,21 +309,25 @@
             transition: 0.2s;
             cursor: pointer;
         }
-        .welcome_btn:hover{
+
+        .welcome_btn:hover {
             background-color: #07C5F5;
             color: #ffffff;
             border: 1px solid #eeeeee;
         }
-        .btn_flex{
+
+        .btn_flex {
             display: flex;
             justify-content: space-evenly;
 
         }
-        .btn_flex button{
+
+        .btn_flex button {
             width: 35%;
         }
-      /* footer -------------------------------------------------------------------------------*/
-      .footer {
+
+        /* footer -------------------------------------------------------------------------------*/
+        .footer {
             width: 100%;
             height: 300px;
             margin: 0 auto;
@@ -403,166 +425,218 @@
             box-sizing: border-box;
             overflow: hidden;
         }
-        .order_sub_title{
+
+        .order_sub_title {
             margin-bottom: 10px;
+        }
+
+        .find_daum_add {
+            border: 1px solid #ccc;
+            margin: 10px auto;
+            width: 150px;
+            height: 30px;
+            margin-left: 120px;
+            background-color: #fff;
+            border-radius: 4px;
+            padding: 5px 0;
+            cursor: pointer;
+            transition: 0.3s;
+            box-sizing: border-box;
+        }
+
+        .find_daum_add:hover {
+            background-color: coral;
+            border: none;
+            box-sizing: border-box;
+            font-weight: bold;
         }
     </style>
 </head>
+
 <body>
-<script type="text/javascript">
+    <!-- <script type="text/javascript">
     // 앞으로 가기 버튼 비활성화
     history.pushState(null, null, location.href);
     window.onpopstate = function(event) {
         alert('비정상적인 접근입니다.');
         window.location.href = '/';
     };
-</script>
-<div class="header_outer">
+</script> -->
+    <div class="header_outer">
 
-    <header class="header">
-        <a href="/" class="logo">MOAMOA</a>
+        <header class="header">
+            <a href="/" class="logo">MOAMOA</a>
 
-        <!--        검색창-->
-        <div class="search_box">
-            <input type="search" name="search" id="searchInput">
-            <div class="search_btn" onclick="searchProducts()">검색</div>
-        </div>
-        <div id="searchResults"></div>
-
-        <!--        로그인 버튼-->
-        <div class="login_btn" id="loginBtn">
-            <a href="javascript:;">
-                <img src="https://developers.kakao.com/tool/resource/static/img/button/login/full/ko/kakao_login_medium_wide.png"
-                     alt="kakao_btn"></a>
-        </div>
-
-        <div id="welcomeMessage"   class="welcome">
-            <p>환영합니다!</p>
-            <div class="btn_flex">
-                <button id="logoutBtn" class="logout_btn welcome_btn">로그아웃</button>
-            <button id="my-page-button" class="my_btn welcome_btn">마이페이지</button>
+            <!--        검색창-->
+            <div class="search_box">
+                <input type="search" name="search" id="searchInput">
+                <div class="search_btn" onclick="searchProducts()">검색</div>
             </div>
-            
-        </div>
-    </header>
-</div>
-<div class="container">
-    <h1 class="order_title">공동 주문 정보 입력</h1>
-    <h3 class="order_sub_title">주문은 로그인한 유저만 가능합니다 !</h3>
-    <form class="form" id="orderForm" method="post">
-        <input type="hidden" id="productId" name="productId">
+            <div id="searchResults"></div>
 
-        <label class="quantity_label" for="quantity">수량 :</label>
-        <input class="text_box_quantity" type="text" id="quantity" name="quantity" placeholder=" 1 - 99 사이로 입력해주세요">
-
-        <br><br>
-
-        <label class="address_label" for="address">주소 :</label>
-        <input class="text_box_address" type="text" id="address" name="address" placeholder=" 올바른 주소를 입력해주세요"><br><br>
-
-        <label class="phoneNum_label" for="phoneNumber">폰번호 :</label>
-        <input class="text_box_phoneNum" type="text" id="phoneNumber" name="phoneNumber" placeholder=" -을 제외한 전화번호"><br><br>
-
-        <input id="order_btn" class="order_btn" type="submit" value="주문 생성">
-    </form>
-
-</div>
-<footer class="footer">
-    <div class="footer_inner">
-        <div class="footer_left">
-            <div class="footer_menu">
-                <ul>
-                    <li>고객서비스</li>
-                    <li>회사소개</li>
-                    <li>소셜 네트워크</li>
-                    <li>이용약관</li>
-                    <li>개인정보처리방침</li>
-                </ul>
-            </div>
-            <div class="info">
-                <p>모아모아(주) 대표: kim, sun-byuong(jake), 부산광역시 남구 유엔평화로 29번길 117 동원rose 205호</p>
-                <p>
-                    사업자등록번호: 000-00-0000 &nbsp;
-                    <span> 통신판매업신고번호: 부산성심당-3849호 </span>
-                    <span>사업자정보조회</span>
-                </p>
-                <p>고객관리지원팀: (054)000-0000 &nbsp; <span> njunju77@nate.com </span></p>
-                <p>호스팅서비스 사업자: (주)에스케이테레콤</p>
-                <p>(c) MOAMOA 2024 <span>대한민국</span></p>
-            </div>
-        </div>
-        <div class="footer_right">
-            <div class="logo_box">
-                <p>
-                    MoA
-                    <br/>
-                    MOA
-                </p>
-                <p>myeok jul-ki and nakgopsae </p>
+            <!--        로그인 버튼-->
+            <div class="login_btn" id="loginBtn">
+                <a href="javascript:;">
+                    <img src="https://developers.kakao.com/tool/resource/static/img/button/login/full/ko/kakao_login_medium_wide.png"
+                        alt="kakao_btn"></a>
             </div>
 
-        </div>
+            <div id="welcomeMessage" class="welcome">
+                <p>환영합니다!</p>
+                <div class="btn_flex">
+                    <button id="logoutBtn" class="logout_btn welcome_btn">로그아웃</button>
+                    <button id="my-page-button" class="my_btn welcome_btn">마이페이지</button>
+                </div>
+
+            </div>
+        </header>
     </div>
-</footer>
-<script defer>
+    <div class="container">
+        <h1 class="order_title">공동 주문 정보 입력</h1>
+        <h3 class="order_sub_title">주문은 로그인한 유저만 가능합니다 !</h3>
+        <form class="form" id="orderForm" method="post">
+            <input type="hidden" id="productId" name="productId">
 
-    // 로그인 함수
+            <label class="quantity_label" for="quantity">수량 :</label>
+            <input class="text_box_quantity" type="text" id="quantity" name="quantity" placeholder=" 1 - 99 사이로 입력해주세요">
 
-    document.querySelector('.login_btn a').addEventListener('click', function () {
-        location.href = '/oauth2/login/kakao';
-    });
+            <br><br>
 
-    document.addEventListener("DOMContentLoaded", function () {
-        var loginButton = document.getElementById('loginBtn');
+            <label class="address_label" for="address">주소 :</label>
+            <input class="text_box_address" type="text" id="address" name="address" placeholder="주소찾기버튼으로 입력해주세요"
+                disabled>
+            <br>
+            <label for="address_detail">상세주소</label>
+            <input class="text_box_address_detail" type="text" id="address_detail" name="address_detail"
+                placeholder=" 상세주소를 입력하세요">
+            <div class="find_daum_add">
+                주소찾기
+            </div>
+            <!-- <br><br> -->
 
-        // 쿠키에서 JWT 토큰을 가져오는 함수
-        function extractJwtTokenFromCookies() {
-            const cookies = document.cookie.split(';'); // 쿠키 문자열을 세미콜론을 기준으로 나눕니다.
+            <label class="phoneNum_label" for="phoneNumber">폰번호 :</label>
+            <input class="text_box_phoneNum" type="text" id="phoneNumber" name="phoneNumber"
+                placeholder=" -을 제외한 전화번호"><br><br>
 
-            // 쿠키 배열을 반복하면서 JWT 토큰을 찾습니다.
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim(); // 공백을 제거합니다.
-                if (cookie.startsWith('jwt_token=')) {
-                    // 'jwt_token=' 부분을 제외하고 추출하여 반환합니다.
-                    return cookie.substring('jwt_token='.length);
+            <input id="order_btn" class="order_btn" type="submit" value="주문 생성">
+        </form>
+
+    </div>
+    <footer class="footer">
+        <div class="footer_inner">
+            <div class="footer_left">
+                <div class="footer_menu">
+                    <ul>
+                        <li>고객서비스</li>
+                        <li>회사소개</li>
+                        <li>소셜 네트워크</li>
+                        <li>이용약관</li>
+                        <li>개인정보처리방침</li>
+                    </ul>
+                </div>
+                <div class="info">
+                    <p>모아모아(주) 대표: kim, sun-byuong(jake), 부산광역시 남구 유엔평화로 29번길 117 동원rose 205호</p>
+                    <p>
+                        사업자등록번호: 000-00-0000 &nbsp;
+                        <span> 통신판매업신고번호: 부산성심당-3849호 </span>
+                        <span>사업자정보조회</span>
+                    </p>
+                    <p>고객관리지원팀: (054)000-0000 &nbsp; <span> njunju77@nate.com </span></p>
+                    <p>호스팅서비스 사업자: (주)에스케이테레콤</p>
+                    <p>(c) MOAMOA 2024 <span>대한민국</span></p>
+                </div>
+            </div>
+            <div class="footer_right">
+                <div class="logo_box">
+                    <p>
+                        MoA
+                        <br />
+                        MOA
+                    </p>
+                    <p>myeok jul-ki and nakgopsae </p>
+                </div>
+
+            </div>
+        </div>
+    </footer>
+    <script defer>
+        const findBtnDaum = document.querySelector(".find_daum_add")
+        const addressInput = document.querySelector(".text_box_address")
+        const addressDetail = document.querySelector(".text_box_address_detail")
+        const phoneNum = document.querySelector(".text_box_phoneNum")
+
+
+        findBtnDaum.addEventListener("click", function () {
+            findAddress();
+        })
+
+        function findAddress() {
+            new daum.Postcode({
+                oncomplete: function (data) {
+                    // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분입니다.
+                    // 예제를 참고하여 다양한 활용법을 확인해 보세요.
+                    addressInput.setAttribute("value", data.address);
+
                 }
+            }).open();
+        }
+        // 로그인 함수
+
+        document.querySelector('.login_btn a').addEventListener('click', function () {
+            location.href = '/oauth2/login/kakao';
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            var loginButton = document.getElementById('loginBtn');
+
+            // 쿠키에서 JWT 토큰을 가져오는 함수
+            function extractJwtTokenFromCookies() {
+                const cookies = document.cookie.split(';'); // 쿠키 문자열을 세미콜론을 기준으로 나눕니다.
+
+                // 쿠키 배열을 반복하면서 JWT 토큰을 찾습니다.
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim(); // 공백을 제거합니다.
+                    if (cookie.startsWith('jwt_token=')) {
+                        // 'jwt_token=' 부분을 제외하고 추출하여 반환합니다.
+                        return cookie.substring('jwt_token='.length);
+                    }
+                }
+
+                // JWT 토큰이 없으면 null을 반환합니다.
+                return null;
             }
 
-            // JWT 토큰이 없으면 null을 반환합니다.
-            return null;
-        }
+            // 쿠키에서 JWT 토큰 가져오기
+            var jwtToken = extractJwtTokenFromCookies();
 
-        // 쿠키에서 JWT 토큰 가져오기
-        var jwtToken = extractJwtTokenFromCookies();
-
-        // JWT 토큰이 존재하는 경우
-        if (jwtToken) {
-            // 로그인 버튼을 숨깁니다.
-            loginButton.style.display = 'none';
-            welcomeMessage.style.display = 'block';
-        } else {
-            // JWT 토큰이 존재하지 않는 경우, 로그인 버튼을 표시합니다.
-            loginButton.style.display = 'block';
-        }
-    });
-    // 로그아웃 버튼을 눌렀을 때 실행되는 함수
-    function logout() {
-        // 쿠키 삭제
-        document.cookie = 'jwt_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-        // 로그인 버튼을 보이도록 설정
-        document.getElementById('loginBtn').style.display = 'block';
-        // 환영 메시지 숨기기
-        document.getElementById('welcomeMessage').style.display = 'none';
-    }
-    // 로그아웃 버튼에 이벤트 리스너 추가
-    document.getElementById('logoutBtn').addEventListener('click', logout);
-
-    $(document).ready(function () {
-        $('#my-page-button').click(function () {
-            window.location.href = "/my-order-page";
+            // JWT 토큰이 존재하는 경우
+            if (jwtToken) {
+                // 로그인 버튼을 숨깁니다.
+                loginButton.style.display = 'none';
+                welcomeMessage.style.display = 'block';
+            } else {
+                // JWT 토큰이 존재하지 않는 경우, 로그인 버튼을 표시합니다.
+                loginButton.style.display = 'block';
+            }
         });
-    });
+        // 로그아웃 버튼을 눌렀을 때 실행되는 함수
+        function logout() {
+            // 쿠키 삭제
+            document.cookie = 'jwt_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+            // 로그인 버튼을 보이도록 설정
+            document.getElementById('loginBtn').style.display = 'block';
+            // 환영 메시지 숨기기
+            document.getElementById('welcomeMessage').style.display = 'none';
+        }
+        // 로그아웃 버튼에 이벤트 리스너 추가
+        document.getElementById('logoutBtn').addEventListener('click', logout);
 
-</script>
+        $(document).ready(function () {
+            $('#my-page-button').click(function () {
+                window.location.href = "/my-order-page";
+            });
+        });
+    </script>
 </body>
+
 </html>
