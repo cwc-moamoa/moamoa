@@ -124,41 +124,6 @@ class OrderServiceImpl(
         return Triple(findUser, findProduct, stockCheck)
     }
 
-//    @Transactional
-//    override fun createOrder(
-//        userId: Long,
-//        productId: Long,
-//        quantity: Int,
-//        address: String,
-//        phoneNumber: String,
-//    ): ResponseOrderDto {
-//        val lockKey = "createOrderWithLock_$productId"
-//        val lockAcquired = redissonLockManager.acquireLock(lockKey, 15000, 60000)
-//        if (!lockAcquired) {
-//            throw Exception("락을 획득할 수 없습니다. 잠시 후 다시 시도해주세요.")
-//        }
-//
-//        try {
-//            val (findUser, findProduct, stockCheck) = orderCommon(userId, productId, quantity)
-//
-//            val totalPrice = findProduct.price * quantity
-//            val finalDiscount = 0.0
-//
-//            return orderSave(
-//                findUser,
-//                findProduct,
-//                stockCheck,
-//                totalPrice,
-//                finalDiscount,
-//                address,
-//                quantity,
-//                phoneNumber,
-//            ).toResponse()
-//        } finally {
-//            redissonLockManager.releaseLock(lockKey)
-//        }
-//    }
-
     @Transactional // 테스트용 락 없는 코드
     override fun createOrderNoLock(
         userId: Long,
@@ -233,30 +198,6 @@ class OrderServiceImpl(
         return Triple(findUser, findProduct, stockCheck)
     }
 
-//    @Transactional
-//    override fun createGroupOrder(
-//        userId: Long,
-//        productId: Long,
-//        quantity: Int,
-//        address: String,
-//        phoneNumber: String,
-//    ): ResponseOrderDto {
-//        val (findUser, findProduct, stockCheck) = orderCommon(userId, productId, quantity)
-//        val finalDiscount = findProduct.discount
-//
-//        val groupPurchaseCheck = groupPurchaseRepository.findByProductIdAndDeletedAtIsNull(productId) // 없으면 유저도 없는거니께
-//        val groupPurchaseUserCheck = groupPurchaseCheck?.groupPurchaseUsers?.find { it.userId == findUser.id }
-//
-//        if (groupPurchaseUserCheck == null) {
-//            val totalPrice = findProduct.price * quantity * (1 - findProduct.discount / 100.0)
-//
-//            return orderSave(findUser, findProduct, stockCheck, totalPrice, finalDiscount, address, quantity, phoneNumber).toResponse()
-//        } else {
-//            throw Exception("이미 공동 구매 신청중인 유저는 주문을 신청 할 수 없습니다.")
-//        }
-//    }
-
-
     private fun orderSave(
         findUser: SocialUser,
         findProduct: Product,
@@ -267,7 +208,7 @@ class OrderServiceImpl(
         quantity: Int,
         phoneNumber: String,
     ): OrdersEntity {
-        val payment = PaymentEntity(price = totalPrice, status = PaymentStatus.READY)
+        val payment = PaymentEntity(price = totalPrice, status = PaymentStatus.READY , deletedAt = LocalDateTime.now())
         paymentRepository.save(payment)
         val order = OrdersEntity(
             productName = findProduct.title,
@@ -282,8 +223,9 @@ class OrderServiceImpl(
             phoneNumber = phoneNumber,
             sellerId = findProduct.seller.id,
             reviewId = null,
+            deletedAt = LocalDateTime.now()
         )
-        productStockRepository.save(stockCheck.discountForTest(quantity))
+//        productStockRepository.save(stockCheck.discountForTest(quantity))
 //        stockCheck.discount(quantity)
         return orderRepository.save(order)
     }

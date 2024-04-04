@@ -11,14 +11,6 @@ interface OrderService {
         createOrderDto: CreateOrderDto
     ): ResponseOrderDto
 
-//    fun createOrder(
-//        userId: Long,
-//        productId: Long,
-//        quantity: Int,
-//        address: String,
-//        phoneNumber: String,
-//    ): ResponseOrderDto
-
     // 테스트용 락 없는 코드
     fun createOrderNoLock(
         userId: Long,
@@ -99,5 +91,4 @@ interface OrderService {
         address: String,
         phoneNumber: String,
     ): ResponseOrderDto
-
 }

@@ -9,7 +9,6 @@ import com.teamsparta.moamoa.infra.security.UserPrincipal
 import jakarta.validation.Valid
 import org.springframework.data.domain.Page
 import org.springframework.http.HttpStatus
-import org.springframework.http.HttpStatusCode
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.validation.annotation.Validated
@@ -74,42 +73,7 @@ class OrderController(
             .status(HttpStatus.CREATED)
             .body(responseOrderDto)
     }
-//    @PostMapping("/create")
-//    fun createOrder(request: HttpServletRequest): ResponseEntity<ResponseOrderDto> {
-//        val userId = request.getParameter("userId").toLong()
-//        val productId = request.getParameter("productId").toLong()
-//        val quantity = request.getParameter("quantity").toInt()
-//        val address = request.getParameter("address")
-//        val phoneNumber = request.getParameter("phoneNumber")
-//        val responseOrderDto = orderService.createOrder(userId, productId, quantity, address, phoneNumber)
-//        return ResponseEntity.status(HttpStatus.CREATED).body(responseOrderDto)
-//    }
 
-//    @PostMapping("/create/swagger")
-//    fun createOrderAtSwagger(
-//        @RequestParam userId: Long,
-//        @RequestParam productId: Long,
-//        @RequestParam quantity: Int,
-//        @RequestParam address: String,
-//        @RequestParam phoneNumber: String,
-//    ): ResponseEntity<ResponseOrderDto> {
-//        val responseOrderDto = orderService.createOrder(userId, productId, quantity, address, phoneNumber)
-//        return ResponseEntity
-//            .status(HttpStatus.CREATED)
-//            .body(responseOrderDto)
-//    }
-
-    //    @PostMapping("/group/create")
-//    fun createGroupOrder(request: HttpServletRequest): ResponseEntity<ResponseOrderDto> {
-//        val userId = request.getParameter("userId").toLong()
-//        val productId = request.getParameter("productId").toLong()
-//        val quantity = request.getParameter("quantity").toInt()
-//        val address = request.getParameter("address")
-//        val phoneNumber = request.getParameter("phoneNumber")
-//        return ResponseEntity
-//            .status(HttpStatus.OK)
-//            .body(orderService.createGroupOrder(userId, productId, quantity, address, phoneNumber))
-//    }
     @PutMapping("/update/{orderId}")
     fun updateOrder(
         @AuthenticationPrincipal user: UserPrincipal,
@@ -165,7 +129,6 @@ class OrderController(
 
     // 주문 전체 조회
 
-    // ---------------- sellerEntity 만들고 해~ -----------------------
     // 주문 추적상태 업데이트
     @PutMapping("/status/{orderId}/{sellerId}")
     fun orderStatusChange(
@@ -199,12 +162,6 @@ class OrderController(
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(orderService.getOrderPageBySellerId(sellerId, page, size))
-    }
-
-    @PutMapping("{orderUid}")
-    fun deleteOrderAndPayment(@PathVariable orderUid: String): ResponseEntity<Unit> {
-        orderService.trollOrderDelete(orderUid)
-        return ResponseEntity.status(HttpStatus.OK).body(Unit)
     }
 
     @GetMapping("/getOneByOrderUId/{orderUId}")
