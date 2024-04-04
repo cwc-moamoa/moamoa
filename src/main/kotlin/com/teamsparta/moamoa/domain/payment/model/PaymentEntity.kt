@@ -20,9 +20,11 @@ class PaymentEntity(
     fun changePaymentBySuccess(
         status: PaymentStatus,
         paymentUid: String,
+        deletedAt: LocalDateTime?
     ): PaymentEntity {
         this.status = status
         this.paymentUid = paymentUid
+        this.deletedAt = null
         return this
     }
 }
