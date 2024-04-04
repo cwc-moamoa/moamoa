@@ -6,6 +6,7 @@ import com.teamsparta.moamoa.domain.product.model.Product
 import com.teamsparta.moamoa.domain.socialUser.model.SocialUser
 import com.teamsparta.moamoa.infra.BaseTimeEntity
 import jakarta.persistence.*
+import java.time.LocalDateTime
 
 @Entity
 @Table(name = "orders")
@@ -36,6 +37,9 @@ class OrdersEntity(
     val sellerId: Long?,
     @Column
     var reviewId: Long?,
+
+    override var deletedAt: LocalDateTime?
+
 ) : BaseTimeEntity() {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,7 +47,7 @@ class OrdersEntity(
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    var status: OrdersStatus = OrdersStatus.COMPLETED
+    var status: OrdersStatus = OrdersStatus.NOTPAYD
 }
 
 fun OrdersEntity.toResponse(): ResponseOrderDto {
