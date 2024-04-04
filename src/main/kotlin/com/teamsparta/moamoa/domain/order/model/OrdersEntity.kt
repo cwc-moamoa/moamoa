@@ -2,6 +2,7 @@ package com.teamsparta.moamoa.domain.order.model
 
 import com.teamsparta.moamoa.domain.order.dto.ResponseOrderDto
 import com.teamsparta.moamoa.domain.payment.model.PaymentEntity
+import com.teamsparta.moamoa.domain.payment.model.PaymentStatus
 import com.teamsparta.moamoa.domain.product.model.Product
 import com.teamsparta.moamoa.domain.socialUser.model.SocialUser
 import com.teamsparta.moamoa.infra.BaseTimeEntity
@@ -48,6 +49,15 @@ class OrdersEntity(
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     var status: OrdersStatus = OrdersStatus.NOTPAYD
+
+    fun changeOrderBySuccess(
+        status: OrdersStatus,
+        deletedAt: LocalDateTime?
+    ): OrdersEntity {
+        this.status = status
+        this.deletedAt = null
+        return this
+    }
 }
 
 fun OrdersEntity.toResponse(): ResponseOrderDto {
