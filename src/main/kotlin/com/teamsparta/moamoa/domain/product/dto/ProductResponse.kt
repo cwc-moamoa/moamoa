@@ -15,6 +15,7 @@ data class ProductResponse(
     var ratingAverage: Double?,
     val likes: Int,
     var deletedAt: LocalDateTime?,
+    val userLimit:Int
 ) {
     constructor(product: Product) : this(
         id = product.id,
@@ -28,5 +29,6 @@ data class ProductResponse(
         ratingAverage = product.ratingAverage,
         likes = product.likes,
         deletedAt = product.deletedAt,
+        userLimit = product.userLimit
     )
 }

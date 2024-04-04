@@ -392,10 +392,12 @@
                     url: '/products/' + productId,
                     success: function (response) {
                         // 상품 정보를 표시하는 부분 업데이트
+                        console.log(response)
                         $('#productInfo').html('<p>상품명: ' + response.title + '</p>' +
                             '<p>가격: ' + response.price + '</p>' +
                             '<p>내용: ' + response.content + '</p>' +
-                            '<p>할인: ' + response.discount + "%" + '</p>' +
+                            '<p>공동구매시 할인: ' + response.discount + "%" + '</p>' +
+                            '<p>보성님이 알아서 잘 하실거라 믿습니다: ' + response.userLimit + ' 명</p>' +
                             '<p>평균 평점: ' + response.ratingAverage.toFixed(1) + '</p>' +
                             '<p>좋아요 수: ' + response.likes + '</p>');
                         $('#productImage').html('<img src="' + response.imageUrl +
@@ -510,8 +512,8 @@
                 <!-- 여기에 상품 정보가 표시됩니다 -->
             </div>
             <div class="order_btn_box">
-                <a href="#" class="order-button" id="order-button01">주문하기</a>
-                <a href="#" class="order-button" id="order-button02">공동주문하기</a>
+                <a href="#" class="order-button" id="order-button01">할인 안받고 혼자 주문하기</a>
+                <a href="#" class="order-button" id="order-button02">할인받고 공동 주문하기</a>
             </div>
 
         </div>
