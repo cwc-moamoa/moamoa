@@ -5,6 +5,7 @@ import com.siot.IamportRestClient.exception.IamportResponseException
 import com.siot.IamportRestClient.request.CancelData
 import com.siot.IamportRestClient.response.IamportResponse
 import com.siot.IamportRestClient.response.Payment
+import com.teamsparta.moamoa.domain.order.model.OrdersStatus
 import com.teamsparta.moamoa.domain.order.repository.OrderRepository
 import com.teamsparta.moamoa.domain.order.service.OrderService
 import com.teamsparta.moamoa.domain.payment.dto.PaymentCallbackRequest
@@ -96,10 +97,10 @@ class PaymentServiceImpl(
                 throw RuntimeException("결제금액 위변조 의심")
             }
 
-            order.payment.changePaymentBySuccess(PaymentStatus.OK, iamportResponse.response.impUid)
-            order.deletedAt = null
-            order.payment.deletedAt = null
+            order.payment.changePaymentBySuccess(PaymentStatus.OK, iamportResponse.response.impUid, null)
+            order.changeOrderBySuccess(OrdersStatus.COMPLETED,null )
             stockFind!!.stock -= order.quantity
+
 //            orderService.ifPaymentSuccessOrderChangeAndDeletedAtChange(order.orderUid!!)
 
 
