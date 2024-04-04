@@ -12,16 +12,17 @@ interface OrderRepository : JpaRepository<OrdersEntity, Long>, CustomOrderReposi
         "select o from OrdersEntity o" +
                 " left join fetch o.payment p" +
                 " left join fetch o.socialUser m" +
-                " where o.orderUid = :orderUid and o.deletedAt IS NULL",
+                " where o.orderUid = :orderUid",
     )
     fun findOrderAndPaymentAndSocialUser(orderUid: String): Optional<OrdersEntity>
 
     @Query(
         "select o from OrdersEntity o" +
                 " left join fetch o.payment p" +
-                " where o.orderUid = :orderUid and o.deletedAt IS NULL",
+                " where o.orderUid = :orderUid",
     )
     fun findOrderAndPayment(orderUid: String): Optional<OrdersEntity>
+
 
     fun findByProductIdAndSocialUserId(
         productId: Long,
