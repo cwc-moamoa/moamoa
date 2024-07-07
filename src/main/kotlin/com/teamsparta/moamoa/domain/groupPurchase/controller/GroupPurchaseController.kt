@@ -8,15 +8,14 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/groupPurchases")
 class GroupPurchaseController(private val groupPurchaseService: GroupPurchaseService) {
-//    @PostMapping("/createAndJoin")
-//    fun createAndJoinOrJoin(
-//        @RequestBody request: CreateGroupPurchaseRequest,
-//        @RequestParam userId: Long,
-//         @RequestParam orderId: Long,
-//    ): ResponseEntity<String> {
-//        groupPurchaseService.createAndJoinOrJoinGroupPurchase(request, userId , orderId)
-//        return ResponseEntity.status(HttpStatus.OK).body("공동구매 매칭 성공")
-//    }
+    @PostMapping("/createAndJoin")
+    fun createAndJoinOrJoin(
+        @RequestParam userId: String,
+        @RequestParam orderId: String,
+    ): ResponseEntity<String> {
+        groupPurchaseService.createAndJoinOrJoinGroupPurchase(userId , orderId)
+        return ResponseEntity.status(HttpStatus.OK).body("공동구매 매칭 성공")
+    }
 
     @PostMapping("/join")
     fun join(

@@ -11,7 +11,6 @@ interface OrderService {
         createOrderDto: CreateOrderDto
     ): ResponseOrderDto
 
-    // 테스트용 락 없는 코드
     fun createOrderNoLock(
         userId: Long,
         productId: Long,
@@ -25,32 +24,27 @@ interface OrderService {
        createOrderDto: CreateOrderDto
     ): ResponseOrderDto
 
-    // 주문 생성
     fun updateOrder(
         user: UserPrincipal,
         orderId: Long,
         updateOrderDto: UpdateOrderDto,
     ): ResponseOrderDto
 
-    // 주문 업데이트 / 유저
     fun cancelOrder(
         user: UserPrincipal,
         orderId: Long,
     ): CancelResponseDto
 
-    // 주문취소 / 유저
     fun getOrder(
         user: UserPrincipal,
         orderId: Long,
     ): ResponseOrderDto
 
-    // 주문 단건조회
 
     fun getOrderList(
     user: UserPrincipal,
     ) : List<ResponseOrderDto>
 
-    //주문 리스트 조회
 
     fun getOrderPage(
         userId: Long,
@@ -58,20 +52,17 @@ interface OrderService {
         size: Int,
     ): Page<ResponseOrderDto>
 
-    // 주문 페이지 조회
     fun orderStatusChange(
         orderId: Long,
         sellerId: Long,
         status: OrdersStatus,
     ): ResponseOrderDto
 
-    // 판매자 주문 상태값 변경
     fun getOrderBySellerId(
         sellerId: Long,
         orderId: Long,
     ): ResponseOrderDto
 
-    // 판매자 주문 단건 조회
     fun getOrderPageBySellerId(
         sellerId: Long,
         page: Int,

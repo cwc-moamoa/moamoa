@@ -27,7 +27,6 @@ interface ProductService {
 
     fun getProductById(productId: Long): ProductResponse
 
-// 재고감소임
     fun decreaseStock(
         productId: Long,
         quantity: Int,

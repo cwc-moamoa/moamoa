@@ -10,7 +10,8 @@
 
 ---
 # Service Architecture
-![image](https://github.com/cwc-moamoa/moamoa/assets/149165093/efc3a023-6b81-4f8d-933d-3ed4d22bf4e3)
+![모아모아 new() 아키텍쳐쓰](https://github.com/96KimBoseong/moamoa/assets/120659405/f0b9a80d-880f-4706-bba6-255b415a3465)
+
 
 
 

@@ -7,30 +7,26 @@ import com.siot.IamportRestClient.response.IamportResponse
 import com.siot.IamportRestClient.response.Payment
 import com.teamsparta.moamoa.domain.order.model.OrdersStatus
 import com.teamsparta.moamoa.domain.order.repository.OrderRepository
-import com.teamsparta.moamoa.domain.order.service.OrderService
 import com.teamsparta.moamoa.domain.payment.dto.PaymentCallbackRequest
 import com.teamsparta.moamoa.domain.payment.dto.RequestPayDto
 import com.teamsparta.moamoa.domain.payment.model.PaymentStatus
-import com.teamsparta.moamoa.domain.payment.repository.PaymentRepository
 import com.teamsparta.moamoa.domain.product.repository.ProductStockRepository
 import com.teamsparta.moamoa.event.DiscountPaymentEvent
-import com.teamsparta.moamoa.infra.redis.RedisService
+import com.teamsparta.moamoa.infra.redis.RedisServiceImpl
 import jakarta.transaction.Transactional
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 import java.io.IOException
 import java.math.BigDecimal
-import java.time.LocalDateTime
 
 @Service
 @Transactional
 class PaymentServiceImpl(
     private val orderRepository: OrderRepository,
-    private val paymentRepository: PaymentRepository,
     private val iamportClient: IamportClient,
     private val productStockRepository: ProductStockRepository,
     private val applicationEventPublisher: ApplicationEventPublisher,
-    private val redisService: RedisService,
+    private val redisService: RedisServiceImpl,
 ) : PaymentService {
 
     override fun findRequestDto(orderUid: String): RequestPayDto {

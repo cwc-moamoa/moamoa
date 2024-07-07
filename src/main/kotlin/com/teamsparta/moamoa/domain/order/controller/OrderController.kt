@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/api/orders")
 @RestController
 @Validated
-@CrossOrigin(origins = ["*"], allowedHeaders = ["*"])
 class OrderController(
     private val orderService: OrderService,
 ) {

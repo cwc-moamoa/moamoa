@@ -12,6 +12,9 @@ import org.springframework.security.web.AuthenticationEntryPoint
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.access.AccessDeniedHandler
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
+import org.springframework.web.cors.CorsConfiguration
+import org.springframework.web.cors.CorsConfigurationSource
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 
 @Configuration
 @EnableWebSecurity
@@ -22,11 +25,26 @@ class SecurityConfig(
     private val oAuth2UserService: OAuth2UserService,
     private val oAuth2LoginSuccessHandler: OAuth2LoginSuccessHandler,
 ) {
+
+    @Bean
+    fun corsConfigSource(): CorsConfigurationSource {
+        val configuration = CorsConfiguration()
+        configuration.allowedOrigins = listOf("*")
+        configuration.allowedMethods = listOf("GET", "POST", "PUT", "DELETE")
+        configuration.allowedHeaders = listOf("*")
+        configuration.exposedHeaders = listOf("*")
+        configuration.allowCredentials = true
+        val source = UrlBasedCorsConfigurationSource()
+        source.registerCorsConfiguration("/**",configuration)
+        return source
+    }
+
     @Bean
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
         return http
             .httpBasic { it.disable() }
             .formLogin { it.disable() }
+            .cors{it.configurationSource(corsConfigSource())}
             .csrf { it.disable() }
             .headers { it.frameOptions { options -> options.sameOrigin() } }
             .authorizeHttpRequests {

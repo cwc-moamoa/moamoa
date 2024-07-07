@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/products")
-@CrossOrigin(origins = ["*"], allowedHeaders = ["*"])
 class ProductController(
     private val productService: ProductService,
 ) {
@@ -36,7 +35,7 @@ class ProductController(
     }
 
     @Operation(summary = "상품 등록", description = "새로운 상품을 시스템에 등록합니다.")
-    @PostMapping("/products")
+    @PostMapping()
     fun createProduct(
         @AuthenticationPrincipal user: UserPrincipal,
         @RequestBody @Valid request: ProductRequest,

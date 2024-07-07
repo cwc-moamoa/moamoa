@@ -8,7 +8,7 @@ import jakarta.persistence.*
 
 @Entity
 @Table(name = "product_review_like")
-data class Like(
+class Like(
     @Id @GeneratedValue
     val id: Long? = null,
     @ManyToOne(fetch = FetchType.LAZY)

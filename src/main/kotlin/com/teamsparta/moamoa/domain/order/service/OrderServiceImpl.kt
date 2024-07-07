@@ -23,7 +23,7 @@ import com.teamsparta.moamoa.domain.seller.repository.SellerRepository
 import com.teamsparta.moamoa.domain.socialUser.model.SocialUser
 import com.teamsparta.moamoa.domain.socialUser.repository.SocialUserRepository
 import com.teamsparta.moamoa.exception.ModelNotFoundException
-import com.teamsparta.moamoa.infra.redis.RedissonLockManager
+import com.teamsparta.moamoa.infra.redis.RedissonLockManagerImpl
 import com.teamsparta.moamoa.infra.security.UserPrincipal
 import java.time.LocalDateTime
 import java.util.*
@@ -42,7 +42,7 @@ class OrderServiceImpl(
     private val groupPurchaseRepository: GroupPurchaseRepository,
     private val socialUserRepository: SocialUserRepository,
     private val groupPurchaseJoinUserRepository: GroupPurchaseJoinUserRepository,
-    private val redissonLockManager: RedissonLockManager,
+    private val redissonLockManager: RedissonLockManagerImpl,
 ) : OrderService {
     @Transactional
     override fun createOrder(
